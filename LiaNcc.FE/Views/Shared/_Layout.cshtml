@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="dark scroll-smooth" lang="it">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LIA NCC</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#353535",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-fixed": "#ffe088",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-tertiary-container": "#434546",
+                        "on-secondary-fixed-variant": "#474747",
+                        "surface-tint": "#e9c349",
+                        error: "#ffb4ab",
+                        "on-surface": "#e5e2e1",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "surface-container-low": "#1c1b1b",
+                        "on-primary-fixed": "#241a00",
+                        "error-container": "#93000a",
+                        "tertiary-fixed": "#e2e2e2",
+                        "surface-container-high": "#2a2a2a",
+                        "primary-fixed-dim": "#e9c349",
+                        surface: "#131313",
+                        "on-background": "#e5e2e1",
+                        "on-secondary-fixed": "#1b1b1b",
+                        "on-primary": "#3c2f00",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "surface-bright": "#393939",
+                        "on-secondary-container": "#b5b5b5",
+                        "on-error-container": "#ffdad6",
+                        tertiary: "#cecece",
+                        "surface-container-highest": "#353535",
+                        "surface-dim": "#131313",
+                        "on-tertiary": "#2f3131",
+                        background: "#131313",
+                        primary: "#f2ca50",
+                        "outline-variant": "#4d4635",
+                        "on-surface-variant": "#d0c5af",
+                        "inverse-surface": "#e5e2e1",
+                        "secondary-container": "#474747",
+                        "on-primary-container": "#554300",
+                        "secondary-fixed": "#e2e2e2",
+                        "surface-container": "#20201f",
+                        "on-secondary": "#303030",
+                        secondary: "#c6c6c6",
+                        "on-error": "#690005",
+                        "inverse-primary": "#735c00",
+                        "primary-container": "#d4af37",
+                        outline: "#99907c",
+                        "on-primary-fixed-variant": "#574500",
+                        "secondary-fixed-dim": "#c6c6c6",
+                        "tertiary-container": "#b2b3b3"
+                    },
+                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+                    spacing: { unit: "8px", "container-max": "1440px", "section-gap": "128px", margin: "64px", gutter: "24px", "element-gap": "32px", "section-padding": "120px" },
+                    fontFamily: {
+                        sans: ["Montserrat", "sans-serif"],
+                        display: ["Montserrat", "sans-serif"],
+                        body: ["Montserrat", "sans-serif"]
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            background-color: #000000;
+            color: #e2e2e2;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+        }
+
+        .section-title {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .light-text {
+            font-weight: 300;
+        }
+
+        .gold-border {
+            border: 1px solid #D4AF37;
+        }
+
+        .gold-text {
+            color: #D4AF37;
+        }
+
+        .gold-bg {
+            background-color: #D4AF37;
+        }
+
+        .charcoal-border {
+            border: 1px solid #1A1A1A;
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-mask {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.9) 100%);
+        }
+
+        .cinematic-img {
+            filter: grayscale(20%) contrast(110%);
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Secondary Button Style */
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid #D4AF37;
+            color: #D4AF37;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 12px 32px;
+            white-space: nowrap;
+            transition: all 0.4s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+            .btn-secondary:hover {
+                background-color: #D4AF37;
+                color: #121212;
+            }
+
+        .input-underline {
+            border: none;
+            border-bottom: 1px solid #1A1A1A;
+            background: transparent !important;
+            transition: border-color 0.4s ease;
+        }
+
+            .input-underline:focus {
+                outline: none;
+                border-bottom: 1px solid #D4AF37;
+                box-shadow: none;
+                ring: 0;
+            }
+
+        .btn-ghost {
+            background-color: transparent;
+            border: 1px solid #D4AF37;
+            color: #D4AF37;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 12px 32px;
+            white-space: nowrap;
+            transition: all 0.4s ease;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-ghost:hover {
+            background-color: #D4AF37;
+            color: #000000;
+        }
+
+        .luxury-gradient-bg {
+            background: radial-gradient(circle at 50% -20%, #1A1A1A 0%, #000000 100%);
+        }
+        .vehicle-glow {
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.15));
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .noir-gradient {
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
+        }
+        .cinematic-card:hover .card-border {
+            border-color: #D4AF37;
+        }
+        .cinematic-card:hover img {
+            scale: 1.05;
+        }
+    </style>
+</head>
+<body class="font-body overflow-x-hidden selection:bg-primary/30 selection:text-on-primary-container">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 py-6 bg-black/90 backdrop-blur-xl border-b border-[#1A1A1A]">
+        <a asp-action="Index" asp-controller="Home" class="text-2xl font-bold text-[#D4AF37] tracking-tighter">
+            <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhS87gNjheq6fsg1_0XkocTBoGQ2rr5jDTvkJrq1F4TGo7mBVy7uQoXQ_DC6LMOhgiKoaF082zITmJHfAr2YBJ-8uqjcUsjTsHFyu8cpFFn3I4xG5ba3EYzkSoW2Lp9qDoXo6ls5MgEPE8CubhRlBISnYI893WT5VC62uFVCaIXKWpnXi7WSdZGo3F32nH0SCywSapfjvEO4yAmBEL-IrGyqTGWejhdk32QPX0ZFD_zaj5KRldOzklWwwjrH-cBadRwjrboE7o3dgA" />
+        </a>
+        <nav class="hidden md:flex gap-12 font-semibold tracking-widest uppercase text-[10px]">
+            <a asp-action="Index" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Home</a>
+            <a asp-action="Fleet" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Fleet" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Flotta</a>
+            <a href="/Home/Index#servizi" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Servizi</a>
+            <a asp-action="Tours" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Tours" || ViewContext.RouteData.Values["Action"]?.ToString() == "TourDetail" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Tour</a>
+            <a href="#contatti" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Contatti</a>
+
+            @{
+                var isItalian = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "it";
+            }
+            <div class="flex gap-2">
+                <a href="?culture=it" class="@(isItalian ? "text-[#D4AF37]" : "text-gray-500 hover:text-[#D4AF37]")">IT</a>
+                <span class="text-gray-500">|</span>
+                <a href="?culture=en" class="@(!isItalian ? "text-[#D4AF37]" : "text-gray-500 hover:text-[#D4AF37]")">EN</a>
+            </div>
+        </nav>
+        <a href="#booking-form" class="btn-secondary !text-[10px] !py-3">Prenota Ora</a>
+    </header>
+
+    @RenderBody()
+
+    <!-- Footer -->
+    <footer class="w-full bg-[#000000] border-t border-[#1A1A1A] mt-32" id="contatti">
+        <div class="w-full py-20 px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-7xl mx-auto items-center">
+            <div>
+                <div class="mb-8">
+                    <a asp-action="Index" asp-controller="Home">
+                        <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhS87gNjheq6fsg1_0XkocTBoGQ2rr5jDTvkJrq1F4TGo7mBVy7uQoXQ_DC6LMOhgiKoaF082zITmJHfAr2YBJ-8uqjcUsjTsHFyu8cpFFn3I4xG5ba3EYzkSoW2Lp9qDoXo6ls5MgEPE8CubhRlBISnYI893WT5VC62uFVCaIXKWpnXi7WSdZGo3F32nH0SCywSapfjvEO4yAmBEL-IrGyqTGWejhdk32QPX0ZFD_zaj5KRldOzklWwwjrH-cBadRwjrboE7o3dgA" />
+                    </a>
+                </div>
+                <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-8 text-[15px]">© 2024 LIA NCC. L'ECCELLENZA IN MOVIMENTO.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-8">
+                <div class="flex flex-col gap-4">
+                    <a href="#" class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all">Privacy Policy</a>
+                    <a href="#" class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all">Termini e Condizioni</a>
+                </div>
+                <div class="flex flex-col gap-4 text-right">
+                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 333 715 9308</p>
+                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 350 576 3433</p>
+                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 text-[15px]">liamoto@alice.it</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
