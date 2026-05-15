@@ -205,7 +205,7 @@
     <!-- TopNavBar -->
     <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 py-6 bg-black/90 backdrop-blur-xl border-b border-[#1A1A1A]">
         <a asp-action="Index" asp-controller="Home" class="text-2xl font-bold text-[#D4AF37] tracking-tighter">
-            <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhS87gNjheq6fsg1_0XkocTBoGQ2rr5jDTvkJrq1F4TGo7mBVy7uQoXQ_DC6LMOhgiKoaF082zITmJHfAr2YBJ-8uqjcUsjTsHFyu8cpFFn3I4xG5ba3EYzkSoW2Lp9qDoXo6ls5MgEPE8CubhRlBISnYI893WT5VC62uFVCaIXKWpnXi7WSdZGo3F32nH0SCywSapfjvEO4yAmBEL-IrGyqTGWejhdk32QPX0ZFD_zaj5KRldOzklWwwjrH-cBadRwjrboE7o3dgA" />
+            <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="~/img/LiaNcc_logo.jpeg" />
         </a>
         <nav class="hidden md:flex gap-12 font-semibold tracking-widest uppercase text-[10px]">
             <a asp-action="Index" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Home</a>
@@ -234,10 +234,10 @@
             <div>
                 <div class="mb-8">
                     <a asp-action="Index" asp-controller="Home">
-                        <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhS87gNjheq6fsg1_0XkocTBoGQ2rr5jDTvkJrq1F4TGo7mBVy7uQoXQ_DC6LMOhgiKoaF082zITmJHfAr2YBJ-8uqjcUsjTsHFyu8cpFFn3I4xG5ba3EYzkSoW2Lp9qDoXo6ls5MgEPE8CubhRlBISnYI893WT5VC62uFVCaIXKWpnXi7WSdZGo3F32nH0SCywSapfjvEO4yAmBEL-IrGyqTGWejhdk32QPX0ZFD_zaj5KRldOzklWwwjrH-cBadRwjrboE7o3dgA" />
+                        <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="~/img/LiaNcc_logo.jpeg" />
                     </a>
                 </div>
-                <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-8 text-[15px]">© 2024 LIA NCC. L'ECCELLENZA IN MOVIMENTO.</p>
+                <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-8 text-[15px]">© @DateTime.Now.Year LIA NCC. L'ECCELLENZA IN MOVIMENTO.</p>
             </div>
             <div class="grid grid-cols-2 gap-8">
                 <div class="flex flex-col gap-4">
