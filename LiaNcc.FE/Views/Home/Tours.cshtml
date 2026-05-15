@@ -1,257 +1,105 @@
-<!DOCTYPE html>
-<html class="dark scroll-smooth" lang="it">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - LIA NCC</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "surface-variant": "#353535",
-                        "surface-container-lowest": "#0e0e0e",
-                        "primary-fixed": "#ffe088",
-                        "inverse-on-surface": "#313030",
-                        "on-tertiary-fixed-variant": "#454747",
-                        "on-tertiary-container": "#434546",
-                        "on-secondary-fixed-variant": "#474747",
-                        "surface-tint": "#e9c349",
-                        error: "#ffb4ab",
-                        "on-surface": "#e5e2e1",
-                        "on-tertiary-fixed": "#1a1c1c",
-                        "surface-container-low": "#1c1b1b",
-                        "on-primary-fixed": "#241a00",
-                        "error-container": "#93000a",
-                        "tertiary-fixed": "#e2e2e2",
-                        "surface-container-high": "#2a2a2a",
-                        "primary-fixed-dim": "#e9c349",
-                        surface: "#131313",
-                        "on-background": "#e5e2e1",
-                        "on-secondary-fixed": "#1b1b1b",
-                        "on-primary": "#3c2f00",
-                        "tertiary-fixed-dim": "#c6c6c7",
-                        "surface-bright": "#393939",
-                        "on-secondary-container": "#b5b5b5",
-                        "on-error-container": "#ffdad6",
-                        tertiary: "#cecece",
-                        "surface-container-highest": "#353535",
-                        "surface-dim": "#131313",
-                        "on-tertiary": "#2f3131",
-                        background: "#131313",
-                        primary: "#f2ca50",
-                        "outline-variant": "#4d4635",
-                        "on-surface-variant": "#d0c5af",
-                        "inverse-surface": "#e5e2e1",
-                        "secondary-container": "#474747",
-                        "on-primary-container": "#554300",
-                        "secondary-fixed": "#e2e2e2",
-                        "surface-container": "#20201f",
-                        "on-secondary": "#303030",
-                        secondary: "#c6c6c6",
-                        "on-error": "#690005",
-                        "inverse-primary": "#735c00",
-                        "primary-container": "#d4af37",
-                        outline: "#99907c",
-                        "on-primary-fixed-variant": "#574500",
-                        "secondary-fixed-dim": "#c6c6c6",
-                        "tertiary-container": "#b2b3b3"
-                    },
-                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
-                    spacing: { unit: "8px", "container-max": "1440px", "section-gap": "128px", margin: "64px", gutter: "24px", "element-gap": "32px", "section-padding": "120px" },
-                    fontFamily: {
-                        sans: ["Montserrat", "sans-serif"],
-                        display: ["Montserrat", "sans-serif"],
-                        body: ["Montserrat", "sans-serif"]
-                    }
-                }
-            }
-        };
-    </script>
-    <style>
-        body {
-            background-color: #000000;
-            color: #e2e2e2;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 400;
-        }
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+@{
+    ViewData["Title"] = "Tutti i Tour d'Autore";
+}
 
-        h1, h2, h3 {
-            font-weight: 600;
-        }
-
-        .section-title {
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        .light-text {
-            font-weight: 300;
-        }
-
-        .gold-border {
-            border: 1px solid #D4AF37;
-        }
-
-        .gold-text {
-            color: #D4AF37;
-        }
-
-        .gold-bg {
-            background-color: #D4AF37;
-        }
-
-        .charcoal-border {
-            border: 1px solid #1A1A1A;
-        }
-
-        .glass-effect {
-            backdrop-filter: blur(20px);
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        .hero-mask {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.9) 100%);
-        }
-
-        .cinematic-img {
-            filter: grayscale(20%) contrast(110%);
-        }
-
-        .modal-overlay {
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-        }
-
-        /* Secondary Button Style */
-        .btn-secondary {
-            background-color: transparent;
-            border: 1px solid #D4AF37;
-            color: #D4AF37;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 12px 32px;
-            white-space: nowrap;
-            transition: all 0.4s ease;
-            display: inline-block;
-            text-align: center;
-        }
-
-            .btn-secondary:hover {
-                background-color: #D4AF37;
-                color: #121212;
-            }
-
-        .input-underline {
-            border: none;
-            border-bottom: 1px solid #1A1A1A;
-            background: transparent !important;
-            transition: border-color 0.4s ease;
-        }
-
-            .input-underline:focus {
-                outline: none;
-                border-bottom: 1px solid #D4AF37;
-                box-shadow: none;
-                ring: 0;
-            }
-
-        .btn-ghost {
-            background-color: transparent;
-            border: 1px solid #D4AF37;
-            color: #D4AF37;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 12px 32px;
-            white-space: nowrap;
-            transition: all 0.4s ease;
-            display: inline-block;
-            text-align: center;
-        }
-        .btn-ghost:hover {
-            background-color: #D4AF37;
-            color: #000000;
-        }
-
-        .luxury-gradient-bg {
-            background: radial-gradient(circle at 50% -20%, #1A1A1A 0%, #000000 100%);
-        }
-        .vehicle-glow {
-            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.15));
-        }
-
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .noir-gradient {
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
-        }
-        .cinematic-card:hover .card-border {
-            border-color: #D4AF37;
-        }
-        .cinematic-card:hover img {
-            scale: 1.05;
-        }
-    </style>
-</head>
-<body class="font-body overflow-x-hidden selection:bg-primary/30 selection:text-on-primary-container">
-    <!-- TopNavBar -->
-    <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 py-6 bg-black/90 backdrop-blur-xl border-b border-[#1A1A1A]">
-        <a asp-action="Index" asp-controller="Home" class="text-2xl font-bold text-[#D4AF37] tracking-tighter">
-            <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhS87gNjheq6fsg1_0XkocTBoGQ2rr5jDTvkJrq1F4TGo7mBVy7uQoXQ_DC6LMOhgiKoaF082zITmJHfAr2YBJ-8uqjcUsjTsHFyu8cpFFn3I4xG5ba3EYzkSoW2Lp9qDoXo6ls5MgEPE8CubhRlBISnYI893WT5VC62uFVCaIXKWpnXi7WSdZGo3F32nH0SCywSapfjvEO4yAmBEL-IrGyqTGWejhdk32QPX0ZFD_zaj5KRldOzklWwwjrH-cBadRwjrboE7o3dgA" />
-        </a>
-        <nav class="hidden md:flex gap-12 font-semibold tracking-widest uppercase text-[10px]">
-            <a asp-action="Index" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Home</a>
-            <a asp-action="Fleet" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Fleet" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Flotta</a>
-            <a href="/Home/Index#servizi" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Servizi</a>
-            <a asp-action="Tours" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Tours" || ViewContext.RouteData.Values["Action"]?.ToString() == "TourDetail" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Tour</a>
-            <a href="#contatti" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Contatti</a>
-
-            @{
-                var isItalian = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "it";
-            }
-            <div class="flex gap-2">
-                <a href="?culture=it" class="@(isItalian ? "text-[#D4AF37]" : "text-gray-500 hover:text-[#D4AF37]")">IT</a>
-                <span class="text-gray-500">|</span>
-                <a href="?culture=en" class="@(!isItalian ? "text-[#D4AF37]" : "text-gray-500 hover:text-[#D4AF37]")">EN</a>
-            </div>
-        </nav>
-        <a href="#booking-form" class="btn-secondary !text-[10px] !py-3">Prenota Ora</a>
-    </header>
-
-    @RenderBody()
-
-    <!-- Footer -->
-    <footer class="w-full bg-[#000000] border-t border-[#1A1A1A] mt-32" id="contatti">
-        <div class="w-full py-20 px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-7xl mx-auto items-center">
-            <div>
-                <div class="mb-8">
-                    <a asp-action="Index" asp-controller="Home">
-                        <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhS87gNjheq6fsg1_0XkocTBoGQ2rr5jDTvkJrq1F4TGo7mBVy7uQoXQ_DC6LMOhgiKoaF082zITmJHfAr2YBJ-8uqjcUsjTsHFyu8cpFFn3I4xG5ba3EYzkSoW2Lp9qDoXo6ls5MgEPE8CubhRlBISnYI893WT5VC62uFVCaIXKWpnXi7WSdZGo3F32nH0SCywSapfjvEO4yAmBEL-IrGyqTGWejhdk32QPX0ZFD_zaj5KRldOzklWwwjrH-cBadRwjrboE7o3dgA" />
-                    </a>
-                </div>
-                <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-8 text-[15px]">© 2024 LIA NCC. L'ECCELLENZA IN MOVIMENTO.</p>
-            </div>
-            <div class="grid grid-cols-2 gap-8">
-                <div class="flex flex-col gap-4">
-                    <a href="#" class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all">Privacy Policy</a>
-                    <a href="#" class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all">Termini e Condizioni</a>
-                </div>
-                <div class="flex flex-col gap-4 text-right">
-                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 333 715 9308</p>
-                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 350 576 3433</p>
-                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 text-[15px]">liamoto@alice.it</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+<main class="pt-48 pb-32">
+<section class="max-w-7xl mx-auto px-8">
+<!-- Section Header -->
+<div class="mb-24 flex flex-col items-center text-center">
+<span class="font-bold text-primary tracking-[0.4em] uppercase text-xs mb-4 block">Esperienza Chauffeur Premium</span>
+<h1 class="text-4xl md:text-5xl font-medium text-white mb-6 tracking-tight uppercase" style="letter-spacing: 3px;">Tutti i Tour d'Autore</h1>
+<div class="w-24 h-px bg-[#D4AF37]"></div>
+</div>
+<!-- Bento / Poster Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Main Featured Poster: Matera -->
+<div class="md:col-span-8 group relative aspect-[16/10] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
+<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
+<img alt="Matera" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_26FKFmffDMRQjZlBs2q7aOfiViMvBFXUH_caO-scku4mrbyHlmW_CLlTvmvYylgeoQI3ocah3I_3EvDK5YPANBs_ZQ_WkEUGXregJhxY9GMegst8K0RyWIpOiFdDeNWMzMAGigJE5siXmq6ANAlgo6whHBCSIWOrVxXBuZ08443Koo757QfRYhM73UtaLCygsN8jSNFwpuc5k-EJgB4oGsgIXBdkhjHnfcchWho1WDrhEFERdUEo-ZV1EtFwVM47BfvhfzWKgn5j"/>
+<div class="absolute inset-0 noir-gradient z-10"></div>
+<div class="absolute bottom-0 left-0 p-10 z-30">
+<h2 class="text-3xl md:text-4xl font-semibold text-white mb-2 uppercase tracking-widest">Matera</h2>
+<p class="text-sm text-on-surface-variant mb-6 max-w-md font-light">L'eternità scolpita nella pietra. Un viaggio silenzioso attraverso i Sassi, dove il tempo si è fermato.</p>
+<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em] hover:translate-x-2 transition-transform duration-300" asp-action="TourDetail" asp-controller="Home">
+<span>Scopri di più</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Secondary Poster: Valle d'Itria -->
+<div class="md:col-span-4 group relative aspect-[3/4] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
+<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
+<img alt="Valle d'Itria" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtShf6qOrX_gwJmojpPrAkKucl4CiG2uuAx-nsaZx8MvipdnZGcubfe_rYH2N5QkKxYsUhXnPOEdmJYv-mraQ2oC3ssSVSeqYJYuay4TFmfbn68B92A2VClChKatdB_lcSNU29-uwgxXJkO02H7qcyroDRsaNyl8ueMia2nkvijmLEuX2XT_Pe5M883pZL7u7YkyEEhcwv5hBEJxz1NY3dkke8ljRVJtlXUnaAXrdVjRBAx_pNf1_-ZsMY3iL9lacaqjjR2aIaapXM"/>
+<div class="absolute inset-0 noir-gradient z-10"></div>
+<div class="absolute bottom-0 left-0 p-8 z-30">
+<h2 class="text-2xl font-semibold text-white mb-4 uppercase tracking-widest">Valle d'Itria</h2>
+<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em]" asp-action="TourDetail" asp-controller="Home">
+<span>Scopri di più</span>
+</a>
+</div>
+</div>
+<!-- Card 3: Costiera Amalfitana -->
+<div class="md:col-span-4 group relative aspect-[3/4] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
+<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
+<img alt="Costiera Amalfitana" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk3sSERBsPJTlbahW5ygl7_87dc-SdRDE-yqn0Bd7KDW3dmGVerBTenWJpfMvJN0suCLPXGfyLptQuEi5gIAYNMmTyBuZxNojKvugZDzigPnYqh5pzBF0xj6IbWZhBlqbxQ1filaKNjhWEh0nqut9nY5-8efM3DbCpPI0WvX9w8WCnvOk2dqOYMMTN1RohBtWJAXTjeA1FHbs9AISOeYCCa3gf5gbqyA3Yv6eI0ThNDV5ImXBLoeFApvFE05ANwq7qwExMxusG5qa-"/>
+<div class="absolute inset-0 noir-gradient z-10"></div>
+<div class="absolute bottom-0 left-0 p-8 z-30">
+<h2 class="text-2xl font-semibold text-white mb-4 uppercase tracking-widest">Costiera Amalfitana</h2>
+<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em]" asp-action="TourDetail" asp-controller="Home">
+<span>Scopri di più</span>
+</a>
+</div>
+</div>
+<!-- Card 4: Salento -->
+<div class="md:col-span-4 group relative aspect-[3/4] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
+<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
+<img alt="Salento" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNlwrn6Y9joXvqVdgdV5Obx5o7hBiNqGyQwnj0tPM9qH0YgwlmiK9LmEie65sc2VfCjtVhHx_0fApJd0-OCDCbRgGMRh-pZirUGoYnPycSzNTlvbW_fvbKbvWjhN3jP5P8MyoS1ug4odB-R2CaWB7oBAADwrbeuI4EpiQg6MRoM0fp803f3kVnifGpwqcFdffBpr7_CNuZOcj0cJ39A6Oo0nDdQeGlU6lJNI2A_4IdriwPHzxTEUcyboOA0jWzvjeZyPl_8a_Jy-On"/>
+<div class="absolute inset-0 noir-gradient z-10"></div>
+<div class="absolute bottom-0 left-0 p-8 z-30">
+<h2 class="text-2xl font-semibold text-white mb-4 uppercase tracking-widest">Salento</h2>
+<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em]" asp-action="TourDetail" asp-controller="Home">
+<span>Scopri di più</span>
+</a>
+</div>
+</div>
+<!-- Card 5: Castel del Monte -->
+<div class="md:col-span-4 group relative aspect-[3/4] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
+<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
+<img alt="Castel del Monte" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCa_SN6T0CuHzb78wWbvgKr5ggpyda6saM-XxSTdnw3d7rrcbRzh0ZylUBf037Uh6bajNjVv_5mn8TnLDhjUubEP8ALe9xVEUZvYDXzkA33a0p6OsSeuecKa1f3_e49AWN1jjPqnxaanhezuyojLJbv4E_-3fhzrfJp_cLttUhtBVxZB8WNDF6fjoYNKVUKwI9vN-ND9Dzb6itTv7-1tIs0h7O-7t8e7_-u2-htFMM2ueasq7Tjs1yNPChKB2is3c96OPxnLnHi3hwi"/>
+<div class="absolute inset-0 noir-gradient z-10"></div>
+<div class="absolute bottom-0 left-0 p-8 z-30">
+<h2 class="text-2xl font-semibold text-white mb-4 uppercase tracking-widest">Castel del Monte</h2>
+<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em]" asp-action="TourDetail" asp-controller="Home">
+<span>Scopri di più</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Call to Action -->
+<div class="mt-section-gap border border-[#1A1A1A] p-16 bg-black">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full max-w-7xl mx-auto">
+<div class="max-w-xl text-left">
+<h3 class="text-3xl font-semibold text-white mb-6 uppercase tracking-widest leading-tight">Un itinerario su misura per le vostre esigenze.</h3>
+<p class="text-lg text-on-surface-variant font-light">Collaboriamo con voi per creare esperienze di viaggio esclusive, garantendo la massima discrezione e precisione in ogni dettaglio.</p>
+</div>
+<div class="w-full">
+<form action="javascript:void(0);" class="flex flex-col gap-4 font-body" id="tour-contact" onsubmit="alert('Grazie per la tua richiesta. Ti ricontatteremo al più presto.')">
+<div class="relative">
+<input class="w-full bg-black border border-[#D4AF37] px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#D4AF37] placeholder-gray-500 uppercase tracking-widest font-medium transition-all" placeholder="Nome" required="" type="text"/>
+</div>
+<div class="relative">
+<input class="w-full bg-black border border-[#D4AF37] px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#D4AF37] placeholder-gray-500 uppercase tracking-widest font-medium transition-all" placeholder="Email" required="" type="email"/>
+</div>
+<div class="relative">
+<textarea class="w-full bg-black border border-[#D4AF37] px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#D4AF37] placeholder-gray-500 uppercase tracking-widest font-medium transition-all resize-none" placeholder="Messaggio" required="" rows="4"></textarea>
+</div>
+<button class="bg-[#D4AF37] text-black font-bold text-[10px] uppercase tracking-[0.2em] py-4 px-12 hover:bg-white hover:text-black transition-all duration-300 self-start" type="submit">
+                            Invia Richiesta
+                        </button>
+</form>
+</div>
+</div>
+</div>
+</section>
+</main>

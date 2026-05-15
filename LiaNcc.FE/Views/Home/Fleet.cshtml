@@ -1,92 +1,8 @@
 @{
-    Layout = null;
+    ViewData["Title"] = "La Nostra Flotta";
+    Layout = "_Layout";
 }
-<!DOCTYPE html>
-<html class="dark" lang="it"><head></head><body class="bg-background text-on-surface font-sans selection:bg-primary/30">
 
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>LIA NCC | La Nostra Flotta</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#D4AF37",
-                        background: "#000000",
-                        surface: "#131313",
-                        "on-surface": "#e5e2e1",
-                        "on-surface-variant": "#d0c5af",
-                        "primary-container": "#d4af37",
-                    },
-                    fontFamily: {
-                        sans: ["Montserrat", "sans-serif"],
-                    }
-                }
-            }
-        }
-    </script>
-<style>
-        body {
-            background-color: #000000;
-            color: #e2e2e2;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .section-title {
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-weight: 600;
-        }
-        .gold-text { color: #D4AF37; }
-        .gold-border { border: 1px solid #D4AF37; }
-        .gold-bg { background-color: #D4AF37; }
-        .luxury-gradient-bg {
-            background: radial-gradient(circle at 50% -20%, #1A1A1A 0%, #000000 100%);
-        }
-        .vehicle-glow {
-            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.15));
-        }
-        .modal-overlay {
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-        }
-        /* Ghost Button Style */
-        .btn-ghost {
-            background-color: transparent;
-            border: 1px solid #D4AF37;
-            color: #D4AF37;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 12px 32px;
-            white-space: nowrap;
-            transition: all 0.4s ease;
-            display: inline-block;
-            text-align: center;
-        }
-        .btn-ghost:hover {
-            background-color: #D4AF37;
-            color: #000000;
-        }
-    </style>
-<!-- Header -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 py-6 bg-black/90 backdrop-blur-xl border-b border-[#1A1A1A]">
-<a class="text-2xl font-bold text-[#D4AF37] tracking-tighter" href="@Url.Action("Index", "Home")">
-<img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhS87gNjheq6fsg1_0XkocTBoGQ2rr5jDTvkJrq1F4TGo7mBVy7uQoXQ_DC6LMOhgiKoaF082zITmJHfAr2YBJ-8uqjcUsjTsHFyu8cpFFn3I4xG5ba3EYzkSoW2Lp9qDoXo6ls5MgEPE8CubhRlBISnYI893WT5VC62uFVCaIXKWpnXi7WSdZGo3F32nH0SCywSapfjvEO4yAmBEL-IrGyqTGWejhdk32QPX0ZFD_zaj5KRldOzklWwwjrH-cBadRwjrboE7o3dgA"/>
-</a>
-<nav class="hidden md:flex gap-12 font-semibold tracking-widest uppercase text-[10px]">
-<a class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300" href="@Url.Action("Index", "Home")">Home</a>
-<a class="text-[#D4AF37] border-b border-[#D4AF37] pb-1 transition-colors duration-300" href="@Url.Action("Fleet", "Home")">Flotta</a>
-<a class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300" href="@Url.Action("Index", "Home")#servizi">Servizi</a>
-<a class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300" href="@Url.Action("Tours", "Home")">Tour</a>
-<a class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300" href="#contatti">Contatti</a>
-</nav>
-<a class="btn-ghost text-[10px] tracking-widest" href="#booking-form">Prenota Ora</a>
-</header>
 <main class="luxury-gradient-bg pt-32">
 <!-- Hero Section -->
 <section class="px-12 py-24 max-w-screen-2xl mx-auto text-center">
@@ -192,31 +108,7 @@
 </div>
 </section>
 </main>
-<!-- Footer -->
-<footer class="w-full bg-[#000000] border-t border-[#1A1A1A]" id="contatti">
-<div class="w-full py-20 px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-7xl mx-auto items-center">
-<div>
-<div class="mb-8">
-<a href="@Url.Action("Index", "Home")">
-<img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhS87gNjheq6fsg1_0XkocTBoGQ2rr5jDTvkJrq1F4TGo7mBVy7uQoXQ_DC6LMOhgiKoaF082zITmJHfAr2YBJ-8uqjcUsjTsHFyu8cpFFn3I4xG5ba3EYzkSoW2Lp9qDoXo6ls5MgEPE8CubhRlBISnYI893WT5VC62uFVCaIXKWpnXi7WSdZGo3F32nH0SCywSapfjvEO4yAmBEL-IrGyqTGWejhdk32QPX0ZFD_zaj5KRldOzklWwwjrH-cBadRwjrboE7o3dgA"/>
-</a>
-</div>
-<p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-8">© 2024 LIA NCC. L'ECCELLENZA IN MOVIMENTO.</p>
-</div>
-<div class="grid grid-cols-2 gap-8">
-<div class="flex flex-col gap-4">
-<a class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all" href="#">Privacy Policy</a>
-<a class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all" href="#">Termini e Condizioni</a>
-</div>
-<div class="flex flex-col gap-4 text-right">
-<p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37]">+39 333 715 9308</p>
-<p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37]">+39 350 576 3433</p>
-<p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600">liamoto@alice.it</p>
-</div>
-</div>
-</div>
-</footer>
-<!-- VIP Booking Modal -->
+
 <div class="hidden fixed inset-0 z-[100] modal-overlay flex items-center justify-center px-4 py-8 overflow-y-auto" id="bookingModal">
 <div class="bg-[#050505] border border-[#1A1A1A] w-full max-w-4xl p-8 md:p-12 relative">
 <button class="absolute top-6 right-6 text-primary hover:scale-110 transition-transform" onclick="closeBookingModal()">
@@ -260,7 +152,9 @@
 </form>
 </div>
 </div>
-<script>
+
+@section Scripts {
+    <script>
     function openBookingModal(carName) {
         document.getElementById('selectedCarName').innerText = carName;
         document.getElementById('bookingModal').classList.remove('hidden');
@@ -280,4 +174,4 @@
         }
     }
 </script>
-</body></html>
+}
