@@ -1,0 +1,6 @@
+@LiaNcc.WebAPI_HostAddress = http://localhost:5153
+
+GET {{LiaNcc.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
