@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.4.11605.240 stable
+VisualStudioVersion = 18.4.11605.240
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiaNcc.FE", "LiaNcc.FE\LiaNcc.FE.csproj", "{0D3E15F8-0B7C-4F30-BE0D-E07ECD34FF7C}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiaNcc.Models", "LiaNcc.Models\LiaNcc.Models.csproj", "{6C67EE02-5D12-4D04-AADC-B90395FC5731}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiaNcc.Repository", "LiaNcc.Repository\LiaNcc.Repository.csproj", "{8F8C1BCC-4EAF-45CA-A3F2-14BDFD3DC930}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiaNcc.BO", "LiaNcc.BO\LiaNcc.BO.csproj", "{285713DC-81A8-4B93-84E4-CA8FECFD5F18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8F8C1BCC-4EAF-45CA-A3F2-14BDFD3DC930}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F8C1BCC-4EAF-45CA-A3F2-14BDFD3DC930}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F8C1BCC-4EAF-45CA-A3F2-14BDFD3DC930}.Release|Any CPU.Build.0 = Release|Any CPU
+		{285713DC-81A8-4B93-84E4-CA8FECFD5F18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{285713DC-81A8-4B93-84E4-CA8FECFD5F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{285713DC-81A8-4B93-84E4-CA8FECFD5F18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{285713DC-81A8-4B93-84E4-CA8FECFD5F18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
