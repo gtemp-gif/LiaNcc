@@ -1,0 +1,128 @@
+USE [master]
+GO
+
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'LiaNcc')
+BEGIN
+    CREATE DATABASE [LiaNcc]
+END
+GO
+
+USE [LiaNcc]
+GO
+
+-- USERS & ROLES
+
+CREATE TABLE Users (
+    Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_Users PRIMARY KEY DEFAULT NEWID(),
+    FullName NVARCHAR(200) NOT NULL,
+    Email NVARCHAR(256) NOT NULL,
+    PasswordHash NVARCHAR(500) NOT NULL,
+    IsActive BIT NOT NULL CONSTRAINT DF_Users_IsActive DEFAULT 1,
+    CreatedAt DATETIME2 NOT NULL CONSTRAINT DF_Users_CreatedAt DEFAULT SYSUTCDATETIME(),
+    UpdatedAt DATETIME2 NULL
+);
+GO
+
+CREATE UNIQUE INDEX IX_Users_Email ON Users(Email);
+GO
+
+CREATE TABLE Roles (
+    Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_Roles PRIMARY KEY DEFAULT NEWID(),
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(500) NULL,
+    IsActive BIT NOT NULL CONSTRAINT DF_Roles_IsActive DEFAULT 1,
+    CreatedAt DATETIME2 NOT NULL CONSTRAINT DF_Roles_CreatedAt DEFAULT SYSUTCDATETIME(),
+    UpdatedAt DATETIME2 NULL
+);
+GO
+
+CREATE UNIQUE INDEX IX_Roles_Name ON Roles(Name);
+GO
+
+CREATE TABLE UserRoles (
+    UserId UNIQUEIDENTIFIER NOT NULL,
+    RoleId UNIQUEIDENTIFIER NOT NULL,
+    AssignedAt DATETIME2 NOT NULL CONSTRAINT DF_UserRoles_AssignedAt DEFAULT SYSUTCDATETIME(),
+
+    CONSTRAINT PK_UserRoles PRIMARY KEY (UserId, RoleId),
+
+    CONSTRAINT FK_UserRoles_Users FOREIGN KEY (UserId)
+        REFERENCES Users(Id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_UserRoles_Roles FOREIGN KEY (RoleId)
+        REFERENCES Roles(Id)
+        ON DELETE CASCADE
+);
+GO
+
+CREATE INDEX IX_UserRoles_UserId ON UserRoles(UserId);
+CREATE INDEX IX_UserRoles_RoleId ON UserRoles(RoleId);
+GO
+
+-- VEHICLES (Flotta)
+CREATE TABLE Vehicles (
+    Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_Vehicles PRIMARY KEY DEFAULT NEWID(),
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(1000) NULL,
+    Category NVARCHAR(50) NOT NULL, -- e.g., 'BERLINA EXECUTIVE', 'LUXURY VAN', etc.
+    ImageUrl NVARCHAR(500) NULL,
+    Seats INT NOT NULL,
+    Luggages INT NOT NULL,
+    IsActive BIT NOT NULL CONSTRAINT DF_Vehicles_IsActive DEFAULT 1,
+    CreatedAt DATETIME2 NOT NULL CONSTRAINT DF_Vehicles_CreatedAt DEFAULT SYSUTCDATETIME(),
+    UpdatedAt DATETIME2 NULL
+);
+GO
+
+-- TOURS
+CREATE TABLE Tours (
+    Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_Tours PRIMARY KEY DEFAULT NEWID(),
+    Name NVARCHAR(150) NOT NULL,
+    ShortDescription NVARCHAR(500) NULL,
+    FullDescription NVARCHAR(MAX) NULL,
+    ImageUrl NVARCHAR(500) NULL,
+    Price DECIMAL(18,2) NULL,
+    IsActive BIT NOT NULL CONSTRAINT DF_Tours_IsActive DEFAULT 1,
+    CreatedAt DATETIME2 NOT NULL CONSTRAINT DF_Tours_CreatedAt DEFAULT SYSUTCDATETIME(),
+    UpdatedAt DATETIME2 NULL
+);
+GO
+
+-- BOOKINGS (Prenotazioni)
+CREATE TABLE Bookings (
+    Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_Bookings PRIMARY KEY DEFAULT NEWID(),
+    FullName NVARCHAR(200) NOT NULL,
+    Email NVARCHAR(256) NOT NULL,
+    ServiceDate DATETIME2 NOT NULL,
+    ServiceType NVARCHAR(100) NOT NULL, -- e.g., 'Transfer Aeroportuale', 'Tour Personalizzato'
+    Message NVARCHAR(MAX) NULL,
+    Status NVARCHAR(50) NOT NULL CONSTRAINT DF_Bookings_Status DEFAULT 'Pending', -- Pending, Confirmed, Cancelled, Completed
+    CreatedAt DATETIME2 NOT NULL CONSTRAINT DF_Bookings_CreatedAt DEFAULT SYSUTCDATETIME(),
+    UpdatedAt DATETIME2 NULL
+);
+GO
+
+-- CONTACT MESSAGES (Contatti)
+CREATE TABLE ContactMessages (
+    Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_ContactMessages PRIMARY KEY DEFAULT NEWID(),
+    FullName NVARCHAR(200) NOT NULL,
+    Email NVARCHAR(256) NOT NULL,
+    Message NVARCHAR(MAX) NOT NULL,
+    IsRead BIT NOT NULL CONSTRAINT DF_ContactMessages_IsRead DEFAULT 0,
+    CreatedAt DATETIME2 NOT NULL CONSTRAINT DF_ContactMessages_CreatedAt DEFAULT SYSUTCDATETIME()
+);
+GO
+
+-- INITIAL SEED (ROLES)
+INSERT INTO Roles (Id, Name, Description)
+VALUES
+('E3452BAA-93B4-4B36-A309-8C7E7BC4B692', 'Admin', 'Administrator role with full access'),
+('C996ED9E-C6B3-4412-B67D-51B42E708E5B', 'Operator', 'Operator role with operational access'),
+('F07A3E76-13E0-4D88-8869-2E82EBC8234E', 'User', 'Standard user role');
+
+-- NOTE FOR ADMIN CREATION:
+-- To create an initial admin, you must use BCrypt to hash the password before inserting into the Users table.
+-- Example: Hash for 'Admin123!' is something like '$2a$11$w.NnU/8RTYgG0yD3WzC8G.w7.75R5N1d1d8Z7g38Z.tXvXn/z4n7O'
+-- INSERT INTO Users (Id, FullName, Email, PasswordHash) VALUES (NEWID(), 'Admin', 'admin@liancc.it', '$2a$11$w.NnU/8RTYgG0yD3WzC8G.w7.75R5N1d1d8Z7g38Z.tXvXn/z4n7O');
+-- INSERT INTO UserRoles (UserId, RoleId) VALUES ((SELECT Id FROM Users WHERE Email='admin@liancc.it'), 'E3452BAA-93B4-4B36-A309-8C7E7BC4B692');
