@@ -11,7 +11,7 @@ namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Admin,Operator")]
     public class BookingsController : ControllerBase
     {
         private readonly IBookingRepository _bookingRepository;
@@ -21,15 +21,12 @@ namespace LiaNcc.WebAPI.Controllers
             _bookingRepository = bookingRepository;
         }
 
-        [Authorize(Roles = "Admin,Operator")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
-            var bookings = await _bookingRepository.GetAllAsync();
-            return Ok(bookings);
+            return Ok(await _bookingRepository.GetAllAsync());
         }
 
-        [Authorize(Roles = "Admin,Operator")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetBooking(Guid id)
         {
@@ -38,7 +35,12 @@ namespace LiaNcc.WebAPI.Controllers
             return Ok(booking);
         }
 
-        // Public endpoint to allow users/guests to create bookings
+        [HttpGet("status/{status}")]
+        public async Task<ActionResult<IEnumerable<Booking>>> GetByStatus(string status)
+        {
+            return Ok(await _bookingRepository.GetByStatusAsync(status));
+        }
+
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<Booking>> CreateBooking(CreateBookingRequest request)
@@ -48,36 +50,49 @@ namespace LiaNcc.WebAPI.Controllers
                 FullName = request.FullName,
                 Email = request.Email,
                 ServiceDate = request.ServiceDate,
-                ServiceType = request.ServiceType,
-                Message = request.Message
+                ServiceType = null, // Will depend on ServiceTypeId in a complete DTO mapping
+                Message = request.Message,
+                Status = "Pending"
             };
 
             await _bookingRepository.CreateAsync(booking);
-            return CreatedAtAction(nameof(GetBooking), new { id = booking.Id }, booking);
+            return Ok(booking);
         }
 
-        [Authorize(Roles = "Admin,Operator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBooking(Guid id, Booking booking)
         {
             if (id != booking.Id) return BadRequest();
-
-            var existing = await _bookingRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
             await _bookingRepository.UpdateAsync(booking);
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] string status)
+        {
+            await _bookingRepository.UpdateStatusAsync(id, status);
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(Guid id)
         {
-            var existing = await _bookingRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
             await _bookingRepository.DeleteAsync(id);
             return NoContent();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("service-types")]
+        public async Task<ActionResult<IEnumerable<BookingServiceType>>> GetServiceTypes()
+        {
+            return Ok(await _bookingRepository.GetServiceTypesAsync());
+        }
+
+        [AllowAnonymous]
+        [HttpGet("passenger-options")]
+        public async Task<ActionResult<IEnumerable<BookingPassengerOption>>> GetPassengerOptions()
+        {
+            return Ok(await _bookingRepository.GetPassengerOptionsAsync());
         }
     }
 }

@@ -10,7 +10,7 @@ namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Admin,Operator")]
     public class ToursController : ControllerBase
     {
         private readonly ITourRepository _tourRepository;
@@ -20,20 +20,24 @@ namespace LiaNcc.WebAPI.Controllers
             _tourRepository = tourRepository;
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tour>>> GetTours()
         {
-            var tours = await _tourRepository.GetActiveAsync();
-            return Ok(tours);
+            return Ok(await _tourRepository.GetAllAsync());
         }
 
-        [Authorize(Roles = "Admin,Operator")]
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Tour>>> GetAllTours()
+        [AllowAnonymous]
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<Tour>>> GetActiveTours()
         {
-            var tours = await _tourRepository.GetAllAsync();
-            return Ok(tours);
+            return Ok(await _tourRepository.GetActiveToursAsync());
+        }
+
+        [AllowAnonymous]
+        [HttpGet("featured")]
+        public async Task<ActionResult<IEnumerable<Tour>>> GetFeaturedTours()
+        {
+            return Ok(await _tourRepository.GetFeaturedToursAsync());
         }
 
         [AllowAnonymous]
@@ -45,34 +49,65 @@ namespace LiaNcc.WebAPI.Controllers
             return Ok(tour);
         }
 
-        [Authorize(Roles = "Admin,Operator")]
+        [AllowAnonymous]
+        [HttpGet("slug/{slug}")]
+        public async Task<ActionResult<Tour>> GetTourBySlug(string slug)
+        {
+            var tour = await _tourRepository.GetBySlugAsync(slug);
+            if (tour == null) return NotFound();
+            return Ok(tour);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/detail")]
+        public async Task<ActionResult<Tour>> GetTourDetail(Guid id)
+        {
+            var tour = await _tourRepository.GetTourDetailAsync(id);
+            if (tour == null) return NotFound();
+            return Ok(tour);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("slug/{slug}/detail")]
+        public async Task<ActionResult<Tour>> GetTourDetailBySlug(string slug)
+        {
+            var tour = await _tourRepository.GetTourDetailBySlugAsync(slug);
+            if (tour == null) return NotFound();
+            return Ok(tour);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("category/{categoryId}")]
+        public async Task<ActionResult<IEnumerable<Tour>>> GetByCategory(Guid categoryId)
+        {
+            return Ok(await _tourRepository.GetByCategoryAsync(categoryId));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("categories")]
+        public async Task<ActionResult<IEnumerable<TourCategory>>> GetCategories()
+        {
+            return Ok(await _tourRepository.GetCategoriesAsync());
+        }
+
         [HttpPost]
         public async Task<ActionResult<Tour>> CreateTour(Tour tour)
         {
             await _tourRepository.CreateAsync(tour);
-            return CreatedAtAction(nameof(GetTour), new { id = tour.Id }, tour);
+            return Ok(tour);
         }
 
-        [Authorize(Roles = "Admin,Operator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTour(Guid id, Tour tour)
         {
             if (id != tour.Id) return BadRequest();
-
-            var existing = await _tourRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
             await _tourRepository.UpdateAsync(tour);
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTour(Guid id)
         {
-            var existing = await _tourRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
             await _tourRepository.DeleteAsync(id);
             return NoContent();
         }

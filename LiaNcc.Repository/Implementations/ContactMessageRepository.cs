@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LiaNcc.Models.Entities;
 using LiaNcc.Repository.Interfaces;
@@ -18,7 +19,12 @@ namespace LiaNcc.Repository.Implementations
 
         public async Task<IEnumerable<ContactMessage>> GetAllAsync()
         {
-            return await _context.ContactMessages.AsNoTracking().ToListAsync();
+            return await _context.ContactMessages.AsNoTracking().OrderByDescending(m => m.CreatedAt).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ContactMessage>> GetUnreadAsync()
+        {
+            return await _context.ContactMessages.AsNoTracking().Where(m => !m.IsRead).OrderByDescending(m => m.CreatedAt).ToListAsync();
         }
 
         public async Task<ContactMessage?> GetByIdAsync(Guid id)
@@ -37,6 +43,16 @@ namespace LiaNcc.Repository.Implementations
         {
             _context.ContactMessages.Update(message);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task MarkAsReadAsync(Guid id)
+        {
+            var message = await _context.ContactMessages.FindAsync(id);
+            if (message != null && !message.IsRead)
+            {
+                message.IsRead = true;
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteAsync(Guid id)

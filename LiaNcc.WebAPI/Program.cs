@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using LiaNcc.Repository.Extensions;
 using LiaNcc.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,7 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
 

@@ -19,19 +19,35 @@ namespace LiaNcc.Repository.Implementations
 
         public async Task<IEnumerable<Vehicle>> GetAllAsync()
         {
-            return await _context.Vehicles.AsNoTracking().ToListAsync();
+            return await _context.Vehicles.AsNoTracking().OrderBy(v => v.SortOrder).ToListAsync();
         }
 
-        public async Task<IEnumerable<Vehicle>> GetActiveAsync()
+        public async Task<IEnumerable<Vehicle>> GetActiveVehiclesAsync()
         {
-            return await _context.Vehicles.AsNoTracking()
-                .Where(v => v.IsActive)
-                .ToListAsync();
+            return await _context.Vehicles.AsNoTracking().Where(v => v.IsActive).OrderBy(v => v.SortOrder).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Vehicle>> GetFeaturedVehiclesAsync()
+        {
+            return await _context.Vehicles.AsNoTracking().Where(v => v.IsActive && v.IsFeatured).OrderBy(v => v.SortOrder).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Vehicle>> GetByCategoryAsync(Guid categoryId)
+        {
+            return await _context.Vehicles.AsNoTracking().Where(v => v.IsActive && v.CategoryId == categoryId).OrderBy(v => v.SortOrder).ToListAsync();
         }
 
         public async Task<Vehicle?> GetByIdAsync(Guid id)
         {
             return await _context.Vehicles.FindAsync(id);
+        }
+
+        public async Task<Vehicle?> GetVehicleWithFeaturesAsync(Guid vehicleId)
+        {
+            return await _context.Vehicles.AsNoTracking()
+                .Include(v => v.VehicleCategory)
+                .Include(v => v.VehicleFeatures.OrderBy(f => f.SortOrder))
+                .FirstOrDefaultAsync(v => v.Id == vehicleId);
         }
 
         public async Task<Vehicle> CreateAsync(Vehicle vehicle)
@@ -56,6 +72,16 @@ namespace LiaNcc.Repository.Implementations
                 _context.Vehicles.Remove(vehicle);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<VehicleCategory>> GetCategoriesAsync()
+        {
+            return await _context.VehicleCategories.AsNoTracking().OrderBy(c => c.SortOrder).ToListAsync();
+        }
+
+        public async Task<IEnumerable<VehicleFeature>> GetFeaturesAsync(Guid vehicleId)
+        {
+            return await _context.VehicleFeatures.AsNoTracking().Where(f => f.VehicleId == vehicleId).OrderBy(f => f.SortOrder).ToListAsync();
         }
     }
 }

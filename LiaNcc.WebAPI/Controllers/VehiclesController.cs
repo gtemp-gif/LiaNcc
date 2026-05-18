@@ -10,7 +10,7 @@ namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Admin,Operator")]
     public class VehiclesController : ControllerBase
     {
         private readonly IVehicleRepository _vehicleRepository;
@@ -20,20 +20,24 @@ namespace LiaNcc.WebAPI.Controllers
             _vehicleRepository = vehicleRepository;
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Vehicle>>> GetVehicles()
         {
-            var vehicles = await _vehicleRepository.GetActiveAsync();
-            return Ok(vehicles);
+            return Ok(await _vehicleRepository.GetAllAsync());
         }
 
-        [Authorize(Roles = "Admin,Operator")]
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Vehicle>>> GetAllVehicles()
+        [AllowAnonymous]
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<Vehicle>>> GetActiveVehicles()
         {
-            var vehicles = await _vehicleRepository.GetAllAsync();
-            return Ok(vehicles);
+            return Ok(await _vehicleRepository.GetActiveVehiclesAsync());
+        }
+
+        [AllowAnonymous]
+        [HttpGet("featured")]
+        public async Task<ActionResult<IEnumerable<Vehicle>>> GetFeaturedVehicles()
+        {
+            return Ok(await _vehicleRepository.GetFeaturedVehiclesAsync());
         }
 
         [AllowAnonymous]
@@ -45,34 +49,47 @@ namespace LiaNcc.WebAPI.Controllers
             return Ok(vehicle);
         }
 
-        [Authorize(Roles = "Admin,Operator")]
+        [AllowAnonymous]
+        [HttpGet("{id}/features")]
+        public async Task<ActionResult<Vehicle>> GetVehicleWithFeatures(Guid id)
+        {
+            var vehicle = await _vehicleRepository.GetVehicleWithFeaturesAsync(id);
+            if (vehicle == null) return NotFound();
+            return Ok(vehicle);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("category/{categoryId}")]
+        public async Task<ActionResult<IEnumerable<Vehicle>>> GetByCategory(Guid categoryId)
+        {
+            return Ok(await _vehicleRepository.GetByCategoryAsync(categoryId));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("categories")]
+        public async Task<ActionResult<IEnumerable<VehicleCategory>>> GetCategories()
+        {
+            return Ok(await _vehicleRepository.GetCategoriesAsync());
+        }
+
         [HttpPost]
         public async Task<ActionResult<Vehicle>> CreateVehicle(Vehicle vehicle)
         {
             await _vehicleRepository.CreateAsync(vehicle);
-            return CreatedAtAction(nameof(GetVehicle), new { id = vehicle.Id }, vehicle);
+            return Ok(vehicle);
         }
 
-        [Authorize(Roles = "Admin,Operator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVehicle(Guid id, Vehicle vehicle)
         {
             if (id != vehicle.Id) return BadRequest();
-
-            var existing = await _vehicleRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
             await _vehicleRepository.UpdateAsync(vehicle);
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicle(Guid id)
         {
-            var existing = await _vehicleRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
             await _vehicleRepository.DeleteAsync(id);
             return NoContent();
         }

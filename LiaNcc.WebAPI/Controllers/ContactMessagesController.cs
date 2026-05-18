@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/contact-messages")]
     [Authorize(Roles = "Admin,Operator")]
     public class ContactMessagesController : ControllerBase
     {
@@ -24,19 +24,23 @@ namespace LiaNcc.WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ContactMessage>>> GetContactMessages()
         {
-            var messages = await _contactMessageRepository.GetAllAsync();
-            return Ok(messages);
+            return Ok(await _contactMessageRepository.GetAllAsync());
+        }
+
+        [HttpGet("unread")]
+        public async Task<ActionResult<IEnumerable<ContactMessage>>> GetUnreadMessages()
+        {
+            return Ok(await _contactMessageRepository.GetUnreadAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ContactMessage>> GetContactMessage(Guid id)
         {
-            var message = await _contactMessageRepository.GetByIdAsync(id);
-            if (message == null) return NotFound();
-            return Ok(message);
+            var msg = await _contactMessageRepository.GetByIdAsync(id);
+            if (msg == null) return NotFound();
+            return Ok(msg);
         }
 
-        // Public endpoint to send contact messages
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<ContactMessage>> CreateContactMessage(CreateContactMessageRequest request)
@@ -45,32 +49,24 @@ namespace LiaNcc.WebAPI.Controllers
             {
                 FullName = request.FullName,
                 Email = request.Email,
-                Message = request.Message
+                Message = request.Message,
+                IsRead = false
             };
 
             await _contactMessageRepository.CreateAsync(message);
-            return CreatedAtAction(nameof(GetContactMessage), new { id = message.Id }, message);
+            return Ok(message);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateContactMessage(Guid id, ContactMessage message)
+        [HttpPatch("{id}/read")]
+        public async Task<IActionResult> MarkAsRead(Guid id)
         {
-            if (id != message.Id) return BadRequest();
-
-            var existing = await _contactMessageRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
-            await _contactMessageRepository.UpdateAsync(message);
+            await _contactMessageRepository.MarkAsReadAsync(id);
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContactMessage(Guid id)
         {
-            var existing = await _contactMessageRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
             await _contactMessageRepository.DeleteAsync(id);
             return NoContent();
         }
