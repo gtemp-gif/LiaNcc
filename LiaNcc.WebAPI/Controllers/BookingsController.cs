@@ -11,7 +11,7 @@ namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin,Operator")]
+    [Authorize]
     public class BookingsController : ControllerBase
     {
         private readonly IBookingRepository _bookingRepository;

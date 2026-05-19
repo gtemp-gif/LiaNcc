@@ -10,7 +10,7 @@ namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin,Operator")]
+    [Authorize]
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyRepository _companyRepository;

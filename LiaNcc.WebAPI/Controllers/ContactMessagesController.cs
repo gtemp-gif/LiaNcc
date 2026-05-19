@@ -11,7 +11,7 @@ namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/contact-messages")]
-    [Authorize(Roles = "Admin,Operator")]
+    [Authorize]
     public class ContactMessagesController : ControllerBase
     {
         private readonly IContactMessageRepository _contactMessageRepository;

@@ -10,7 +10,7 @@ namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/call-to-actions")]
-    [Authorize(Roles = "Admin,Operator")]
+    [Authorize]
     public class CallToActionsController : ControllerBase
     {
         private readonly ICallToActionRepository _callToActionRepository;

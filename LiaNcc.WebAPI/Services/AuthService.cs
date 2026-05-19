@@ -23,6 +23,7 @@ namespace LiaNcc.WebAPI.Services
 
         public async Task<LoginResponse?> LoginAsync(LoginRequest request)
         {
+            var psw = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var user = await _userRepository.GetByEmailWithRolesAsync(request.Email);
 
             if (user == null || !user.IsActive)

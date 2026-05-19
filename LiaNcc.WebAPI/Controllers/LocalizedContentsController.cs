@@ -10,7 +10,7 @@ namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/localization")]
-    [Authorize(Roles = "Admin,Operator")]
+    [Authorize]
     public class LocalizedContentsController : ControllerBase
     {
         private readonly ILocalizedContentRepository _localizedContentRepository;

@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LiaNcc.WebAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/site-pages")]
-    [Authorize(Roles = "Admin,Operator")]
+    ///[Authorize(Roles = "Admin,Operator")]
     public class SitePagesController : ControllerBase
     {
         private readonly ISitePageRepository _sitePageRepository;

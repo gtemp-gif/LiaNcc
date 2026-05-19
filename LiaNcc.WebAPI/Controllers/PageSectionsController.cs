@@ -10,7 +10,7 @@ namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/page-sections")]
-    [Authorize(Roles = "Admin,Operator")]
+    [Authorize]
     public class PageSectionsController : ControllerBase
     {
         private readonly IPageSectionRepository _pageSectionRepository;
