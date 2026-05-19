@@ -56,6 +56,35 @@ builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IMediaAssetsApiClie
     client.BaseAddress = new Uri(apiBaseUrl);
 });
 
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ISitePagesApiClient, LiaNcc.BO.Services.Implementations.SitePagesApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ICompanyApiClient, LiaNcc.BO.Services.Implementations.CompanyApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IPartnersApiClient, LiaNcc.BO.Services.Implementations.PartnersApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IUsersApiClient, LiaNcc.BO.Services.Implementations.UsersApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IBookingsApiClient, LiaNcc.BO.Services.Implementations.BookingsApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IContactMessagesApiClient, LiaNcc.BO.Services.Implementations.ContactMessagesApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILanguagesApiClient, LiaNcc.BO.Services.Implementations.LanguagesApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

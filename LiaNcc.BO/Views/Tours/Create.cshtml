@@ -1,0 +1,56 @@
+@model LiaNcc.Models.Entities.Tour
+@{
+    ViewData["Title"] = "Nuovo Tour";
+}
+
+<h2>Nuovo Tour</h2>
+
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Name" class="form-label">Nome</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Slug" class="form-label">Slug</label>
+                    <input asp-for="Slug" class="form-control" />
+                    <span asp-validation-for="Slug" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Price" class="form-label">Prezzo</label>
+                    <input asp-for="Price" type="text" class="form-control" value="@(Model?.Price?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="SortOrder" class="form-label">Ordine di visualizzazione</label>
+                    <input asp-for="SortOrder" class="form-control" />
+                    <span asp-validation-for="SortOrder" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3 form-check ms-3">
+                    <input asp-for="IsFeatured" class="form-check-input" />
+                    <label asp-for="IsFeatured" class="form-check-label">In Evidenza</label>
+                </div>
+                <div class="col-md-6 mb-3 form-check ms-3">
+                    <input asp-for="IsActive" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label">Attivo</label>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-gold">Salva</button>
+                <a asp-action="Index" class="btn btn-secondary">Annulla</a>
+            </div>
+        </form>
+    </div>
+</div>

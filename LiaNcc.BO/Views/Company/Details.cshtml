@@ -1,0 +1,31 @@
+@model LiaNcc.Models.Entities.CompanyProfile
+@{
+    ViewData["Title"] = "Gestione Azienda";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gestione Azienda</h2>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-gold"><i class="bi bi-pencil"></i> Modifica</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h4 class="card-title mb-4">Profilo Principale</h4>
+        <div class="row mb-3">
+            <div class="col-sm-3 text-muted">Nome Azienda</div>
+            <div class="col-sm-9 fw-bold">@Model.Name</div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3 text-muted">Partita IVA</div>
+            <div class="col-sm-9">@(Model.VatNumber ?? "-")</div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3 text-muted">Indirizzo</div>
+            <div class="col-sm-9">
+                @(Model.Address ?? "-")<br />
+                @(Model.ZipCode ?? "") @(Model.City ?? "") <br />
+                @(Model.Country ?? "")
+            </div>
+        </div>
+    </div>
+</div>

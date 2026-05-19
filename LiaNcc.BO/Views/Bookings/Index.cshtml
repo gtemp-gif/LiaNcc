@@ -1,3 +1,4 @@
+@model IEnumerable<LiaNcc.Models.Entities.Booking>
 @{
     ViewData["Title"] = "Gestione Prenotazioni";
 }
@@ -8,6 +9,47 @@
 
 <div class="card shadow-sm">
     <div class="card-body">
-        <p class="text-muted">Modulo Prenotazioni in costruzione...</p>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Richiedente</th>
+                        <th>Email / Telefono</th>
+                        <th>Data Servizio</th>
+                        <th>Stato</th>
+                        <th>Data Richiesta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(Model != null && Model.Any()) {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.FullName</td>
+                                <td>
+                                    <div>@item.Email</div>
+                                    @if(!string.IsNullOrEmpty(item.Phone)) {
+                                        <small class="text-muted">@item.Phone</small>
+                                    }
+                                </td>
+                                <td>@item.ServiceDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if(item.Status == "Pending") {
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    } else if (item.Status == "Confirmed") {
+                                        <span class="badge bg-success">Confermata</span>
+                                    } else {
+                                        <span class="badge bg-secondary">@item.Status</span>
+                                    }
+                                </td>
+                                <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                        }
+                    } else {
+                        <tr><td colspan="5" class="text-center text-muted py-4">Nessuna prenotazione presente.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

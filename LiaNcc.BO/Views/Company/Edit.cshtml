@@ -1,0 +1,52 @@
+@model LiaNcc.Models.Entities.CompanyProfile
+@{
+    ViewData["Title"] = "Modifica Profilo Aziendale";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nome Azienda</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="VatNumber" class="form-label">Partita IVA</label>
+                <input asp-for="VatNumber" class="form-control" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Address" class="form-label">Indirizzo</label>
+                    <input asp-for="Address" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="City" class="form-label">Città</label>
+                    <input asp-for="City" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ZipCode" class="form-label">CAP</label>
+                    <input asp-for="ZipCode" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Country" class="form-label">Nazione</label>
+                    <input asp-for="Country" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-gold">Salva</button>
+            </div>
+        </form>
+    </div>
+</div>

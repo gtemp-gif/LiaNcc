@@ -1,11 +1,11 @@
-@model IEnumerable<LiaNcc.Models.Entities.Partner>
+@model IEnumerable<LiaNcc.Models.Entities.Vehicle>
 @{
-    ViewData["Title"] = "Gestione Partner";
+    ViewData["Title"] = "Gestione Flotta";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Gestione Partner</h2>
-    <a asp-action="Create" class="btn btn-gold"><i class="bi bi-plus-circle"></i> Nuovo Partner</a>
+    <h2>Gestione Flotta</h2>
+    <a asp-action="Create" class="btn btn-gold"><i class="bi bi-plus-circle"></i> Nuovo Veicolo</a>
 </div>
 
 <div class="card shadow-sm">
@@ -15,7 +15,9 @@
                 <thead class="table-light">
                     <tr>
                         <th>Nome</th>
-                        <th>Website</th>
+                        <th>Posti</th>
+                        <th>Bagagli</th>
+                        <th>In Evidenza</th>
                         <th>Stato</th>
                         <th>Azioni</th>
                     </tr>
@@ -26,7 +28,18 @@
                         {
                             <tr>
                                 <td>@item.Name</td>
-                                <td><a href="@item.WebsiteUrl" target="_blank">@item.WebsiteUrl</a></td>
+                                <td>@item.Seats</td>
+                                <td>@item.Luggages</td>
+                                <td>
+                                    @if(item.IsFeatured)
+                                    {
+                                        <span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> Sì</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
                                 <td>
                                     @if (item.IsActive)
                                     {
@@ -39,14 +52,14 @@
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Eliminare questo partner?');">
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questo veicolo?');">
                                         <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>
                         }
                     } else {
-                        <tr><td colspan="4" class="text-center text-muted py-4">Nessun partner presente.</td></tr>
+                        <tr><td colspan="6" class="text-center text-muted py-4">Nessun veicolo presente.</td></tr>
                     }
                 </tbody>
             </table>

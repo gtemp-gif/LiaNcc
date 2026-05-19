@@ -1,13 +1,55 @@
+@model IEnumerable<LiaNcc.Models.Entities.Language>
 @{
     ViewData["Title"] = "Gestione Localizzazione";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Gestione Localizzazione</h2>
+    <h2>Gestione Lingue (Localizzazione)</h2>
 </div>
 
 <div class="card shadow-sm">
     <div class="card-body">
-        <p class="text-muted">Modulo Localizzazione in costruzione...</p>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Codice</th>
+                        <th>Nome</th>
+                        <th>Predefinita</th>
+                        <th>Stato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(Model != null && Model.Any()) {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><span class="badge bg-dark text-white">@item.Code.ToUpper()</span></td>
+                                <td>@item.Name</td>
+                                <td>
+                                    @if(item.IsDefault) {
+                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                    } else {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-success">Attivo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Inattivo</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    } else {
+                        <tr><td colspan="4" class="text-center text-muted py-4">Nessuna lingua presente.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

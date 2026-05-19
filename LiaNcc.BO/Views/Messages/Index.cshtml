@@ -1,3 +1,4 @@
+@model IEnumerable<LiaNcc.Models.Entities.ContactMessage>
 @{
     ViewData["Title"] = "Gestione Messaggi";
 }
@@ -8,6 +9,40 @@
 
 <div class="card shadow-sm">
     <div class="card-body">
-        <p class="text-muted">Modulo Messaggi in costruzione...</p>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Messaggio</th>
+                        <th>Letto</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(Model != null && Model.Any()) {
+                        foreach (var item in Model)
+                        {
+                            <tr class="@(item.IsRead ? "" : "fw-bold")">
+                                <td>@item.FullName</td>
+                                <td>@item.Email</td>
+                                <td class="text-truncate" style="max-width: 300px;" title="@item.Message">@item.Message</td>
+                                <td>
+                                    @if(item.IsRead) {
+                                        <i class="bi bi-envelope-open text-muted"></i>
+                                    } else {
+                                        <i class="bi bi-envelope-fill text-primary"></i>
+                                    }
+                                </td>
+                                <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            </tr>
+                        }
+                    } else {
+                        <tr><td colspan="5" class="text-center text-muted py-4">Nessun messaggio presente.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
