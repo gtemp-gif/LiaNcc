@@ -24,6 +24,13 @@ namespace LiaNcc.WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SitePage>>> GetSitePages()
         {
+            return Ok(await _sitePageRepository.GetAllAsync());
+        }
+
+        [AllowAnonymous]
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<SitePage>>> GetActiveSitePages()
+        {
             return Ok(await _sitePageRepository.GetActivePagesAsync());
         }
 
