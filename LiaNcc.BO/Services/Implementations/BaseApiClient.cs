@@ -41,11 +41,26 @@ namespace LiaNcc.BO.Services.Implementations
             }
         }
 
+        protected void EnsureValidResponse(HttpResponseMessage response)
+        {
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                var httpContext = _httpContextAccessor.HttpContext;
+                if (httpContext != null)
+                {
+                    httpContext.Response.Redirect("/Auth/Login");
+                    // We throw an exception to halt further processing in the current request pipeline
+                    throw new HttpRequestException("Unauthorized access, redirecting to login.", null, System.Net.HttpStatusCode.Unauthorized);
+                }
+            }
+            response.EnsureSuccessStatusCode();
+        }
+
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             SetBearerToken();
             var response = await _httpClient.GetAsync(_endpointUrl);
-            response.EnsureSuccessStatusCode();
+            EnsureValidResponse(response);
             return await response.Content.ReadFromJsonAsync<IEnumerable<T>>(_jsonSerializerOptions) ?? Array.Empty<T>();
         }
 
@@ -54,7 +69,7 @@ namespace LiaNcc.BO.Services.Implementations
             SetBearerToken();
             var response = await _httpClient.GetAsync($"{_endpointUrl}/{id}");
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
-            response.EnsureSuccessStatusCode();
+            EnsureValidResponse(response);
             return await response.Content.ReadFromJsonAsync<T>(_jsonSerializerOptions);
         }
 
@@ -62,7 +77,7 @@ namespace LiaNcc.BO.Services.Implementations
         {
             SetBearerToken();
             var response = await _httpClient.PostAsJsonAsync(_endpointUrl, entity, _jsonSerializerOptions);
-            response.EnsureSuccessStatusCode();
+            EnsureValidResponse(response);
             return (await response.Content.ReadFromJsonAsync<T>(_jsonSerializerOptions))!;
         }
 
@@ -70,14 +85,14 @@ namespace LiaNcc.BO.Services.Implementations
         {
             SetBearerToken();
             var response = await _httpClient.PutAsJsonAsync($"{_endpointUrl}/{id}", entity, _jsonSerializerOptions);
-            response.EnsureSuccessStatusCode();
+            EnsureValidResponse(response);
         }
 
         public virtual async Task DeleteAsync(TKey id)
         {
             SetBearerToken();
             var response = await _httpClient.DeleteAsync($"{_endpointUrl}/{id}");
-            response.EnsureSuccessStatusCode();
+            EnsureValidResponse(response);
         }
     }
 }
