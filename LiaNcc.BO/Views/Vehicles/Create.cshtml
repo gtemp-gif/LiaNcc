@@ -12,25 +12,35 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label asp-for="Name" class="form-label">Nome</label>
+                    <label asp-for="Name" class="form-label">Nome Interno</label>
                     <input asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <label asp-for="Seats" class="form-label">Posti</label>
-                    <input asp-for="Seats" class="form-control" />
-                    <span asp-validation-for="Seats" class="text-danger"></span>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Title" class="form-label">Titolo Pubblico</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <label asp-for="Luggages" class="form-label">Bagagli</label>
-                    <input asp-for="Luggages" class="form-control" />
-                    <span asp-validation-for="Luggages" class="text-danger"></span>
+                <div class="col-md-12 mb-3">
+                    <label asp-for="Description" class="form-label">Descrizione</label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="SortOrder" class="form-label">Ordine di visualizzazione</label>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Seats" class="form-label">Posti</label>
+                    <input asp-for="Seats" class="form-control" />
+                    <span asp-validation-for="Seats" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Luggages" class="form-label">Bagagli</label>
+                    <input asp-for="Luggages" class="form-control" />
+                    <span asp-validation-for="Luggages" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="SortOrder" class="form-label">Ordine visualizzazione</label>
                     <input asp-for="SortOrder" class="form-control" />
                     <span asp-validation-for="SortOrder" class="text-danger"></span>
                 </div>
@@ -38,17 +48,21 @@
 
             <div class="row">
                 <div class="col-md-4 mb-3 form-check ms-3">
+                    <input asp-for="IsBookable" class="form-check-input" />
+                    <label asp-for="IsBookable" class="form-check-label">Prenotabile</label>
+                </div>
+                <div class="col-md-4 mb-3 form-check ms-3">
                     <input asp-for="IsFeatured" class="form-check-input" />
                     <label asp-for="IsFeatured" class="form-check-label">In Evidenza</label>
                 </div>
-                <div class="col-md-4 mb-3 form-check ms-3">
+                <div class="col-md-3 mb-3 form-check ms-3">
                     <input asp-for="IsActive" class="form-check-input" />
                     <label asp-for="IsActive" class="form-check-label">Attivo</label>
                 </div>
             </div>
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-gold">Salva</button>
+                <button type="submit" class="btn btn-gold">Salva Modifiche</button>
                 <a asp-action="Index" class="btn btn-secondary">Annulla</a>
             </div>
         </form>
