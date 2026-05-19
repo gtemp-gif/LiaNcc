@@ -10,6 +10,8 @@ namespace LiaNcc.Models.Entities
         public bool IsFeatured { get; set; } = false;
         public bool IsBookable { get; set; } = true;
         public bool IsActive { get; set; } = true;
+        public string? CoverImageUrl { get; set; }
+        public Guid? CoverImageMediaId { get; set; }
         public int SortOrder { get; set; } = 0;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }

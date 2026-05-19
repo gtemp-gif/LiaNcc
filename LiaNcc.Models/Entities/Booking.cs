@@ -14,6 +14,7 @@ namespace LiaNcc.Models.Entities
         public Guid? TourId { get; set; }
         public Guid? VehicleId { get; set; }
         public string? Message { get; set; }
+        public int? MaxSeats { get; set; }
         public string Status { get; set; } = "Pending";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }

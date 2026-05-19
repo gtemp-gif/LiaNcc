@@ -17,13 +17,18 @@
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label asp-for="Icon" class="form-label">Icona (classe CSS es. bi-car)</label>
+                    <label asp-for="Icon" class="form-label">Icona (es. bi-car)</label>
                     <input asp-for="Icon" class="form-control" />
                     <span asp-validation-for="Icon" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="CoverImageUrl" class="form-label">Cover Image URL</label>
+                    <input asp-for="CoverImageUrl" class="form-control" />
+                    <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+                </div>
                 <div class="col-md-6 mb-3">
                     <label asp-for="SortOrder" class="form-label">Ordine di visualizzazione</label>
                     <input asp-for="SortOrder" class="form-control" />
@@ -47,7 +52,7 @@
             </div>
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-gold">Salva</button>
+                <button type="submit" class="btn btn-gold">Salva Modifiche</button>
                 <a asp-action="Index" class="btn btn-secondary">Annulla</a>
             </div>
         </form>

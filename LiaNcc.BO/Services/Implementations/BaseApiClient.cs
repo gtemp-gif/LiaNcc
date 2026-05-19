@@ -49,8 +49,9 @@ namespace LiaNcc.BO.Services.Implementations
                 if (httpContext != null)
                 {
                     httpContext.Response.Redirect("/Auth/Login");
-                    // We throw an exception to halt further processing in the current request pipeline
-                    throw new HttpRequestException("Unauthorized access, redirecting to login.", null, System.Net.HttpStatusCode.Unauthorized);
+                    // Terminate the execution of the request to allow the redirect to complete cleanly
+                    httpContext.Response.CompleteAsync().GetAwaiter().GetResult();
+                    return;
                 }
             }
             response.EnsureSuccessStatusCode();
