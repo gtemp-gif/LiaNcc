@@ -9,6 +9,6 @@ namespace LiaNcc.BO.Services.Implementations
     public class SitePagesApiClient : BaseApiClient<SitePage, Guid>, ISitePagesApiClient
     {
         public SitePagesApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
-            : base(httpClient, httpContextAccessor, "sitepages") { }
+            : base(httpClient, httpContextAccessor, "site-pages") { }
     }
 }
