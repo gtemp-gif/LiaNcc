@@ -27,6 +27,11 @@ namespace LiaNcc.Repository.Implementations
             return await _context.MediaAssets.FindAsync(id);
         }
 
+        public async Task<MediaAsset?> GetByFileNameAsync(string fileName)
+        {
+            return await _context.MediaAssets.FirstOrDefaultAsync(m => m.FileName == fileName);
+        }
+
         public async Task<IEnumerable<EntityMedia>> GetMediaForEntityAsync(string entityName, Guid entityId)
         {
             return await _context.EntityMedia.AsNoTracking()

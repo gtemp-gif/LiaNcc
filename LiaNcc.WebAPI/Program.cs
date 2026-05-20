@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using LiaNcc.Models.DTOs;
 using LiaNcc.Repository.Extensions;
 using LiaNcc.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -58,6 +59,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddLiaNccRepository(builder.Configuration);
 
 // Configure Application Services
+builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection("FileStorage"));
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
@@ -107,6 +110,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseRouting();
 

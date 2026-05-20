@@ -36,6 +36,11 @@ builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IAuthApiClient, Lia
     client.BaseAddress = new Uri(apiBaseUrl);
 });
 
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IFilesApiClient, LiaNcc.BO.Services.Implementations.FilesApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IToursApiClient, LiaNcc.BO.Services.Implementations.ToursApiClient>(client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
