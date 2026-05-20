@@ -7,7 +7,7 @@
     <h2>Gestione Media</h2>
     <form asp-action="Upload" method="post" enctype="multipart/form-data" class="d-flex align-items-center">
         <input type="file" name="file" class="form-control me-2" required />
-        <button type="submit" class="btn btn-gold"><i class="bi bi-upload"></i> Upload</button>
+        <button type="submit" class="btn btn-gold"><span class="material-symbols-outlined">upload</span> Upload</button>
     </form>
 </div>
 
@@ -23,7 +23,7 @@
                 else
                 {
                     <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 150px;">
-                        <i class="bi bi-file-earmark fs-1 text-muted"></i>
+                        <span class="material-symbols-outlined fs-1 text-muted">description</span>
                     </div>
                 }
                 <div class="card-body">
@@ -33,7 +33,7 @@
                 </div>
                 <div class="card-footer bg-transparent border-top-0 text-end">
                     <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Sei sicuro di voler eliminare questo file?');">
-                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Elimina</button>
+                        <button type="submit" class="btn btn-sm btn-outline-danger"><span class="material-symbols-outlined">delete</span> Elimina</button>
                     </form>
                 </div>
             </div>

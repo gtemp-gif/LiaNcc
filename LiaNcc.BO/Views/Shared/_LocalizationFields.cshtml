@@ -1,0 +1,65 @@
+@model List<LiaNcc.BO.Models.Localization.LocalizationTabViewModel>
+
+<div class="card mt-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Traduzioni</h5>
+    </div>
+    <div class="card-body">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-info mb-0">
+                Non ci sono altre lingue attive oltre a quella predefinita.
+                Puoi gestirle nel modulo <a asp-controller="Localization" asp-action="Index">Localizzazione</a>.
+            </div>
+        }
+        else
+        {
+            <ul class="nav nav-tabs" id="localizationTabs" role="tablist">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link @(i == 0 ? "active" : "")"
+                                id="tab-@Model[i].LanguageCode"
+                                data-bs-toggle="tab"
+                                data-bs-target="#content-@Model[i].LanguageCode"
+                                type="button" role="tab">
+                            @Model[i].LanguageName (@Model[i].LanguageCode)
+                        </button>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content p-3 border border-top-0 rounded-bottom" id="localizationTabsContent">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <div class="tab-pane fade @(i == 0 ? "show active" : "")"
+                         id="content-@Model[i].LanguageCode"
+                         role="tabpanel">
+
+                        <input type="hidden" name="Translations[@i].LanguageCode" value="@Model[i].LanguageCode" />
+                        <input type="hidden" name="Translations[@i].LanguageName" value="@Model[i].LanguageName" />
+
+                        @{
+                            int j = 0;
+                            foreach (var kvp in Model[i].Values)
+                            {
+                                <div class="mb-3">
+                                    <label class="form-label">@kvp.Key</label>
+                                    <input type="hidden" name="Translations[@i].Values[@j].Key" value="@kvp.Key" />
+                                    @if (kvp.Key.Contains("Description") || kvp.Key.Contains("Content"))
+                                    {
+                                        <textarea name="Translations[@i].Values[@j].Value" class="form-control" rows="3">@kvp.Value</textarea>
+                                    }
+                                    else
+                                    {
+                                        <input type="text" name="Translations[@i].Values[@j].Value" class="form-control" value="@kvp.Value" />
+                                    }
+                                </div>
+                                j++;
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

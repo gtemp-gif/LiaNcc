@@ -1,8 +1,318 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model LiaNcc.Models.DTOs.Dashboard.DashboardSummaryDto
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Dashboard</h2>
+    <div class="text-muted small">Ultimo aggiornamento: @DateTime.Now.ToString("HH:mm:ss")</div>
 </div>
+
+<!-- Card Statistics -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 card-stat">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-bold">Servizi</div>
+                        <h3 class="mb-0">@Model.TotalServices</h3>
+                        <div class="small text-success">@Model.ActiveServices attivi</div>
+                    </div>
+                    <div class="bg-gold-light p-3 rounded-circle">
+                        <span class="material-symbols-outlined text-gold">briefcase</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 card-stat">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-bold">Flotta</div>
+                        <h3 class="mb-0">@Model.TotalVehicles</h3>
+                        <div class="small text-info">@Model.BookableVehicles prenotabili</div>
+                    </div>
+                    <div class="bg-gold-light p-3 rounded-circle">
+                        <span class="material-symbols-outlined text-gold">directions_car</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 card-stat">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-bold">Tour</div>
+                        <h3 class="mb-0">@Model.TotalTours</h3>
+                        <div class="small text-success">@Model.ActiveTours attivi</div>
+                    </div>
+                    <div class="bg-gold-light p-3 rounded-circle">
+                        <span class="material-symbols-outlined text-gold">map</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 card-stat">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-bold">Prenotazioni</div>
+                        <h3 class="mb-0">@Model.TotalBookings</h3>
+                        @if (Model.PendingBookings > 0)
+                        {
+                            <div class="small text-warning">@Model.PendingBookings da gestire</div>
+                        }
+                        else
+                        {
+                            <div class="small text-muted">Tutte gestite</div>
+                        }
+                    </div>
+                    <div class="bg-gold-light p-3 rounded-circle">
+                        <span class="material-symbols-outlined text-gold">calendar_month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 card-stat">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-bold">Messaggi</div>
+                        <h3 class="mb-0">@Model.TotalMessages</h3>
+                        @if (Model.UnreadMessages > 0)
+                        {
+                            <div class="small text-danger">@Model.UnreadMessages non letti</div>
+                        }
+                        else
+                        {
+                            <div class="small text-muted">Tutti letti</div>
+                        }
+                    </div>
+                    <div class="bg-gold-light p-3 rounded-circle">
+                        <span class="material-symbols-outlined text-gold">mail</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 card-stat">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-bold">Partner</div>
+                        <h3 class="mb-0">@Model.ActivePartners</h3>
+                        <div class="small text-muted">Attivi</div>
+                    </div>
+                    <div class="bg-gold-light p-3 rounded-circle">
+                        <span class="material-symbols-outlined text-gold">groups</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 card-stat">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-bold">Media</div>
+                        <h3 class="mb-0">@Model.TotalMediaAssets</h3>
+                        <div class="small text-muted">Caricati</div>
+                    </div>
+                    <div class="bg-gold-light p-3 rounded-circle">
+                        <span class="material-symbols-outlined text-gold">image</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Graphs Section -->
+<div class="row g-4 mb-4">
+    <div class="col-md-8">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <h5 class="card-title">Prenotazioni per Mese</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="bookingsChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <h5 class="card-title">Stato Prenotazioni</h5>
+            </div>
+            <div class="card-body d-flex align-items-center">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between">
+                <h5 class="card-title">Ultime Prenotazioni</h5>
+                <a asp-controller="Bookings" asp-action="Index" class="btn btn-sm btn-outline-gold">Vedi tutte</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <tbody>
+                            @foreach (var booking in Model.LatestBookings)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">@booking.FullName</div>
+                                        <div class="text-muted small">@booking.Email</div>
+                                    </td>
+                                    <td>@booking.ServiceDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @{
+                                            var badgeClass = booking.Status switch
+                                            {
+                                                "Pending" => "bg-warning text-dark",
+                                                "Confirmed" => "bg-success",
+                                                "Cancelled" => "bg-danger",
+                                                _ => "bg-secondary"
+                                            };
+                                        }
+                                        <span class="badge @badgeClass">@booking.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between">
+                <h5 class="card-title">Ultimi Messaggi</h5>
+                <a asp-controller="Messages" asp-action="Index" class="btn btn-sm btn-outline-gold">Vedi tutti</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <tbody>
+                            @foreach (var message in Model.LatestMessages)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">@message.FullName</div>
+                                        <div class="text-muted small">@message.Email</div>
+                                    </td>
+                                    <td>@message.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (message.IsRead)
+                                        {
+                                            <span class="badge bg-light text-muted">Letto</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-primary">Nuovo</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gold-light {
+        background-color: rgba(212, 175, 55, 0.1);
+    }
+    .text-gold {
+        color: #D4AF37;
+    }
+    .btn-outline-gold {
+        color: #D4AF37;
+        border-color: #D4AF37;
+    }
+    .btn-outline-gold:hover {
+        background-color: #D4AF37;
+        color: white;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Bookings per Month Chart
+        const bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
+        new Chart(bookingsCtx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.BookingsByMonth.Select(x => x.Label))),
+                datasets: [{
+                    label: 'Prenotazioni',
+                    data: @Html.Raw(Json.Serialize(Model.BookingsByMonth.Select(x => x.Value))),
+                    backgroundColor: 'rgba(212, 175, 55, 0.7)',
+                    borderColor: 'rgba(212, 175, 55, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+
+        // Status Distribution Chart
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.BookingsByStatus.Select(x => x.Label))),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.BookingsByStatus.Select(x => x.Value))),
+                    backgroundColor: [
+                        'rgba(255, 193, 7, 0.7)', // Pending
+                        'rgba(40, 167, 69, 0.7)',  // Confirmed
+                        'rgba(220, 53, 69, 0.7)',  // Cancelled
+                        'rgba(108, 117, 125, 0.7)' // Others
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+}

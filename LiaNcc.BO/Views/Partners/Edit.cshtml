@@ -1,4 +1,4 @@
-@model LiaNcc.Models.Entities.Partner
+@model LiaNcc.BO.Models.Partners.PartnerViewModel
 @{
     ViewData["Title"] = "Modifica Partner";
 }
@@ -38,6 +38,8 @@
                     <label asp-for="IsActive" class="form-check-label">Attivo</label>
                 </div>
             </div>
+
+            <partial name="_LocalizationFields" model="Model.Translations" />
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-gold">Salva</button>

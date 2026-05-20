@@ -15,17 +15,29 @@ namespace LiaNcc.WebAPI.Controllers
     public class SitePagesController : ControllerBase
     {
         private readonly ISitePageRepository _sitePageRepository;
+        private readonly ILocalizedContentRepository _localizationRepository;
+        private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
 
-        public SitePagesController(ISitePageRepository sitePageRepository)
+        public SitePagesController(
+            ISitePageRepository sitePageRepository,
+            ILocalizedContentRepository localizationRepository,
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
         {
             _sitePageRepository = sitePageRepository;
+            _localizationRepository = localizationRepository;
+            _resolver = resolver;
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SitePage>>> GetSitePages()
+        public async Task<ActionResult<IEnumerable<SitePage>>> GetSitePages([FromQuery] string? culture)
         {
-            return Ok(await _sitePageRepository.GetAllAsync());
+            var pages = await _sitePageRepository.GetAllAsync();
+            if (!string.IsNullOrEmpty(culture))
+            {
+                foreach (var page in pages) await LocalizePage(page, culture, false);
+            }
+            return Ok(pages);
         }
 
         [AllowAnonymous]
@@ -55,20 +67,48 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id}/full")]
-        public async Task<ActionResult<SitePage>> GetSitePageFull(Guid id)
+        public async Task<ActionResult<SitePage>> GetSitePageFull(Guid id, [FromQuery] string? culture)
         {
             var page = await _sitePageRepository.GetPageWithSectionsAsync(id);
             if (page == null) return NotFound();
+            if (!string.IsNullOrEmpty(culture)) await LocalizePage(page, culture, true);
             return Ok(page);
         }
 
         [AllowAnonymous]
         [HttpGet("slug/{slug}/full")]
-        public async Task<ActionResult<SitePage>> GetSitePageFullBySlug(string slug)
+        public async Task<ActionResult<SitePage>> GetSitePageFullBySlug(string slug, [FromQuery] string? culture)
         {
             var page = await _sitePageRepository.GetPageWithSectionsBySlugAsync(slug);
             if (page == null) return NotFound();
+            if (!string.IsNullOrEmpty(culture)) await LocalizePage(page, culture, true);
             return Ok(page);
+        }
+
+        private async Task LocalizePage(SitePage page, string culture, bool includeSections)
+        {
+            var translations = await _localizationRepository.GetByEntityAsync("SitePage", page.Id, culture);
+            page.Name = _resolver.Resolve(translations, "Name", page.Name, culture);
+            page.MetaTitle = _resolver.Resolve(translations, "MetaTitle", page.MetaTitle ?? "", culture);
+            page.MetaDescription = _resolver.Resolve(translations, "MetaDescription", page.MetaDescription ?? "", culture);
+
+            if (includeSections)
+            {
+                foreach (var section in page.PageSections)
+                {
+                    var sTranslations = await _localizationRepository.GetByEntityAsync("PageSection", section.Id, culture);
+                    section.Name = _resolver.Resolve(sTranslations, "Name", section.Name, culture);
+                    section.Title = _resolver.Resolve(sTranslations, "Title", section.Title ?? "", culture);
+                    section.Description = _resolver.Resolve(sTranslations, "Description", section.Description ?? "", culture);
+
+                    foreach (var cta in section.CallToActions)
+                    {
+                        var cTranslations = await _localizationRepository.GetByEntityAsync("CallToAction", cta.Id, culture);
+                        cta.Label = _resolver.Resolve(cTranslations, "Label", cta.Label ?? "", culture);
+                        cta.Title = _resolver.Resolve(cTranslations, "Title", cta.Title ?? "", culture);
+                    }
+                }
+            }
         }
 
         [HttpPost]

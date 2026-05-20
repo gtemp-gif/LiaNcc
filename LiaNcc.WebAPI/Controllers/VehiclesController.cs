@@ -17,15 +17,23 @@ namespace LiaNcc.WebAPI.Controllers
     {
         private readonly IVehicleRepository _vehicleRepository;
         private readonly IMediaRepository _mediaRepository;
+        private readonly ILocalizedContentRepository _localizationRepository;
+        private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
 
-        public VehiclesController(IVehicleRepository vehicleRepository, IMediaRepository mediaRepository)
+        public VehiclesController(
+            IVehicleRepository vehicleRepository,
+            IMediaRepository mediaRepository,
+            ILocalizedContentRepository localizationRepository,
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
         {
             _vehicleRepository = vehicleRepository;
             _mediaRepository = mediaRepository;
+            _localizationRepository = localizationRepository;
+            _resolver = resolver;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VehicleDto>>> GetVehicles()
+        public async Task<ActionResult<IEnumerable<VehicleDto>>> GetVehicles([FromQuery] string? culture)
         {
             var vehicles = await _vehicleRepository.GetAllAsync();
             var dtos = new List<VehicleDto>();
@@ -34,6 +42,7 @@ namespace LiaNcc.WebAPI.Controllers
                 var fullV = await _vehicleRepository.GetVehicleWithFeaturesAsync(v.Id);
                 if (fullV != null)
                 {
+                    if (!string.IsNullOrEmpty(culture)) await LocalizeVehicle(fullV, culture);
                     dtos.Add(await MapToDto(fullV));
                 }
             }
@@ -42,25 +51,62 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("active")]
-        public async Task<ActionResult<IEnumerable<Vehicle>>> GetActiveVehicles()
+        public async Task<ActionResult<IEnumerable<VehicleDto>>> GetActiveVehicles([FromQuery] string? culture)
         {
-            return Ok(await _vehicleRepository.GetActiveVehiclesAsync());
+            var vehicles = await _vehicleRepository.GetActiveVehiclesAsync();
+            var dtos = new List<VehicleDto>();
+            foreach (var v in vehicles)
+            {
+                var fullV = await _vehicleRepository.GetVehicleWithFeaturesAsync(v.Id);
+                if (fullV != null)
+                {
+                    if (!string.IsNullOrEmpty(culture)) await LocalizeVehicle(fullV, culture);
+                    dtos.Add(await MapToDto(fullV));
+                }
+            }
+            return Ok(dtos);
         }
 
         [AllowAnonymous]
         [HttpGet("featured")]
-        public async Task<ActionResult<IEnumerable<Vehicle>>> GetFeaturedVehicles()
+        public async Task<ActionResult<IEnumerable<VehicleDto>>> GetFeaturedVehicles([FromQuery] string? culture)
         {
-            return Ok(await _vehicleRepository.GetFeaturedVehiclesAsync());
+            var vehicles = await _vehicleRepository.GetFeaturedVehiclesAsync();
+            var dtos = new List<VehicleDto>();
+            foreach (var v in vehicles)
+            {
+                var fullV = await _vehicleRepository.GetVehicleWithFeaturesAsync(v.Id);
+                if (fullV != null)
+                {
+                    if (!string.IsNullOrEmpty(culture)) await LocalizeVehicle(fullV, culture);
+                    dtos.Add(await MapToDto(fullV));
+                }
+            }
+            return Ok(dtos);
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<VehicleDto>> GetVehicle(Guid id)
+        public async Task<ActionResult<VehicleDto>> GetVehicle(Guid id, [FromQuery] string? culture)
         {
             var vehicle = await _vehicleRepository.GetVehicleWithFeaturesAsync(id);
             if (vehicle == null) return NotFound();
+            if (!string.IsNullOrEmpty(culture)) await LocalizeVehicle(vehicle, culture);
             return Ok(await MapToDto(vehicle));
+        }
+
+        private async Task LocalizeVehicle(Vehicle vehicle, string culture)
+        {
+            var translations = await _localizationRepository.GetByEntityAsync("Vehicle", vehicle.Id, culture);
+            vehicle.Name = _resolver.Resolve(translations, "Name", vehicle.Name, culture);
+            vehicle.Title = _resolver.Resolve(translations, "Title", vehicle.Title ?? "", culture);
+            vehicle.Description = _resolver.Resolve(translations, "Description", vehicle.Description ?? "", culture);
+
+            foreach (var feature in vehicle.VehicleFeatures)
+            {
+                var fTranslations = await _localizationRepository.GetByEntityAsync("VehicleFeature", feature.Id, culture);
+                feature.Name = _resolver.Resolve(fTranslations, "Name", feature.Name, culture);
+            }
         }
 
         [AllowAnonymous]

@@ -15,10 +15,17 @@ namespace LiaNcc.WebAPI.Controllers
     public class BookingsController : ControllerBase
     {
         private readonly IBookingRepository _bookingRepository;
+        private readonly ILocalizedContentRepository _localizationRepository;
+        private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
 
-        public BookingsController(IBookingRepository bookingRepository)
+        public BookingsController(
+            IBookingRepository bookingRepository,
+            ILocalizedContentRepository localizationRepository,
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
         {
             _bookingRepository = bookingRepository;
+            _localizationRepository = localizationRepository;
+            _resolver = resolver;
         }
 
         [HttpGet]
@@ -83,16 +90,34 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("service-types")]
-        public async Task<ActionResult<IEnumerable<BookingServiceType>>> GetServiceTypes()
+        public async Task<ActionResult<IEnumerable<BookingServiceType>>> GetServiceTypes([FromQuery] string? culture)
         {
-            return Ok(await _bookingRepository.GetServiceTypesAsync());
+            var types = await _bookingRepository.GetServiceTypesAsync();
+            if (!string.IsNullOrEmpty(culture))
+            {
+                foreach (var type in types)
+                {
+                    var translations = await _localizationRepository.GetByEntityAsync("BookingServiceType", type.Id, culture);
+                    type.Name = _resolver.Resolve(translations, "Name", type.Name, culture);
+                }
+            }
+            return Ok(types);
         }
 
         [AllowAnonymous]
         [HttpGet("passenger-options")]
-        public async Task<ActionResult<IEnumerable<BookingPassengerOption>>> GetPassengerOptions()
+        public async Task<ActionResult<IEnumerable<BookingPassengerOption>>> GetPassengerOptions([FromQuery] string? culture)
         {
-            return Ok(await _bookingRepository.GetPassengerOptionsAsync());
+            var options = await _bookingRepository.GetPassengerOptionsAsync();
+            if (!string.IsNullOrEmpty(culture))
+            {
+                foreach (var option in options)
+                {
+                    var translations = await _localizationRepository.GetByEntityAsync("BookingPassengerOption", option.Id, culture);
+                    option.Name = _resolver.Resolve(translations, "Name", option.Name, culture);
+                }
+            }
+            return Ok(options);
         }
     }
 }

@@ -1,4 +1,4 @@
-@model LiaNcc.Models.Entities.SitePage
+@model LiaNcc.BO.Models.CMS.SitePageViewModel
 @{
     ViewData["Title"] = "Modifica Pagina";
 }
@@ -25,11 +25,24 @@
             </div>
 
             <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MetaTitle" class="form-label">Meta Title</label>
+                    <input asp-for="MetaTitle" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MetaDescription" class="form-label">Meta Description</label>
+                    <input asp-for="MetaDescription" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-12 mb-3 form-check ms-3 mt-2">
                     <input asp-for="IsActive" class="form-check-input" />
                     <label asp-for="IsActive" class="form-check-label">Attivo</label>
                 </div>
             </div>
+
+            <partial name="_LocalizationFields" model="Model.Translations" />
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-gold">Salva Modifiche</button>

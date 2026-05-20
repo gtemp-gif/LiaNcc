@@ -16,12 +16,27 @@ namespace LiaNcc.BO.Controllers
         private readonly IToursApiClient _toursApiClient;
         private readonly IVehiclesApiClient _vehiclesApiClient;
         private readonly IFilesApiClient _filesApiClient;
+        private readonly ILanguagesApiClient _languagesApiClient;
+        private readonly ILocalizedContentsApiClient _localizedContentsApiClient;
 
-        public ToursController(IToursApiClient toursApiClient, IVehiclesApiClient vehiclesApiClient, IFilesApiClient filesApiClient)
+        private readonly List<string> _translatableKeys = new List<string>
+        {
+            "Name", "Description", "HeroTitle", "HeroSubtitle",
+            "ExperienceDescription", "MeetingPoint"
+        };
+
+        public ToursController(
+            IToursApiClient toursApiClient,
+            IVehiclesApiClient vehiclesApiClient,
+            IFilesApiClient filesApiClient,
+            ILanguagesApiClient languagesApiClient,
+            ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _toursApiClient = toursApiClient;
             _vehiclesApiClient = vehiclesApiClient;
             _filesApiClient = filesApiClient;
+            _languagesApiClient = languagesApiClient;
+            _localizedContentsApiClient = localizedContentsApiClient;
         }
 
         public async Task<IActionResult> Index()
@@ -38,6 +53,7 @@ namespace LiaNcc.BO.Controllers
                 AvailableVehicles = await GetVehiclesSelectList(),
                 IsActive = true
             };
+            await PrepareLocalizationAsync(_languagesApiClient, _localizedContentsApiClient, model, "Tour", null, _translatableKeys);
             return View(model);
         }
 
@@ -80,7 +96,8 @@ namespace LiaNcc.BO.Controllers
                     SortOrder = model.SortOrder
                 };
 
-                await _toursApiClient.CreateTourAsync(tour);
+                var createdTour = await _toursApiClient.CreateTourAsync(tour);
+                await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Tour", createdTour.Id);
                 TempData["SuccessMessage"] = "Tour creato con successo.";
                 return RedirectToAction(nameof(Index));
             }
@@ -118,6 +135,8 @@ namespace LiaNcc.BO.Controllers
                 AvailableCategories = await GetCategoriesSelectList(),
                 AvailableVehicles = await GetVehiclesSelectList()
             };
+
+            await PrepareLocalizationAsync(_languagesApiClient, _localizedContentsApiClient, model, "Tour", id, _translatableKeys);
 
             return View(model);
         }
@@ -165,6 +184,7 @@ namespace LiaNcc.BO.Controllers
                 };
 
                 await _toursApiClient.UpdateTourAsync(id, tour);
+                await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Tour", id);
                 TempData["SuccessMessage"] = "Tour aggiornato con successo.";
                 return RedirectToAction(nameof(Index));
             }

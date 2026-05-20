@@ -94,7 +94,7 @@
                                 <input type="number" name="FeatureSortOrders" class="form-control" value="@feature.SortOrder" />
                             </div>
                             <div class="col-md-1">
-                                <button type="button" class="btn btn-outline-danger remove-feature"><i class="bi bi-trash"></i></button>
+                                <button type="button" class="btn btn-outline-danger remove-feature"><i class="material-symbols-outlined"></i></button>
                             </div>
                         </div>
                     }
@@ -116,7 +116,7 @@
                             <input type="number" name="FeatureSortOrders" class="form-control" value="0" />
                         </div>
                         <div class="col-md-1">
-                            <button type="button" class="btn btn-outline-danger remove-feature"><i class="bi bi-trash"></i></button>
+                            <button type="button" class="btn btn-outline-danger remove-feature"><i class="material-symbols-outlined"></i></button>
                         </div>
                     </div>
                 }
@@ -139,6 +139,8 @@
                 <label class="form-label">Aggiungi Nuove Immagini</label>
                 <input type="file" name="NewGalleryImages" class="form-control" multiple accept="image/*" />
             </div>
+
+            <partial name="_LocalizationFields" model="Model.Translations" />
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-gold">Salva Modifiche</button>
@@ -183,7 +185,7 @@
                                    '<input type="text" name="FeatureIcons" class="form-control icon-input" placeholder="Icona (es. wifi)" />' +
                                    '<button type="button" class="btn btn-outline-secondary open-picker" title="Scegli icona"><i class="bi bi-grid-3x3-gap"></i></button></div></div>' +
                                    '<div class="col-md-2"><input type="number" name="FeatureSortOrders" class="form-control" value="0" /></div>' +
-                                   '<div class="col-md-1"><button type="button" class="btn btn-outline-danger remove-feature"><i class="bi bi-trash"></i></button></div>';
+                                   '<div class="col-md-1"><button type="button" class="btn btn-outline-danger remove-feature"><i class="material-symbols-outlined"></i></button></div>';
             }
 
             var inputs = newRow.querySelectorAll('input');

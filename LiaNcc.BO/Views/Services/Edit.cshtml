@@ -1,4 +1,4 @@
-@model LiaNcc.Models.Entities.Service
+@model LiaNcc.BO.Models.Services.ServiceViewModel
 @{
     ViewData["Title"] = "Modifica Servizio";
 }
@@ -22,6 +22,12 @@
                     <partial name="_MaterialIconPicker" model='("Icon", Model.Icon)' />
                     <span asp-validation-for="Icon" class="text-danger"></span>
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Descrizione</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <div class="row">
@@ -58,6 +64,8 @@
                     <label asp-for="IsActive" class="form-check-label">Attivo</label>
                 </div>
             </div>
+
+            <partial name="_LocalizationFields" model="Model.Translations" />
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-gold">Salva Modifiche</button>

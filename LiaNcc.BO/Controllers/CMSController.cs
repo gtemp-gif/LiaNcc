@@ -10,10 +10,19 @@ namespace LiaNcc.BO.Controllers
     public class CMSController : BaseController
     {
         private readonly ISitePagesApiClient _sitePagesApiClient;
+        private readonly ILanguagesApiClient _languagesApiClient;
+        private readonly ILocalizedContentsApiClient _localizedContentsApiClient;
 
-        public CMSController(ISitePagesApiClient sitePagesApiClient)
+        private readonly List<string> _translatableKeys = new List<string> { "Name", "MetaTitle", "MetaDescription" };
+
+        public CMSController(
+            ISitePagesApiClient sitePagesApiClient,
+            ILanguagesApiClient languagesApiClient,
+            ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _sitePagesApiClient = sitePagesApiClient;
+            _languagesApiClient = languagesApiClient;
+            _localizedContentsApiClient = localizedContentsApiClient;
         }
 
         public async Task<IActionResult> Index()
@@ -22,44 +31,77 @@ namespace LiaNcc.BO.Controllers
             return View(pages);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new SitePage());
+            var model = new LiaNcc.BO.Models.CMS.SitePageViewModel();
+            await PrepareLocalizationAsync(_languagesApiClient, _localizedContentsApiClient, model, "SitePage", null, _translatableKeys);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SitePage sitePage)
+        public async Task<IActionResult> Create(LiaNcc.BO.Models.CMS.SitePageViewModel model)
         {
             if (ModelState.IsValid)
             {
-                await _sitePagesApiClient.CreateAsync(sitePage);
+                var sitePage = new SitePage
+                {
+                    Name = model.Name,
+                    Slug = model.Slug,
+                    MetaTitle = model.MetaTitle,
+                    MetaDescription = model.MetaDescription,
+                    IsActive = model.IsActive
+                };
+                var createdPage = await _sitePagesApiClient.CreateAsync(sitePage);
+                await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "SitePage", createdPage.Id);
                 TempData["SuccessMessage"] = "Pagina creata con successo.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(sitePage);
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(Guid id)
         {
             var page = await _sitePagesApiClient.GetByIdAsync(id);
             if (page == null) return NotFound();
-            return View(page);
+
+            var model = new LiaNcc.BO.Models.CMS.SitePageViewModel
+            {
+                Id = page.Id,
+                Name = page.Name,
+                Slug = page.Slug,
+                MetaTitle = page.MetaTitle,
+                MetaDescription = page.MetaDescription,
+                IsActive = page.IsActive
+            };
+
+            await PrepareLocalizationAsync(_languagesApiClient, _localizedContentsApiClient, model, "SitePage", id, _translatableKeys);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, SitePage sitePage)
+        public async Task<IActionResult> Edit(Guid id, LiaNcc.BO.Models.CMS.SitePageViewModel model)
         {
-            if (id != sitePage.Id) return NotFound();
+            if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
-                await _sitePagesApiClient.UpdateAsync(id, sitePage);
+                var page = await _sitePagesApiClient.GetByIdAsync(id);
+                if (page == null) return NotFound();
+
+                page.Name = model.Name;
+                page.Slug = model.Slug;
+                page.MetaTitle = model.MetaTitle;
+                page.MetaDescription = model.MetaDescription;
+                page.IsActive = model.IsActive;
+
+                await _sitePagesApiClient.UpdateAsync(id, page);
+                await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "SitePage", id);
                 TempData["SuccessMessage"] = "Pagina aggiornata con successo.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(sitePage);
+            return View(model);
         }
     }
 }
