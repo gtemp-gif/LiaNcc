@@ -92,6 +92,9 @@ builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILanguagesApiClient
 
 var app = builder.Build();
 
+// Initialize MediaUrlHelper
+LiaNcc.BO.Helpers.MediaUrlHelper.Initialize(app.Configuration);
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -30,7 +30,7 @@
                     @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
                     {
                         <div class="mb-2">
-                            <img src="@Model.CoverImageUrl" alt="Cover Preview" class="img-thumbnail" style="max-height: 150px;" />
+                            <img src="@MediaUrlHelper.GetAbsoluteUrl(Model.CoverImageUrl)" alt="Cover Preview" class="img-thumbnail" style="max-height: 150px;" />
                         </div>
                     }
                     <input type="file" name="coverImageFile" class="form-control" accept="image/*" />

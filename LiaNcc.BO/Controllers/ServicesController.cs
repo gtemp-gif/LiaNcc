@@ -35,22 +35,27 @@ namespace LiaNcc.BO.Controllers
         {
             if (ModelState.IsValid)
             {
+                // 1. Create the service first to get its ID
+                var createdService = await _servicesApiClient.CreateAsync(service);
+
+                // 2. If a cover image is provided, upload it and associate it with the created service
                 if (coverImageFile != null)
                 {
                     var uploadResponse = await _filesApiClient.UploadFilesAsync(
                         new System.Collections.Generic.List<Microsoft.AspNetCore.Http.IFormFile> { coverImageFile },
                         "services",
                         "Services",
-                        null,
+                        createdService.Id,
                         "Cover");
 
                     if (uploadResponse?.UploadedFiles.Count > 0)
                     {
-                        service.CoverImageUrl = uploadResponse.UploadedFiles[0].Url;
+                        // 3. Update the service with the returned URL
+                        createdService.CoverImageUrl = uploadResponse.UploadedFiles[0].Url;
+                        await _servicesApiClient.UpdateAsync(createdService.Id, createdService);
                     }
                 }
 
-                await _servicesApiClient.CreateAsync(service);
                 TempData["SuccessMessage"] = "Servizio creato con successo.";
                 return RedirectToAction(nameof(Index));
             }

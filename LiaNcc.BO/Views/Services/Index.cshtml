@@ -30,7 +30,7 @@
                             <td>
                                 @if (!string.IsNullOrEmpty(item.CoverImageUrl))
                                 {
-                                    <img src="@item.CoverImageUrl" alt="Cover" class="img-thumbnail" style="max-width: 80px;" />
+                                    <img src="@MediaUrlHelper.GetAbsoluteUrl(item.CoverImageUrl)" alt="Cover" class="img-thumbnail" style="max-width: 80px;" />
                                 }
                                 else
                                 {

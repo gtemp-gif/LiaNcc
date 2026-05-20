@@ -18,7 +18,7 @@
             <div class="card h-100 shadow-sm">
                 @if (item.MimeType.StartsWith("image/"))
                 {
-                    <img src="@item.FileUrl" class="card-img-top" alt="@item.FileName" style="height: 150px; object-fit: cover;" />
+                    <img src="@MediaUrlHelper.GetAbsoluteUrl(item.FileUrl)" class="card-img-top" alt="@item.FileName" style="height: 150px; object-fit: cover;" />
                 }
                 else
                 {

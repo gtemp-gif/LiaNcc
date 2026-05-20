@@ -121,7 +121,7 @@
                 @foreach (var img in Model.ExistingGalleryImages)
                 {
                     <div class="col-md-2 mb-3 position-relative gallery-item" data-id="@img.Id">
-                        <img src="@img.ImageUrl" class="img-thumbnail" />
+                        <img src="@MediaUrlHelper.GetAbsoluteUrl(img.ImageUrl)" class="img-thumbnail" />
                         <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-image"><i class="bi bi-x"></i></button>
                     </div>
                 }
