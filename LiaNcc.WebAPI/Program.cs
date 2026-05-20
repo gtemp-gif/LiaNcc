@@ -70,7 +70,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5000", "https://localhost:5001") // Adjust FE URLs if necessary
+            policy.WithOrigins("https://localhost:7002", "https://localhost:7003") // Adjust FE/BO URLs as per launchSettings
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
