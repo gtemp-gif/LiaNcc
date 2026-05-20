@@ -18,6 +18,11 @@ namespace LiaNcc.Repository.Interfaces
         Task DeleteAsync(Guid id);
 
         Task<IEnumerable<VehicleCategory>> GetCategoriesAsync();
+        Task<IEnumerable<VehicleCategory>> GetActiveCategoriesAsync();
+
         Task<IEnumerable<VehicleFeature>> GetFeaturesAsync(Guid vehicleId);
+        Task AddFeatureAsync(VehicleFeature feature);
+        Task DeleteFeatureAsync(Guid featureId);
+        Task ClearFeaturesAsync(Guid vehicleId);
     }
 }

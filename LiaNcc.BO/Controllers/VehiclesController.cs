@@ -1,8 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LiaNcc.BO.Controllers.Base;
+using LiaNcc.BO.Models.Vehicles;
 using LiaNcc.BO.Services.Interfaces;
+using LiaNcc.Models.DTOs.Vehicles;
 using LiaNcc.Models.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LiaNcc.BO.Controllers
@@ -10,65 +15,171 @@ namespace LiaNcc.BO.Controllers
     public class VehiclesController : BaseController
     {
         private readonly IVehiclesApiClient _vehiclesApiClient;
+        private readonly IFilesApiClient _filesApiClient;
 
-        public VehiclesController(IVehiclesApiClient vehiclesApiClient)
+        public VehiclesController(IVehiclesApiClient vehiclesApiClient, IFilesApiClient filesApiClient)
         {
             _vehiclesApiClient = vehiclesApiClient;
+            _filesApiClient = filesApiClient;
         }
 
         public async Task<IActionResult> Index()
         {
-            var vehicles = await _vehiclesApiClient.GetAllAsync();
+            var vehicles = await _vehiclesApiClient.GetAllVehiclesAsync();
             return View(vehicles);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new Vehicle());
+            var model = new VehicleViewModel
+            {
+                AvailableCategories = (await _vehiclesApiClient.GetActiveCategoriesAsync()).ToList(),
+                IsActive = true,
+                IsBookable = true
+            };
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Vehicle vehicle)
+        public async Task<IActionResult> Create(VehicleViewModel model, List<string> FeatureNames, List<string> FeatureIcons, List<int> FeatureSortOrders)
         {
             if (ModelState.IsValid)
             {
-                await _vehiclesApiClient.CreateAsync(vehicle);
+                var request = new VehicleUpsertRequest
+                {
+                    CategoryId = model.CategoryId,
+                    Name = model.Name,
+                    Title = model.Title,
+                    Description = model.Description,
+                    Seats = model.Seats,
+                    Luggages = model.Luggages,
+                    IsFeatured = model.IsFeatured,
+                    IsBookable = model.IsBookable,
+                    IsActive = model.IsActive,
+                    SortOrder = model.SortOrder,
+                    Features = new List<VehicleFeatureDto>()
+                };
+
+                for (int i = 0; i < FeatureNames.Count; i++)
+                {
+                    if (!string.IsNullOrWhiteSpace(FeatureNames[i]))
+                    {
+                        request.Features.Add(new VehicleFeatureDto
+                        {
+                            Name = FeatureNames[i],
+                            Icon = FeatureIcons.Count > i ? FeatureIcons[i] : null,
+                            SortOrder = FeatureSortOrders.Count > i ? FeatureSortOrders[i] : 0
+                        });
+                    }
+                }
+
+                var vehicle = await _vehiclesApiClient.CreateVehicleAsync(request);
+
+                if (model.NewGalleryImages != null && model.NewGalleryImages.Count > 0)
+                {
+                    await _filesApiClient.UploadFilesAsync(model.NewGalleryImages, "vehicles", "Vehicles", vehicle.Id, "Gallery");
+                }
+
                 TempData["SuccessMessage"] = "Veicolo creato con successo.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+
+            model.AvailableCategories = (await _vehiclesApiClient.GetActiveCategoriesAsync()).ToList();
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(Guid id)
         {
-            var vehicle = await _vehiclesApiClient.GetByIdAsync(id);
+            var vehicle = await _vehiclesApiClient.GetVehicleByIdAsync(id);
             if (vehicle == null) return NotFound();
-            return View(vehicle);
+
+            var model = new VehicleViewModel
+            {
+                Id = vehicle.Id,
+                CategoryId = vehicle.CategoryId,
+                Name = vehicle.Name,
+                Title = vehicle.Title,
+                Description = vehicle.Description,
+                Seats = vehicle.Seats,
+                Luggages = vehicle.Luggages,
+                IsFeatured = vehicle.IsFeatured,
+                IsBookable = vehicle.IsBookable,
+                IsActive = vehicle.IsActive,
+                SortOrder = vehicle.SortOrder,
+                AvailableCategories = (await _vehiclesApiClient.GetActiveCategoriesAsync()).ToList(),
+                Features = vehicle.Features,
+                ExistingGalleryImages = vehicle.GalleryImages
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, Vehicle vehicle)
+        public async Task<IActionResult> Edit(Guid id, VehicleViewModel model, List<string> FeatureNames, List<string> FeatureIcons, List<int> FeatureSortOrders)
         {
-            if (id != vehicle.Id) return NotFound();
+            if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
-                await _vehiclesApiClient.UpdateAsync(id, vehicle);
+                var request = new VehicleUpsertRequest
+                {
+                    CategoryId = model.CategoryId,
+                    Name = model.Name,
+                    Title = model.Title,
+                    Description = model.Description,
+                    Seats = model.Seats,
+                    Luggages = model.Luggages,
+                    IsFeatured = model.IsFeatured,
+                    IsBookable = model.IsBookable,
+                    IsActive = model.IsActive,
+                    SortOrder = model.SortOrder,
+                    Features = new List<VehicleFeatureDto>()
+                };
+
+                for (int i = 0; i < FeatureNames.Count; i++)
+                {
+                    if (!string.IsNullOrWhiteSpace(FeatureNames[i]))
+                    {
+                        request.Features.Add(new VehicleFeatureDto
+                        {
+                            Name = FeatureNames[i],
+                            Icon = FeatureIcons.Count > i ? FeatureIcons[i] : null,
+                            SortOrder = FeatureSortOrders.Count > i ? FeatureSortOrders[i] : 0
+                        });
+                    }
+                }
+
+                await _vehiclesApiClient.UpdateVehicleAsync(id, request);
+
+                if (model.NewGalleryImages != null && model.NewGalleryImages.Count > 0)
+                {
+                    await _filesApiClient.UploadFilesAsync(model.NewGalleryImages, "vehicles", "Vehicles", id, "Gallery");
+                }
+
                 TempData["SuccessMessage"] = "Veicolo aggiornato con successo.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+
+            model.AvailableCategories = (await _vehiclesApiClient.GetActiveCategoriesAsync()).ToList();
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _vehiclesApiClient.DeleteAsync(id);
+            await _vehiclesApiClient.DeleteVehicleAsync(id);
             TempData["SuccessMessage"] = "Veicolo eliminato con successo.";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteGalleryImage(Guid imageId)
+        {
+            await _vehiclesApiClient.DeleteGalleryImageAsync(imageId);
+            return Ok();
         }
     }
 }

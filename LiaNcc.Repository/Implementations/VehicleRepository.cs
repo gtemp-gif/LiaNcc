@@ -79,9 +79,40 @@ namespace LiaNcc.Repository.Implementations
             return await _context.VehicleCategories.AsNoTracking().OrderBy(c => c.SortOrder).ToListAsync();
         }
 
+        public async Task<IEnumerable<VehicleCategory>> GetActiveCategoriesAsync()
+        {
+            return await _context.VehicleCategories.AsNoTracking()
+                .Where(c => c.IsActive)
+                .OrderBy(c => c.SortOrder)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<VehicleFeature>> GetFeaturesAsync(Guid vehicleId)
         {
             return await _context.VehicleFeatures.AsNoTracking().Where(f => f.VehicleId == vehicleId).OrderBy(f => f.SortOrder).ToListAsync();
+        }
+
+        public async Task AddFeatureAsync(VehicleFeature feature)
+        {
+            _context.VehicleFeatures.Add(feature);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteFeatureAsync(Guid featureId)
+        {
+            var feature = await _context.VehicleFeatures.FindAsync(featureId);
+            if (feature != null)
+            {
+                _context.VehicleFeatures.Remove(feature);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task ClearFeaturesAsync(Guid vehicleId)
+        {
+            var features = await _context.VehicleFeatures.Where(f => f.VehicleId == vehicleId).ToListAsync();
+            _context.VehicleFeatures.RemoveRange(features);
+            await _context.SaveChangesAsync();
         }
     }
 }

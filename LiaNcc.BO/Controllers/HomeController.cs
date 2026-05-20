@@ -22,7 +22,7 @@ namespace LiaNcc.BO.Controllers
         {
             // Simple statistics fetching
             var tours = await _toursApiClient.GetAllAsync();
-            var vehicles = await _vehiclesApiClient.GetAllAsync();
+            var vehicles = await _vehiclesApiClient.GetAllVehiclesAsync();
 
             ViewBag.ActiveToursCount = tours.Count(t => t.IsActive);
             ViewBag.ActiveVehiclesCount = vehicles.Count(v => v.IsActive);
