@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using LiaNcc.Models.DTOs.Tours;
 using LiaNcc.Models.Entities;
 using LiaNcc.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -21,9 +23,10 @@ namespace LiaNcc.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tour>>> GetTours()
+        public async Task<ActionResult<IEnumerable<TourDto>>> GetTours()
         {
-            return Ok(await _tourRepository.GetAllAsync());
+            var tours = await _tourRepository.GetAllAsync();
+            return Ok(tours.Select(MapToDto));
         }
 
         [AllowAnonymous]
@@ -42,11 +45,11 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tour>> GetTour(Guid id)
+        public async Task<ActionResult<TourDto>> GetTour(Guid id)
         {
             var tour = await _tourRepository.GetByIdAsync(id);
             if (tour == null) return NotFound();
-            return Ok(tour);
+            return Ok(MapToDto(tour));
         }
 
         [AllowAnonymous]
@@ -110,6 +113,35 @@ namespace LiaNcc.WebAPI.Controllers
         {
             await _tourRepository.DeleteAsync(id);
             return NoContent();
+        }
+
+        private static TourDto MapToDto(Tour t)
+        {
+            return new TourDto
+            {
+                Id = t.Id,
+                CategoryId = t.CategoryId,
+                CategoryName = t.TourCategory?.Name,
+                Name = t.Name,
+                Slug = t.Slug,
+                Price = t.Price,
+                CoverImageUrl = t.CoverImageUrl,
+                Description = t.Description,
+                HeroTitle = t.HeroTitle,
+                HeroSubtitle = t.HeroSubtitle,
+                ExperienceDescription = t.ExperienceDescription,
+                ExperienceImageUrl = t.ExperienceImageUrl,
+                DurationDays = t.DurationDays,
+                DurationHours = t.DurationHours,
+                MeetingPoint = t.MeetingPoint,
+                VehicleId = t.VehicleId,
+                VehicleName = t.Vehicle != null ? $"{t.Vehicle.Name} ({t.Vehicle.Title})" : null,
+                IsFeatured = t.IsFeatured,
+                IsActive = t.IsActive,
+                SortOrder = t.SortOrder,
+                CreatedAt = t.CreatedAt,
+                UpdatedAt = t.UpdatedAt
+            };
         }
     }
 }

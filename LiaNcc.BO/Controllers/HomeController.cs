@@ -21,7 +21,7 @@ namespace LiaNcc.BO.Controllers
         public async Task<IActionResult> Index()
         {
             // Simple statistics fetching
-            var tours = await _toursApiClient.GetAllAsync();
+            var tours = await _toursApiClient.GetAllToursAsync();
             var vehicles = await _vehiclesApiClient.GetAllVehiclesAsync();
 
             ViewBag.ActiveToursCount = tours.Count(t => t.IsActive);
