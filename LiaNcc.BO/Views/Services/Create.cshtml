@@ -7,7 +7,7 @@
 
 <div class="card shadow-sm mt-4">
     <div class="card-body">
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="row">
@@ -25,9 +25,10 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label asp-for="CoverImageUrl" class="form-label">Cover Image URL</label>
-                    <input asp-for="CoverImageUrl" class="form-control" />
-                    <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+                    <label class="form-label">Immagine di Copertina</label>
+                    <input type="file" name="coverImageFile" class="form-control" accept="image/*" />
+                    <input type="hidden" asp-for="CoverImageUrl" />
+                    <small class="text-muted">L'URL verrà generato automaticamente dopo l'upload.</small>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label asp-for="SortOrder" class="form-label">Ordine di visualizzazione</label>

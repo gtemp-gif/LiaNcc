@@ -14,6 +14,7 @@
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>Cover</th>
                         <th>Nome</th>
                         <th>Icona</th>
                         <th>In Evidenza</th>
@@ -26,6 +27,16 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.CoverImageUrl))
+                                {
+                                    <img src="@item.CoverImageUrl" alt="Cover" class="img-thumbnail" style="max-width: 80px;" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">No image</span>
+                                }
+                            </td>
                             <td>@item.Name</td>
                             <td><i class="@item.Icon"></i> @item.Icon</td>
                             <td>

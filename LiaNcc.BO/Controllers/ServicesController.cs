@@ -10,10 +10,12 @@ namespace LiaNcc.BO.Controllers
     public class ServicesController : BaseController
     {
         private readonly IServicesApiClient _servicesApiClient;
+        private readonly IFilesApiClient _filesApiClient;
 
-        public ServicesController(IServicesApiClient servicesApiClient)
+        public ServicesController(IServicesApiClient servicesApiClient, IFilesApiClient filesApiClient)
         {
             _servicesApiClient = servicesApiClient;
+            _filesApiClient = filesApiClient;
         }
 
         public async Task<IActionResult> Index()
@@ -29,10 +31,25 @@ namespace LiaNcc.BO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Service service)
+        public async Task<IActionResult> Create(Service service, Microsoft.AspNetCore.Http.IFormFile? coverImageFile)
         {
             if (ModelState.IsValid)
             {
+                if (coverImageFile != null)
+                {
+                    var uploadResponse = await _filesApiClient.UploadFilesAsync(
+                        new System.Collections.Generic.List<Microsoft.AspNetCore.Http.IFormFile> { coverImageFile },
+                        "services",
+                        "Services",
+                        null,
+                        "Cover");
+
+                    if (uploadResponse?.UploadedFiles.Count > 0)
+                    {
+                        service.CoverImageUrl = uploadResponse.UploadedFiles[0].Url;
+                    }
+                }
+
                 await _servicesApiClient.CreateAsync(service);
                 TempData["SuccessMessage"] = "Servizio creato con successo.";
                 return RedirectToAction(nameof(Index));
@@ -49,12 +66,27 @@ namespace LiaNcc.BO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, Service service)
+        public async Task<IActionResult> Edit(Guid id, Service service, Microsoft.AspNetCore.Http.IFormFile? coverImageFile)
         {
             if (id != service.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
+                if (coverImageFile != null)
+                {
+                    var uploadResponse = await _filesApiClient.UploadFilesAsync(
+                        new System.Collections.Generic.List<Microsoft.AspNetCore.Http.IFormFile> { coverImageFile },
+                        "services",
+                        "Services",
+                        id,
+                        "Cover");
+
+                    if (uploadResponse?.UploadedFiles.Count > 0)
+                    {
+                        service.CoverImageUrl = uploadResponse.UploadedFiles[0].Url;
+                    }
+                }
+
                 await _servicesApiClient.UpdateAsync(id, service);
                 TempData["SuccessMessage"] = "Servizio aggiornato con successo.";
                 return RedirectToAction(nameof(Index));
