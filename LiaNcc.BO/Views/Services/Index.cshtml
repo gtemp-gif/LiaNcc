@@ -38,7 +38,13 @@
                                 }
                             </td>
                             <td>@item.Name</td>
-                            <td><i class="@item.Icon"></i> @item.Icon</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Icon))
+                                {
+                                    <span class="material-symbols-outlined">@item.Icon</span>
+                                    <small class="text-muted">@item.Icon</small>
+                                }
+                            </td>
                             <td>
                                 @if(item.IsFeatured)
                                 {

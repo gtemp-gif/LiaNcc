@@ -80,11 +80,15 @@
                     foreach (var feature in Model.Features)
                     {
                         <div class="row feature-row mb-2">
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <input type="text" name="FeatureNames" class="form-control" value="@feature.Name" />
                             </div>
-                            <div class="col-md-4">
-                                <input type="text" name="FeatureIcons" class="form-control" value="@feature.Icon" />
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <span class="input-group-text"><span class="material-symbols-outlined icon-preview">@(string.IsNullOrEmpty(feature.Icon) ? "search" : feature.Icon)</span></span>
+                                    <input type="text" name="FeatureIcons" class="form-control icon-input" value="@feature.Icon" placeholder="Icona" />
+                                    <button type="button" class="btn btn-outline-secondary open-picker" title="Scegli icona"><i class="bi bi-grid-3x3-gap"></i></button>
+                                </div>
                             </div>
                             <div class="col-md-2">
                                 <input type="number" name="FeatureSortOrders" class="form-control" value="@feature.SortOrder" />
@@ -98,11 +102,15 @@
                 else
                 {
                     <div class="row feature-row mb-2">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <input type="text" name="FeatureNames" class="form-control" placeholder="Nome Feature (es. Wi-Fi)" />
                         </div>
-                        <div class="col-md-4">
-                            <input type="text" name="FeatureIcons" class="form-control" placeholder="Icona (bi-wifi)" />
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text"><span class="material-symbols-outlined icon-preview">search</span></span>
+                                <input type="text" name="FeatureIcons" class="form-control icon-input" placeholder="Icona" />
+                                <button type="button" class="btn btn-outline-secondary open-picker" title="Scegli icona"><i class="bi bi-grid-3x3-gap"></i></button>
+                            </div>
                         </div>
                         <div class="col-md-2">
                             <input type="number" name="FeatureSortOrders" class="form-control" value="0" />
@@ -140,6 +148,24 @@
     </div>
 </div>
 
+<!-- Modal per Icon Picker -->
+<div class="modal fade" id="iconPickerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Seleziona Icona</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <partial name="_MaterialIconPicker" model='("ModalIcon", "")' />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         document.getElementById('add-feature').addEventListener('click', function() {
@@ -152,8 +178,10 @@
                 // Should not happen with our template but for safety
                 newRow = document.createElement('div');
                 newRow.className = 'row feature-row mb-2';
-                newRow.innerHTML = '<div class="col-md-5"><input type="text" name="FeatureNames" class="form-control" placeholder="Nome Feature (es. Wi-Fi)" /></div>' +
-                                   '<div class="col-md-4"><input type="text" name="FeatureIcons" class="form-control" placeholder="Icona (bi-wifi)" /></div>' +
+                newRow.innerHTML = '<div class="col-md-4"><input type="text" name="FeatureNames" class="form-control" placeholder="Nome Feature (es. Wi-Fi)" /></div>' +
+                                   '<div class="col-md-5"><div class="input-group"><span class="input-group-text"><span class="material-symbols-outlined icon-preview">search</span></span>' +
+                                   '<input type="text" name="FeatureIcons" class="form-control icon-input" placeholder="Icona (es. wifi)" />' +
+                                   '<button type="button" class="btn btn-outline-secondary open-picker" title="Scegli icona"><i class="bi bi-grid-3x3-gap"></i></button></div></div>' +
                                    '<div class="col-md-2"><input type="number" name="FeatureSortOrders" class="form-control" value="0" /></div>' +
                                    '<div class="col-md-1"><button type="button" class="btn btn-outline-danger remove-feature"><i class="bi bi-trash"></i></button></div>';
             }
@@ -165,11 +193,57 @@
             });
             container.appendChild(newRow);
 
+            // Re-init preview for the new row
+            const newIconInput = newRow.querySelector('.icon-input');
+            const newPreview = newRow.querySelector('.icon-preview');
+            newIconInput.addEventListener('change', function() {
+                newPreview.textContent = this.value || 'search';
+            });
+            newIconInput.addEventListener('keyup', function() {
+                newPreview.textContent = this.value || 'search';
+            });
+
             newRow.querySelector('.remove-feature').addEventListener('click', function() {
                 if (container.querySelectorAll('.feature-row').length > 1) {
                     newRow.remove();
                 }
             });
+        });
+
+        // Icon Picker Modal Logic
+        let activeInput = null;
+        let activePreview = null;
+
+        $(document).on('click', '.open-picker', function() {
+            const row = $(this).closest('.row');
+            activeInput = row.find('.icon-input');
+            activePreview = row.find('.icon-preview');
+
+            const currentVal = activeInput.val();
+            $('#icon-input-ModalIcon').val(currentVal);
+
+            // Pre-select in modal grid
+            $('.material-icon-option[data-field="ModalIcon"]').removeClass('selected');
+            if (currentVal) {
+                $(`.material-icon-option[data-field="ModalIcon"][data-icon="${currentVal}"]`).addClass('selected');
+            }
+
+            $('#iconPickerModal').modal('show');
+        });
+
+        // Listen for selection in the modal's picker
+        $(document).on('click', '.material-icon-option[data-field="ModalIcon"]', function() {
+            const icon = $(this).data('icon');
+            if (activeInput) {
+                activeInput.val(icon);
+                activePreview.text(icon);
+            }
+            $('#iconPickerModal').modal('hide');
+        });
+
+        $(document).on('change keyup', '.icon-input', function() {
+            const val = $(this).val();
+            $(this).closest('.row').find('.icon-preview').text(val || 'search');
         });
 
         document.querySelectorAll('.remove-feature').forEach(function(btn) {

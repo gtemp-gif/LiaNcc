@@ -18,8 +18,8 @@
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label asp-for="Icon" class="form-label">Icona (es. bi-car)</label>
-                    <input asp-for="Icon" class="form-control" />
+                    <label asp-for="Icon" class="form-label">Icona</label>
+                    <partial name="_MaterialIconPicker" model='("Icon", Model.Icon)' />
                     <span asp-validation-for="Icon" class="text-danger"></span>
                 </div>
             </div>
