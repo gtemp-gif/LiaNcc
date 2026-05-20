@@ -225,6 +225,7 @@ namespace LiaNcc.Repository
 
             // Company
             modelBuilder.Entity<CompanyProfile>(entity => {
+                entity.ToTable("CompanyProfile");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
