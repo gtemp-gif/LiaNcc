@@ -16,11 +16,21 @@ namespace LiaNcc.BO.Controllers
     {
         private readonly IVehiclesApiClient _vehiclesApiClient;
         private readonly IFilesApiClient _filesApiClient;
+        private readonly ILanguagesApiClient _languagesApiClient;
+        private readonly ILocalizedContentsApiClient _localizedContentsApiClient;
 
-        public VehiclesController(IVehiclesApiClient vehiclesApiClient, IFilesApiClient filesApiClient)
+        private readonly List<string> _translatableKeys = new List<string> { "Name", "Title", "Description" };
+
+        public VehiclesController(
+            IVehiclesApiClient vehiclesApiClient,
+            IFilesApiClient filesApiClient,
+            ILanguagesApiClient languagesApiClient,
+            ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _vehiclesApiClient = vehiclesApiClient;
             _filesApiClient = filesApiClient;
+            _languagesApiClient = languagesApiClient;
+            _localizedContentsApiClient = localizedContentsApiClient;
         }
 
         public async Task<IActionResult> Index()
@@ -37,6 +47,7 @@ namespace LiaNcc.BO.Controllers
                 IsActive = true,
                 IsBookable = true
             };
+            await PrepareLocalizationAsync(_languagesApiClient, _localizedContentsApiClient, model, "Vehicle", null, _translatableKeys);
             return View(model);
         }
 
@@ -76,6 +87,8 @@ namespace LiaNcc.BO.Controllers
 
                 var vehicle = await _vehiclesApiClient.CreateVehicleAsync(request);
 
+                await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Vehicle", vehicle.Id);
+
                 if (model.NewGalleryImages != null && model.NewGalleryImages.Count > 0)
                 {
                     await _filesApiClient.UploadFilesAsync(model.NewGalleryImages, "vehicles", "Vehicles", vehicle.Id, "Gallery");
@@ -111,6 +124,8 @@ namespace LiaNcc.BO.Controllers
                 Features = vehicle.Features,
                 ExistingGalleryImages = vehicle.GalleryImages
             };
+
+            await PrepareLocalizationAsync(_languagesApiClient, _localizedContentsApiClient, model, "Vehicle", id, _translatableKeys);
 
             return View(model);
         }
@@ -152,6 +167,8 @@ namespace LiaNcc.BO.Controllers
                 }
 
                 await _vehiclesApiClient.UpdateVehicleAsync(id, request);
+
+                await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Vehicle", id);
 
                 if (model.NewGalleryImages != null && model.NewGalleryImages.Count > 0)
                 {

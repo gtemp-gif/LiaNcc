@@ -22,8 +22,12 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("entity/{entityName}/{entityId}")]
-        public async Task<ActionResult<IEnumerable<LocalizedContent>>> GetByEntity(string entityName, Guid entityId, [FromQuery] string language = "it")
+        public async Task<ActionResult<IEnumerable<LocalizedContent>>> GetByEntity(string entityName, Guid entityId, [FromQuery] string? language)
         {
+            if (string.IsNullOrEmpty(language))
+            {
+                return Ok(await _localizedContentRepository.GetByEntityAsync(entityName, entityId));
+            }
             return Ok(await _localizedContentRepository.GetByEntityAsync(entityName, entityId, language));
         }
 
@@ -48,6 +52,13 @@ namespace LiaNcc.WebAPI.Controllers
         {
             await _localizedContentRepository.CreateAsync(content);
             return Ok(content);
+        }
+
+        [HttpPost("upsert-batch")]
+        public async Task<IActionResult> UpsertBatch(IEnumerable<LocalizedContent> items)
+        {
+            await _localizedContentRepository.UpsertBatchAsync(items);
+            return Ok();
         }
 
         [HttpPut("{id}")]

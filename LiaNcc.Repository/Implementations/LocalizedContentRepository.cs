@@ -34,6 +34,13 @@ namespace LiaNcc.Repository.Implementations
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<LocalizedContent>> GetByEntityAsync(string entityName, Guid entityId)
+        {
+            return await _context.LocalizedContents.AsNoTracking()
+                .Where(lc => lc.EntityName == entityName && lc.EntityId == entityId)
+                .ToListAsync();
+        }
+
         public async Task<LocalizedContent?> GetStaticContentAsync(string contentKey, string languageCode)
         {
             return await _context.LocalizedContents.AsNoTracking()
@@ -58,6 +65,37 @@ namespace LiaNcc.Repository.Implementations
         {
             localizedContent.UpdatedAt = DateTime.UtcNow;
             _context.LocalizedContents.Update(localizedContent);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpsertBatchAsync(IEnumerable<LocalizedContent> items)
+        {
+            foreach (var item in items)
+            {
+                var existing = await _context.LocalizedContents
+                    .FirstOrDefaultAsync(lc => lc.EntityName == item.EntityName
+                                            && lc.EntityId == item.EntityId
+                                            && lc.LanguageCode == item.LanguageCode
+                                            && lc.ContentKey == item.ContentKey);
+
+                if (existing != null)
+                {
+                    if (string.IsNullOrWhiteSpace(item.ContentValue))
+                    {
+                        _context.LocalizedContents.Remove(existing);
+                    }
+                    else
+                    {
+                        existing.ContentValue = item.ContentValue;
+                        existing.UpdatedAt = DateTime.UtcNow;
+                        _context.LocalizedContents.Update(existing);
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(item.ContentValue))
+                {
+                    _context.LocalizedContents.Add(item);
+                }
+            }
             await _context.SaveChangesAsync();
         }
 

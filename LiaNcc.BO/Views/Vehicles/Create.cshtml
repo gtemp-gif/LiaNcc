@@ -89,7 +89,7 @@
                         <input type="number" name="FeatureSortOrders" class="form-control" value="0" />
                     </div>
                     <div class="col-md-1">
-                        <button type="button" class="btn btn-outline-danger remove-feature"><i class="bi bi-trash"></i></button>
+                        <button type="button" class="btn btn-outline-danger remove-feature"><i class="material-symbols-outlined"></i></button>
                     </div>
                 </div>
             </div>
@@ -101,6 +101,8 @@
                 <label class="form-label">Carica Immagini</label>
                 <input type="file" name="NewGalleryImages" class="form-control" multiple accept="image/*" />
             </div>
+
+            <partial name="_LocalizationFields" model="Model.Translations" />
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-gold">Crea Veicolo</button>

@@ -16,39 +16,61 @@ namespace LiaNcc.WebAPI.Controllers
     public class ToursController : ControllerBase
     {
         private readonly ITourRepository _tourRepository;
+        private readonly ILocalizedContentRepository _localizationRepository;
+        private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
 
-        public ToursController(ITourRepository tourRepository)
+        public ToursController(
+            ITourRepository tourRepository,
+            ILocalizedContentRepository localizationRepository,
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
         {
             _tourRepository = tourRepository;
+            _localizationRepository = localizationRepository;
+            _resolver = resolver;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TourDto>>> GetTours()
+        public async Task<ActionResult<IEnumerable<TourDto>>> GetTours([FromQuery] string? culture)
         {
             var tours = await _tourRepository.GetAllAsync();
+            if (!string.IsNullOrEmpty(culture))
+            {
+                foreach (var tour in tours) await LocalizeTour(tour, culture);
+            }
             return Ok(tours.Select(MapToDto));
         }
 
         [AllowAnonymous]
         [HttpGet("active")]
-        public async Task<ActionResult<IEnumerable<Tour>>> GetActiveTours()
+        public async Task<ActionResult<IEnumerable<TourDto>>> GetActiveTours([FromQuery] string? culture)
         {
-            return Ok(await _tourRepository.GetActiveToursAsync());
+            var tours = await _tourRepository.GetActiveToursAsync();
+            if (!string.IsNullOrEmpty(culture))
+            {
+                foreach (var tour in tours) await LocalizeTour(tour, culture);
+            }
+            return Ok(tours.Select(MapToDto));
         }
 
         [AllowAnonymous]
         [HttpGet("featured")]
-        public async Task<ActionResult<IEnumerable<Tour>>> GetFeaturedTours()
+        public async Task<ActionResult<IEnumerable<TourDto>>> GetFeaturedTours([FromQuery] string? culture)
         {
-            return Ok(await _tourRepository.GetFeaturedToursAsync());
+            var tours = await _tourRepository.GetFeaturedToursAsync();
+            if (!string.IsNullOrEmpty(culture))
+            {
+                foreach (var tour in tours) await LocalizeTour(tour, culture);
+            }
+            return Ok(tours.Select(MapToDto));
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<TourDto>> GetTour(Guid id)
+        public async Task<ActionResult<TourDto>> GetTour(Guid id, [FromQuery] string? culture)
         {
             var tour = await _tourRepository.GetByIdAsync(id);
             if (tour == null) return NotFound();
+            if (!string.IsNullOrEmpty(culture)) await LocalizeTour(tour, culture);
             return Ok(MapToDto(tour));
         }
 
@@ -63,11 +85,23 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id}/detail")]
-        public async Task<ActionResult<Tour>> GetTourDetail(Guid id)
+        public async Task<ActionResult<Tour>> GetTourDetail(Guid id, [FromQuery] string? culture)
         {
             var tour = await _tourRepository.GetTourDetailAsync(id);
             if (tour == null) return NotFound();
+            if (!string.IsNullOrEmpty(culture)) await LocalizeTour(tour, culture);
             return Ok(tour);
+        }
+
+        private async Task LocalizeTour(Tour tour, string culture)
+        {
+            var translations = await _localizationRepository.GetByEntityAsync("Tour", tour.Id, culture);
+            tour.Name = _resolver.Resolve(translations, "Name", tour.Name, culture);
+            tour.Description = _resolver.Resolve(translations, "Description", tour.Description ?? "", culture);
+            tour.HeroTitle = _resolver.Resolve(translations, "HeroTitle", tour.HeroTitle ?? "", culture);
+            tour.HeroSubtitle = _resolver.Resolve(translations, "HeroSubtitle", tour.HeroSubtitle ?? "", culture);
+            tour.ExperienceDescription = _resolver.Resolve(translations, "ExperienceDescription", tour.ExperienceDescription ?? "", culture);
+            tour.MeetingPoint = _resolver.Resolve(translations, "MeetingPoint", tour.MeetingPoint ?? "", culture);
         }
 
         [AllowAnonymous]

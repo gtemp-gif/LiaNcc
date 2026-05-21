@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using LiaNcc.BO.Models.Common;
+using LiaNcc.BO.Models.Localization;
 using LiaNcc.Models.DTOs.Vehicles;
 using LiaNcc.Models.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace LiaNcc.BO.Models.Vehicles
 {
-    public class VehicleViewModel
+    public class VehicleViewModel : ILocalizedViewModel
     {
         public Guid? Id { get; set; }
         public Guid CategoryId { get; set; }
@@ -29,5 +31,7 @@ namespace LiaNcc.BO.Models.Vehicles
         // For adding new feature inline
         public string? NewFeatureName { get; set; }
         public string? NewFeatureIcon { get; set; }
+
+        public List<LocalizationTabViewModel> Translations { get; set; } = new();
     }
 }

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using LiaNcc.BO.Models.Common;
+using LiaNcc.BO.Models.Localization;
 using LiaNcc.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LiaNcc.BO.Models.Tours
 {
-    public class TourViewModel
+    public class TourViewModel : ILocalizedViewModel
     {
         public Guid? Id { get; set; }
         public Guid? CategoryId { get; set; }
@@ -36,5 +38,7 @@ namespace LiaNcc.BO.Models.Tours
 
         public IEnumerable<SelectListItem> AvailableCategories { get; set; } = new List<SelectListItem>();
         public IEnumerable<SelectListItem> AvailableVehicles { get; set; } = new List<SelectListItem>();
+
+        public List<LocalizationTabViewModel> Translations { get; set; } = new();
     }
 }
