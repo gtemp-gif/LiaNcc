@@ -9,6 +9,7 @@ namespace LiaNcc.Repository.Interfaces
     {
         Task<IEnumerable<MediaAsset>> GetAllAsync();
         Task<MediaAsset?> GetByIdAsync(Guid id);
+        Task<MediaAsset?> GetByFileNameAsync(string fileName);
         Task<IEnumerable<EntityMedia>> GetMediaForEntityAsync(string entityName, Guid entityId);
         Task<MediaAsset> CreateAsync(MediaAsset mediaAsset);
         Task UpdateAsync(MediaAsset mediaAsset);

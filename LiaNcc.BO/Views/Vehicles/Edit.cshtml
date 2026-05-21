@@ -1,4 +1,4 @@
-@model LiaNcc.Models.Entities.Vehicle
+@model LiaNcc.BO.Models.Vehicles.VehicleViewModel
 @{
     ViewData["Title"] = "Modifica Veicolo";
 }
@@ -7,7 +7,7 @@
 
 <div class="card shadow-sm mt-4">
     <div class="card-body">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="Id" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -22,45 +22,125 @@
                     <input asp-for="Title" class="form-control" />
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
-                <div class="col-md-12 mb-3">
-                    <label asp-for="Description" class="form-label">Descrizione</label>
-                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Descrizione</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <div class="row">
                 <div class="col-md-4 mb-3">
+                    <label asp-for="CategoryId" class="form-label">Categoria</label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(Model.AvailableCategories, "Id", "Name"))">
+                        <option value="">Seleziona categoria</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
                     <label asp-for="Seats" class="form-label">Posti</label>
-                    <input asp-for="Seats" class="form-control" />
+                    <input asp-for="Seats" type="number" class="form-control" />
                     <span asp-validation-for="Seats" class="text-danger"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label asp-for="Luggages" class="form-label">Bagagli</label>
-                    <input asp-for="Luggages" class="form-control" />
+                    <input asp-for="Luggages" type="number" class="form-control" />
                     <span asp-validation-for="Luggages" class="text-danger"></span>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label asp-for="SortOrder" class="form-label">Ordine visualizzazione</label>
-                    <input asp-for="SortOrder" class="form-control" />
-                    <span asp-validation-for="SortOrder" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-4 mb-3 form-check ms-3">
-                    <input asp-for="IsBookable" class="form-check-input" />
-                    <label asp-for="IsBookable" class="form-check-label">Prenotabile</label>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="SortOrder" class="form-label">Ordine Visualizzazione</label>
+                    <input asp-for="SortOrder" class="form-control" />
+                    <span asp-validation-for="SortOrder" class="text-danger"></span>
                 </div>
-                <div class="col-md-4 mb-3 form-check ms-3">
-                    <input asp-for="IsFeatured" class="form-check-input" />
-                    <label asp-for="IsFeatured" class="form-check-label">In Evidenza</label>
-                </div>
-                <div class="col-md-3 mb-3 form-check ms-3">
-                    <input asp-for="IsActive" class="form-check-input" />
-                    <label asp-for="IsActive" class="form-check-label">Attivo</label>
+                <div class="col-md-8 mb-3 pt-4 d-flex">
+                    <div class="form-check me-4">
+                        <input asp-for="IsFeatured" class="form-check-input" />
+                        <label asp-for="IsFeatured" class="form-check-label">In Evidenza</label>
+                    </div>
+                    <div class="form-check me-4">
+                        <input asp-for="IsBookable" class="form-check-input" />
+                        <label asp-for="IsBookable" class="form-check-label">Prenotabile</label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Attivo</label>
+                    </div>
                 </div>
             </div>
+
+            <hr />
+            <h4>Caratteristiche Veicolo (Features)</h4>
+            <div id="features-container">
+                @if (Model.Features != null && Model.Features.Any())
+                {
+                    foreach (var feature in Model.Features)
+                    {
+                        <div class="row feature-row mb-2">
+                            <div class="col-md-4">
+                                <input type="text" name="FeatureNames" class="form-control" value="@feature.Name" />
+                            </div>
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <span class="input-group-text"><span class="material-symbols-outlined icon-preview">@(string.IsNullOrEmpty(feature.Icon) ? "search" : feature.Icon)</span></span>
+                                    <input type="text" name="FeatureIcons" class="form-control icon-input" value="@feature.Icon" placeholder="Icona" />
+                                    <button type="button" class="btn btn-outline-secondary open-picker" title="Scegli icona"><i class="bi bi-grid-3x3-gap"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" name="FeatureSortOrders" class="form-control" value="@feature.SortOrder" />
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-outline-danger remove-feature"><i class="material-symbols-outlined"></i></button>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="row feature-row mb-2">
+                        <div class="col-md-4">
+                            <input type="text" name="FeatureNames" class="form-control" placeholder="Nome Feature (es. Wi-Fi)" />
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text"><span class="material-symbols-outlined icon-preview">search</span></span>
+                                <input type="text" name="FeatureIcons" class="form-control icon-input" placeholder="Icona" />
+                                <button type="button" class="btn btn-outline-secondary open-picker" title="Scegli icona"><i class="bi bi-grid-3x3-gap"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" name="FeatureSortOrders" class="form-control" value="0" />
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-outline-danger remove-feature"><i class="material-symbols-outlined"></i></button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button type="button" id="add-feature" class="btn btn-sm btn-outline-secondary mb-3">Aggiungi Feature</button>
+
+            <hr />
+            <h4>Galleria Immagini</h4>
+            <div class="row mb-3">
+                @foreach (var img in Model.ExistingGalleryImages)
+                {
+                    <div class="col-md-2 mb-3 position-relative gallery-item" data-id="@img.Id">
+                        <img src="@MediaUrlHelper.GetAbsoluteUrl(img.ImageUrl)" class="img-thumbnail" />
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-image"><i class="bi bi-x"></i></button>
+                    </div>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Aggiungi Nuove Immagini</label>
+                <input type="file" name="NewGalleryImages" class="form-control" multiple accept="image/*" />
+            </div>
+
+            <partial name="_LocalizationFields" model="Model.Translations" />
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-gold">Salva Modifiche</button>
@@ -69,3 +149,132 @@
         </form>
     </div>
 </div>
+
+<!-- Modal per Icon Picker -->
+<div class="modal fade" id="iconPickerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Seleziona Icona</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <partial name="_MaterialIconPicker" model='("ModalIcon", "")' />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('add-feature').addEventListener('click', function() {
+            var container = document.getElementById('features-container');
+            var rows = container.querySelectorAll('.feature-row');
+            var newRow;
+            if (rows.length > 0) {
+                newRow = rows[0].cloneNode(true);
+            } else {
+                // Should not happen with our template but for safety
+                newRow = document.createElement('div');
+                newRow.className = 'row feature-row mb-2';
+                newRow.innerHTML = '<div class="col-md-4"><input type="text" name="FeatureNames" class="form-control" placeholder="Nome Feature (es. Wi-Fi)" /></div>' +
+                                   '<div class="col-md-5"><div class="input-group"><span class="input-group-text"><span class="material-symbols-outlined icon-preview">search</span></span>' +
+                                   '<input type="text" name="FeatureIcons" class="form-control icon-input" placeholder="Icona (es. wifi)" />' +
+                                   '<button type="button" class="btn btn-outline-secondary open-picker" title="Scegli icona"><i class="bi bi-grid-3x3-gap"></i></button></div></div>' +
+                                   '<div class="col-md-2"><input type="number" name="FeatureSortOrders" class="form-control" value="0" /></div>' +
+                                   '<div class="col-md-1"><button type="button" class="btn btn-outline-danger remove-feature"><i class="material-symbols-outlined"></i></button></div>';
+            }
+
+            var inputs = newRow.querySelectorAll('input');
+            inputs.forEach(i => {
+                if (i.type === 'number') i.value = '0';
+                else i.value = '';
+            });
+            container.appendChild(newRow);
+
+            // Re-init preview for the new row
+            const newIconInput = newRow.querySelector('.icon-input');
+            const newPreview = newRow.querySelector('.icon-preview');
+            newIconInput.addEventListener('change', function() {
+                newPreview.textContent = this.value || 'search';
+            });
+            newIconInput.addEventListener('keyup', function() {
+                newPreview.textContent = this.value || 'search';
+            });
+
+            newRow.querySelector('.remove-feature').addEventListener('click', function() {
+                if (container.querySelectorAll('.feature-row').length > 1) {
+                    newRow.remove();
+                }
+            });
+        });
+
+        // Icon Picker Modal Logic
+        let activeInput = null;
+        let activePreview = null;
+
+        $(document).on('click', '.open-picker', function() {
+            const row = $(this).closest('.row');
+            activeInput = row.find('.icon-input');
+            activePreview = row.find('.icon-preview');
+
+            const currentVal = activeInput.val();
+            $('#icon-input-ModalIcon').val(currentVal);
+
+            // Pre-select in modal grid
+            $('.material-icon-option[data-field="ModalIcon"]').removeClass('selected');
+            if (currentVal) {
+                $(`.material-icon-option[data-field="ModalIcon"][data-icon="${currentVal}"]`).addClass('selected');
+            }
+
+            $('#iconPickerModal').modal('show');
+        });
+
+        // Listen for selection in the modal's picker
+        $(document).on('click', '.material-icon-option[data-field="ModalIcon"]', function() {
+            const icon = $(this).data('icon');
+            if (activeInput) {
+                activeInput.val(icon);
+                activePreview.text(icon);
+            }
+            $('#iconPickerModal').modal('hide');
+        });
+
+        $(document).on('change keyup', '.icon-input', function() {
+            const val = $(this).val();
+            $(this).closest('.row').find('.icon-preview').text(val || 'search');
+        });
+
+        document.querySelectorAll('.remove-feature').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var container = document.getElementById('features-container');
+                if (container.querySelectorAll('.feature-row').length > 1) {
+                    btn.closest('.feature-row').remove();
+                }
+            });
+        });
+
+        document.querySelectorAll('.delete-image').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                if (confirm('Sei sicuro di voler eliminare questa immagine?')) {
+                    var item = btn.closest('.gallery-item');
+                    var id = item.getAttribute('data-id');
+
+                    fetch('/Vehicles/DeleteGalleryImage?imageId=' + id, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            item.remove();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

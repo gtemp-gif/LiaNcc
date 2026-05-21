@@ -10,10 +10,19 @@ namespace LiaNcc.BO.Controllers
     public class PartnersController : BaseController
     {
         private readonly IPartnersApiClient _partnersApiClient;
+        private readonly ILanguagesApiClient _languagesApiClient;
+        private readonly ILocalizedContentsApiClient _localizedContentsApiClient;
 
-        public PartnersController(IPartnersApiClient partnersApiClient)
+        private readonly List<string> _translatableKeys = new List<string> { "Name" };
+
+        public PartnersController(
+            IPartnersApiClient partnersApiClient,
+            ILanguagesApiClient languagesApiClient,
+            ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _partnersApiClient = partnersApiClient;
+            _languagesApiClient = languagesApiClient;
+            _localizedContentsApiClient = localizedContentsApiClient;
         }
 
         public async Task<IActionResult> Index()
@@ -22,44 +31,77 @@ namespace LiaNcc.BO.Controllers
             return View(partners);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new Partner());
+            var model = new LiaNcc.BO.Models.Partners.PartnerViewModel();
+            await PrepareLocalizationAsync(_languagesApiClient, _localizedContentsApiClient, model, "Partner", null, _translatableKeys);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Partner partner)
+        public async Task<IActionResult> Create(LiaNcc.BO.Models.Partners.PartnerViewModel model)
         {
             if (ModelState.IsValid)
             {
-                await _partnersApiClient.CreateAsync(partner);
+                var partner = new Partner
+                {
+                    Name = model.Name,
+                    WebsiteUrl = model.WebsiteUrl,
+                    LogoUrl = model.LogoUrl,
+                    IsActive = model.IsActive,
+                    SortOrder = model.SortOrder
+                };
+                var createdPartner = await _partnersApiClient.CreateAsync(partner);
+                await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Partner", createdPartner.Id);
                 TempData["SuccessMessage"] = "Partner creato.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(partner);
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(Guid id)
         {
             var partner = await _partnersApiClient.GetByIdAsync(id);
             if (partner == null) return NotFound();
-            return View(partner);
+
+            var model = new LiaNcc.BO.Models.Partners.PartnerViewModel
+            {
+                Id = partner.Id,
+                Name = partner.Name,
+                WebsiteUrl = partner.WebsiteUrl,
+                LogoUrl = partner.LogoUrl,
+                IsActive = partner.IsActive,
+                SortOrder = partner.SortOrder
+            };
+
+            await PrepareLocalizationAsync(_languagesApiClient, _localizedContentsApiClient, model, "Partner", id, _translatableKeys);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, Partner partner)
+        public async Task<IActionResult> Edit(Guid id, LiaNcc.BO.Models.Partners.PartnerViewModel model)
         {
-            if (id != partner.Id) return NotFound();
+            if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
+                var partner = await _partnersApiClient.GetByIdAsync(id);
+                if (partner == null) return NotFound();
+
+                partner.Name = model.Name;
+                partner.WebsiteUrl = model.WebsiteUrl;
+                partner.LogoUrl = model.LogoUrl;
+                partner.IsActive = model.IsActive;
+                partner.SortOrder = model.SortOrder;
+
                 await _partnersApiClient.UpdateAsync(id, partner);
+                await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Partner", id);
                 TempData["SuccessMessage"] = "Partner aggiornato.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(partner);
+            return View(model);
         }
 
         [HttpPost]

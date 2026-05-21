@@ -1,6 +1,6 @@
-@LiaNcc.WebAPI_HostAddress = http://localhost:5153
+@LiaNcc.WebAPI_HostAddress = https://localhost:7001
 
-GET {{LiaNcc.WebAPI_HostAddress}}/weatherforecast/
+GET {{LiaNcc.WebAPI_HostAddress}}/api/services/active
 Accept: application/json
 
 ###

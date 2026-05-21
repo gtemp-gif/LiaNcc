@@ -1,14 +1,17 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using LiaNcc.Models.DTOs;
 using LiaNcc.Repository.Extensions;
 using LiaNcc.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,8 +61,11 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddLiaNccRepository(builder.Configuration);
 
 // Configure Application Services
+builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection("FileStorage"));
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<LiaNcc.WebAPI.Helpers.ILocalizationResolver, LiaNcc.WebAPI.Helpers.LocalizationResolver>();
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -67,7 +73,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5000", "https://localhost:5001") // Adjust FE URLs if necessary
+            policy.WithOrigins("https://localhost:7002", "https://localhost:7003") // Adjust FE/BO URLs as per launchSettings
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -107,6 +113,19 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+var fileStoragePath = Path.Combine(builder.Environment.ContentRootPath, "LiaNccFiles");
+if (!Directory.Exists(fileStoragePath))
+{
+    Directory.CreateDirectory(fileStoragePath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(fileStoragePath),
+    RequestPath = "/LiaNccFiles"
+});
 
 app.UseRouting();
 

@@ -21,11 +21,15 @@ namespace LiaNcc.WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("profile")]
-        public async Task<ActionResult<CompanyProfile>> GetProfile()
+        [HttpGet]
+        public async Task<ActionResult<CompanyProfile>> GetCompany()
         {
             var profile = await _companyRepository.GetCompanyProfileAsync();
-            if (profile == null) return NotFound();
+            if (profile == null)
+            {
+                // Return an empty profile if not found to avoid 404 in BO
+                return Ok(new CompanyProfile { Name = "LiaNcc" });
+            }
             return Ok(profile);
         }
 
@@ -36,8 +40,8 @@ namespace LiaNcc.WebAPI.Controllers
             return Ok(await _companyRepository.GetCompanyContactsAsync());
         }
 
-        [HttpPut("profile")]
-        public async Task<ActionResult<CompanyProfile>> UpdateProfile(CompanyProfile profile)
+        [HttpPut]
+        public async Task<ActionResult<CompanyProfile>> UpdateCompany(CompanyProfile profile)
         {
             var updated = await _companyRepository.CreateOrUpdateProfileAsync(profile);
             return Ok(updated);

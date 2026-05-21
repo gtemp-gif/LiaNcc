@@ -99,6 +99,8 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Slug).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.MetaTitle).HasMaxLength(200);
+                entity.Property(e => e.MetaDescription).HasMaxLength(500);
                 entity.HasIndex(e => e.Slug).IsUnique();
             });
 
@@ -106,12 +108,15 @@ namespace LiaNcc.Repository
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Title).HasMaxLength(200);
                 entity.HasOne(e => e.SitePage).WithMany(p => p.PageSections).HasForeignKey(e => e.PageId).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<CallToAction>(entity => {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
+                entity.Property(e => e.Label).HasMaxLength(100);
+                entity.Property(e => e.Title).HasMaxLength(200);
                 entity.Property(e => e.Url).HasMaxLength(500);
                 entity.HasOne(e => e.SitePage).WithMany(p => p.CallToActions).HasForeignKey(e => e.PageId).OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(e => e.PageSection).WithMany(s => s.CallToActions).HasForeignKey(e => e.SectionId).OnDelete(DeleteBehavior.ClientSetNull);
@@ -138,6 +143,7 @@ namespace LiaNcc.Repository
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
+                entity.Property(e => e.CoverImageUrl).HasMaxLength(1000);
             });
 
             // Vehicles
@@ -225,6 +231,7 @@ namespace LiaNcc.Repository
 
             // Company
             modelBuilder.Entity<CompanyProfile>(entity => {
+                entity.ToTable("CompanyProfile");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(200);

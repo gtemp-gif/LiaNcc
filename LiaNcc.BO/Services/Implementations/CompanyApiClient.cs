@@ -16,8 +16,18 @@ namespace LiaNcc.BO.Services.Implementations
 
         public async Task<CompanyProfile?> GetFirstCompanyProfileAsync()
         {
-            var profiles = await GetAllAsync();
-            return profiles.FirstOrDefault();
+            SetBearerToken();
+            var response = await _httpClient.GetAsync(_endpointUrl);
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
+            EnsureValidResponse(response);
+            return await response.Content.ReadFromJsonAsync<CompanyProfile>(_jsonSerializerOptions);
+        }
+
+        public override async Task UpdateAsync(Guid id, CompanyProfile entity)
+        {
+            SetBearerToken();
+            var response = await _httpClient.PutAsJsonAsync(_endpointUrl, entity, _jsonSerializerOptions);
+            EnsureValidResponse(response);
         }
     }
 }

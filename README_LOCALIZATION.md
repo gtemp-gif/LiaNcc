@@ -1,6 +1,7 @@
 # Gestione della Localizzazione - Progetto LiaNcc
 
-Questo documento descrive in dettaglio come è strutturata e come funziona la localizzazione (traduzione multilingua) all'interno del progetto LiaNcc, coprendo Database, WebAPI e FrontEnd.
+Questo documento descrive in dettaglio come è strutturata e come funziona la localizzazione (traduzione multilingua) 
+all'interno del progetto LiaNcc, coprendo Database, WebAPI e FrontEnd.
 
 ## 1. Architettura del Database
 
@@ -26,7 +27,8 @@ Implementa un pattern flessibile per tradurre qualsiasi campo di qualsiasi entit
 ## 2. Come Funziona il Meccanismo
 
 L'approccio prevede che le tabelle principali (es. `Tours`, `PageSections`) contengano i testi nella **lingua di default** (Italiano).
-Quando un utente naviga il sito in una lingua diversa (es. Inglese), il sistema interroga la tabella `LocalizedContents` per cercare eventuali sovrascritture. Se la traduzione esiste, viene mostrata al posto del testo originale; se non esiste, si usa il testo di fallback in italiano.
+Quando un utente naviga il sito in una lingua diversa (es. Inglese), il sistema interroga la tabella `LocalizedContents` 
+per cercare eventuali sovrascritture. Se la traduzione esiste, viene mostrata al posto del testo originale; se non esiste, si usa il testo di fallback in italiano.
 
 ## 3. Esempi Pratici di Utilizzo
 
@@ -80,7 +82,8 @@ public async Task<TourResponse> GetTourByIdAsync(Guid id, string culture)
 
 ### Esempio C: Lettura Contenuti delle Pagine (CMS) nel FrontEnd
 
-Nel progetto `LiaNcc.FE`, la lingua selezionata dall'utente è generalmente gestita tramite un cookie o la QueryString (es. `?culture=en`), che imposta il `Thread.CurrentThread.CurrentUICulture`.
+Nel progetto `LiaNcc.FE`, la lingua selezionata dall'utente è generalmente gestita tramite un cookie o 
+la QueryString (es. `?culture=en`), che imposta il `Thread.CurrentThread.CurrentUICulture`.
 
 Se stiamo renderizzando la sezione "Chi Siamo" della Homepage:
 
@@ -114,4 +117,5 @@ Per espandere la gestione dei contenuti, si segue questo pattern:
 1. Quando si modifica un'entità (es. un Servizio), si prevede una tab "Traduzioni".
 2. La tab mostra i campi traducibili (Name, Description).
 3. Per ogni lingua supportata diversa dal default, si presenta un input field per salvare il valore.
-4. Al salvataggio, il controller API fa un "Upsert" (Update o Insert) sulla tabella `LocalizedContents` usando l'`EntityId` del servizio modificato, la `LanguageCode` della tab corrente, e la `ContentKey` corrispondente al campo.
+4. Al salvataggio, il controller API fa un "Upsert" (Update o Insert) sulla tabella `LocalizedContents` usando l'`EntityId` del servizio modificato, 
+la `LanguageCode` della tab corrente, e la `ContentKey` corrispondente al campo.

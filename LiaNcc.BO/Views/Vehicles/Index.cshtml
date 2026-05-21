@@ -1,11 +1,11 @@
-@model IEnumerable<LiaNcc.Models.Entities.Vehicle>
+@model IEnumerable<LiaNcc.Models.DTOs.Vehicles.VehicleDto>
 @{
     ViewData["Title"] = "Gestione Flotta";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Gestione Flotta</h2>
-    <a asp-action="Create" class="btn btn-gold"><i class="bi bi-plus-circle"></i> Nuovo Veicolo</a>
+    <a asp-action="Create" class="btn btn-gold"><span class="material-symbols-outlined">add_circle</span> Nuovo Veicolo</a>
 </div>
 
 <div class="card shadow-sm">
@@ -14,7 +14,10 @@
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>Nome</th>
+                        <th>Immagine</th>
+                        <th>Nome Interno</th>
+                        <th>Titolo</th>
+                        <th>Categoria</th>
                         <th>Posti</th>
                         <th>Bagagli</th>
                         <th>In Evidenza</th>
@@ -23,43 +26,51 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if(Model != null && Model.Any()) {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Name</td>
-                                <td>@item.Seats</td>
-                                <td>@item.Luggages</td>
-                                <td>
-                                    @if(item.IsFeatured)
-                                    {
-                                        <span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> Sì</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.IsActive)
-                                    {
-                                        <span class="badge bg-success">Attivo</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">Inattivo</span>
-                                    }
-                                </td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questo veicolo?');">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    } else {
-                        <tr><td colspan="6" class="text-center text-muted py-4">Nessun veicolo presente.</td></tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.GalleryImages.Any())
+                                {
+                                    <img src="@MediaUrlHelper.GetAbsoluteUrl(item.GalleryImages.First().ImageUrl)" alt="Vehicle" class="img-thumbnail" style="max-width: 80px;" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">No image</span>
+                                }
+                            </td>
+                            <td>@item.Name</td>
+                            <td>@item.Title</td>
+                            <td>@item.CategoryName</td>
+                            <td>@item.Seats</td>
+                            <td>@item.Luggages</td>
+                            <td>
+                                @if (item.IsFeatured)
+                                {
+                                    <span class="badge bg-warning text-dark"><span class="material-symbols-outlined" style="font-size: 14px;">star</span> Sì</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success">Attivo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inattivo</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary"><span class="material-symbols-outlined">edit</span></a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questo veicolo?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><span class="material-symbols-outlined">edit</span></button>
+                                </form>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>

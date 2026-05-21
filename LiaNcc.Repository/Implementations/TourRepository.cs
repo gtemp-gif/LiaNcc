@@ -19,7 +19,10 @@ namespace LiaNcc.Repository.Implementations
 
         public async Task<IEnumerable<Tour>> GetAllAsync()
         {
-            return await _context.Tours.AsNoTracking().OrderBy(t => t.SortOrder).ToListAsync();
+            return await _context.Tours.AsNoTracking()
+                .Include(t => t.TourCategory)
+                .Include(t => t.Vehicle)
+                .OrderBy(t => t.SortOrder).ToListAsync();
         }
 
         public async Task<IEnumerable<Tour>> GetActiveToursAsync()
@@ -39,7 +42,10 @@ namespace LiaNcc.Repository.Implementations
 
         public async Task<Tour?> GetByIdAsync(Guid id)
         {
-            return await _context.Tours.FindAsync(id);
+            return await _context.Tours
+                .Include(t => t.TourCategory)
+                .Include(t => t.Vehicle)
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<Tour?> GetBySlugAsync(string slug)

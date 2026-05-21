@@ -1,4 +1,4 @@
-@model LiaNcc.Models.Entities.Tour
+@model LiaNcc.BO.Models.Tours.TourViewModel
 @{
     ViewData["Title"] = "Modifica Tour";
 }
@@ -7,11 +7,10 @@
 
 <div class="card shadow-sm mt-4">
     <div class="card-body">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="Id" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <h4 class="mt-4 mb-3 border-bottom pb-2">1. Dati Base</h4>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="Name" class="form-label">Nome</label>
@@ -26,94 +25,112 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Price" class="form-label">Prezzo</label>
-                    <input asp-for="Price" type="text" class="form-control" value="@(Model.Price?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
+                <div class="col-md-4 mb-3">
+                    <label asp-for="CategoryId" class="form-label">Categoria</label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="Model.AvailableCategories">
+                        <option value="">Seleziona categoria</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Price" class="form-label">Prezzo (€)</label>
+                    <input asp-for="Price" type="number" step="0.01" class="form-control" />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
                     <label asp-for="SortOrder" class="form-label">Ordine di visualizzazione</label>
                     <input asp-for="SortOrder" class="form-control" />
                     <span asp-validation-for="SortOrder" class="text-danger"></span>
                 </div>
             </div>
 
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Descrizione Breve</label>
+                <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+            </div>
+
+            <hr />
+            <h4>Cover & Hero Section</h4>
             <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label asp-for="Description" class="form-label">Descrizione Tour</label>
-                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Cover Image</label>
+                    @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
+                    {
+                        <div class="mb-2">
+                            <img src="@MediaUrlHelper.GetAbsoluteUrl(Model.CoverImageUrl)" alt="Cover Preview" class="img-thumbnail" style="max-height: 150px;" />
+                        </div>
+                    }
+                    <input type="file" name="CoverImageFile" class="form-control" accept="image/*" />
+                    <input type="hidden" asp-for="CoverImageUrl" />
+                    <small class="text-muted">Lascia vuoto per mantenere l'immagine attuale.</small>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="HeroTitle" class="form-label">Titolo Hero</label>
+                        <input asp-for="HeroTitle" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="HeroSubtitle" class="form-label">Sottotitolo Hero</label>
+                        <input asp-for="HeroSubtitle" class="form-control" />
+                    </div>
                 </div>
             </div>
 
-            <h4 class="mt-4 mb-3 border-bottom pb-2">2. Cover & Hero Section</h4>
+            <hr />
+            <h4>Esperienza</h4>
             <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label asp-for="CoverImageUrl" class="form-label">Cover Image URL</label>
-                    <input asp-for="CoverImageUrl" class="form-control" />
-                    <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Experience Image</label>
+                    @if (!string.IsNullOrEmpty(Model.ExperienceImageUrl))
+                    {
+                        <div class="mb-2">
+                            <img src="@MediaUrlHelper.GetAbsoluteUrl(Model.ExperienceImageUrl)" alt="Experience Preview" class="img-thumbnail" style="max-height: 150px;" />
+                        </div>
+                    }
+                    <input type="file" name="ExperienceImageFile" class="form-control" accept="image/*" />
+                    <input type="hidden" asp-for="ExperienceImageUrl" />
+                    <small class="text-muted">Lascia vuoto per mantenere l'immagine attuale.</small>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label asp-for="HeroTitle" class="form-label">Hero Title</label>
-                    <input asp-for="HeroTitle" class="form-control" />
-                    <span asp-validation-for="HeroTitle" class="text-danger"></span>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label asp-for="HeroSubtitle" class="form-label">Hero Subtitle</label>
-                    <input asp-for="HeroSubtitle" class="form-control" />
-                    <span asp-validation-for="HeroSubtitle" class="text-danger"></span>
-                </div>
-            </div>
-
-            <h4 class="mt-4 mb-3 border-bottom pb-2">3. Esperienza (Experience)</h4>
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label asp-for="ExperienceImageUrl" class="form-label">Experience Image URL</label>
-                    <input asp-for="ExperienceImageUrl" class="form-control" />
-                    <span asp-validation-for="ExperienceImageUrl" class="text-danger"></span>
-                </div>
-                <div class="col-md-12 mb-3">
-                    <label asp-for="ExperienceDescription" class="form-label">Experience Description</label>
+                    <label asp-for="ExperienceDescription" class="form-label">Descrizione Esperienza</label>
                     <textarea asp-for="ExperienceDescription" class="form-control" rows="4"></textarea>
-                    <span asp-validation-for="ExperienceDescription" class="text-danger"></span>
                 </div>
             </div>
 
-            <h4 class="mt-4 mb-3 border-bottom pb-2">4. Dettagli Viaggio</h4>
+            <hr />
+            <h4>Dettagli Viaggio</h4>
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label asp-for="DurationDays" class="form-label">Durata (Giorni)</label>
                     <input asp-for="DurationDays" type="number" class="form-control" />
-                    <span asp-validation-for="DurationDays" class="text-danger"></span>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label asp-for="DurationHours" class="form-label">Durata (Ore)</label>
                     <input asp-for="DurationHours" type="number" class="form-control" />
-                    <span asp-validation-for="DurationHours" class="text-danger"></span>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label asp-for="MeetingPoint" class="form-label">Punto d'incontro</label>
+                    <label asp-for="MeetingPoint" class="form-label">Punto di Ritrovo</label>
                     <input asp-for="MeetingPoint" class="form-control" />
-                    <span asp-validation-for="MeetingPoint" class="text-danger"></span>
-                </div>
-                <div class="col-md-12 mb-3">
-                    <label asp-for="VehicleId" class="form-label">Veicolo Predefinito (ID)</label>
-                    <input asp-for="VehicleId" class="form-control" />
-                    <span asp-validation-for="VehicleId" class="text-danger"></span>
                 </div>
             </div>
 
-            <h4 class="mt-4 mb-3 border-bottom pb-2">5. Configurazione</h4>
             <div class="row">
-                <div class="col-md-6 mb-3 form-check ms-3">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="VehicleId" class="form-label">Veicolo Predefinito</label>
+                    <select asp-for="VehicleId" class="form-select" asp-items="Model.AvailableVehicles">
+                        <option value="">Nessun veicolo predefinito</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3 pt-4 form-check ms-3">
                     <input asp-for="IsFeatured" class="form-check-input" />
                     <label asp-for="IsFeatured" class="form-check-label">In Evidenza</label>
                 </div>
-                <div class="col-md-6 mb-3 form-check ms-3">
+                <div class="col-md-2 mb-3 pt-4 form-check ms-3">
                     <input asp-for="IsActive" class="form-check-input" />
                     <label asp-for="IsActive" class="form-check-label">Attivo</label>
                 </div>
             </div>
+
+            <partial name="_LocalizationFields" model="Model.Translations" />
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-gold">Salva Modifiche</button>

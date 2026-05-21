@@ -36,6 +36,21 @@ builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IAuthApiClient, Lia
     client.BaseAddress = new Uri(apiBaseUrl);
 });
 
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILocalizedContentsApiClient, LiaNcc.BO.Services.Implementations.LocalizedContentsApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IDashboardApiClient, LiaNcc.BO.Services.Implementations.DashboardApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+
+builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IFilesApiClient, LiaNcc.BO.Services.Implementations.FilesApiClient>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IToursApiClient, LiaNcc.BO.Services.Implementations.ToursApiClient>(client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
@@ -86,6 +101,9 @@ builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILanguagesApiClient
 });
 
 var app = builder.Build();
+
+// Initialize MediaUrlHelper
+LiaNcc.BO.Helpers.MediaUrlHelper.Initialize(app.Configuration);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

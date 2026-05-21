@@ -1,0 +1,138 @@
+@using LiaNcc.BO.Models.Common
+@model (string FieldName, string? CurrentValue)
+
+<div class="card mb-3">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <span>Seleziona Icona</span>
+        <div class="selected-preview">
+            @if (!string.IsNullOrEmpty(Model.CurrentValue))
+            {
+                <span class="material-symbols-outlined text-gold">@Model.CurrentValue</span>
+                <span class="ms-1 text-muted small">@Model.CurrentValue</span>
+            }
+            else
+            {
+                <span class="text-muted small">Nessuna icona</span>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+        <input type="hidden" name="@Model.FieldName" id="icon-input-@Model.FieldName" value="@Model.CurrentValue" />
+
+        <div class="mb-3">
+            <input type="text" class="form-control form-control-sm icon-search" placeholder="Cerca icona..." data-field="@Model.FieldName" />
+        </div>
+
+        <div class="material-icon-picker-grid" id="icon-grid-@Model.FieldName">
+            @foreach (var icon in MaterialIconCatalog.Icons)
+            {
+                <div class="material-icon-option @(Model.CurrentValue == icon ? "selected" : "")"
+                     data-icon="@icon"
+                     data-field="@Model.FieldName"
+                     title="@icon">
+                    <span class="material-symbols-outlined">@icon</span>
+                    <div class="icon-name">@icon</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .material-icon-picker-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
+        max-height: 250px;
+        overflow-y: auto;
+        padding: 5px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+    }
+
+    .material-icon-option {
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background: #fff;
+        padding: 8px 4px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .material-icon-option .material-symbols-outlined {
+        font-size: 24px;
+        display: block;
+        margin: 0 auto 4px;
+    }
+
+    .material-icon-option .icon-name {
+        font-size: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #666;
+    }
+
+    .material-icon-option.selected {
+        border-color: #D4AF37;
+        background: #fff8dc;
+        box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+
+    .material-icon-option.selected .material-symbols-outlined {
+        color: #D4AF37;
+    }
+
+    .material-icon-option:hover:not(.selected) {
+        background: #f8f9fa;
+        border-color: #ccc;
+    }
+
+    .text-gold {
+        color: #D4AF37;
+    }
+</style>
+
+<script>
+    if (typeof initIconPickers === 'undefined') {
+        function initIconPickers() {
+            $(document).on('click', '.material-icon-option', function() {
+                const icon = $(this).data('icon');
+                const field = $(this).data('field');
+
+                // Update hidden input
+                $(`#icon-input-${field}`).val(icon);
+
+                // Update selection UI
+                $(`.material-icon-option[data-field="${field}"]`).removeClass('selected');
+                $(this).addClass('selected');
+
+                // Update preview in header
+                const previewDiv = $(this).closest('.card').find('.selected-preview');
+                previewDiv.html(`<span class="material-symbols-outlined text-gold">${icon}</span> <span class="ms-1 text-muted small">${icon}</span>`);
+            });
+
+            $(document).on('keyup', '.icon-search', function() {
+                const term = $(this).val().toLowerCase();
+                const field = $(this).data('field');
+                const grid = $(`#icon-grid-${field}`);
+
+                grid.find('.material-icon-option').each(function() {
+                    const iconName = $(this).data('icon').toLowerCase();
+                    if (iconName.includes(term)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            initIconPickers();
+        });
+
+        var initIconPickers = true;
+    }
+</script>

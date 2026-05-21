@@ -1,4 +1,4 @@
-@model LiaNcc.Models.Entities.CompanyProfile
+@model LiaNcc.BO.Models.Company.CompanyProfileViewModel
 @{
     ViewData["Title"] = "Modifica Profilo Aziendale";
 }
@@ -43,6 +43,8 @@
                     <input asp-for="Country" class="form-control" />
                 </div>
             </div>
+
+            <partial name="_LocalizationFields" model="Model.Translations" />
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-gold">Salva</button>
