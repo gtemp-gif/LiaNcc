@@ -1,177 +1,59 @@
+@model FleetViewModel
 @{
     ViewData["Title"] = "La Nostra Flotta";
     Layout = "_Layout";
 }
 
-<main class="luxury-gradient-bg pt-32">
-<!-- Hero Section -->
-<section class="px-12 py-24 max-w-screen-2xl mx-auto text-center">
-<h1 class="section-title text-4xl md:text-5xl text-white mb-6">LA NOSTRA FLOTTA</h1>
-<p class="font-light text-lg text-on-surface-variant max-w-2xl mx-auto opacity-80">
-            Sperimenta l'eccellenza del servizio chauffeur italiano con la nostra selezione curata di veicoli prestigiosi, progettati per il massimo del comfort e dello stile.
-        </p>
-<div class="w-24 h-px bg-primary mx-auto mt-12 opacity-50"></div>
+<section class="pt-40 pb-20 px-6 md:px-16 bg-black">
+    <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-semibold text-white mb-8 section-title">La Nostra Flotta</h1>
+        <p class="text-xl text-gray-400 max-w-3xl mx-auto font-light">Veicoli di lusso, comfort senza compromessi e tecnologia all'avanguardia per ogni vostro spostamento.</p>
+    </div>
 </section>
-<!-- Fleet Grid -->
-<section class="px-12 pb-32 max-w-screen-2xl mx-auto space-y-48">
-<!-- Mercedes Classe E Section -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-<div class="lg:col-span-7 relative group">
-<div class="absolute inset-0 bg-primary/5 rounded-none blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-<img alt="Mercedes Classe E" class="w-full h-auto object-cover border border-primary/10 vehicle-glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCq9m_lL7UpgjqZL_32ZTlaB2QFW5jaNbJNHlAtf1CDZD1JDvhBn5zP0p7fkUMcgHHncxWfgPE_kkiS_63jGZ5w3Pd9D6dN5Rp9LEK5oVUQtNMhYc126zsfgvza3MJWPRZa7m3EtbJ6LvwC5ZhnHWR8uzv-OVEeENJ3THYFOQmpH9v5wK7pnIwsfgLpOg6z-aXJggBJ-TR8l1tGvB4Wq6btcGB85Z4-a2Xo32OnrSHXjBRsxSDX-u69TpheRjoPi62aMB53VfkYSd0"/>
-</div>
-<div class="lg:col-span-5 space-y-8">
-<div class="space-y-2">
-<span class="font-bold text-primary tracking-[0.3em] text-[10px] uppercase">BERLINA EXECUTIVE</span>
-<h2 class="text-3xl font-semibold text-white uppercase" style="letter-spacing: 2px;">Mercedes Classe E</h2>
-</div>
-<p class="font-light text-on-surface-variant leading-relaxed">
-                    Il gold standard del viaggio d'affari. Combinando eleganza intramontabile e tecnologia all'avanguardia, la Classe E offre un ambiente sereno per il lavoro o il relax durante il transito.
-                </p>
-<div class="grid grid-cols-2 gap-8 border-y border-primary/10 py-8">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">3 PASSEGGERI</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="luggage">luggage</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">2 VALIGIE GRANDI</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">CHAUFFEUR PROFESSIONISTA</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="airline_seat_recline_extra">airline_seat_recline_extra</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">COMFORT SUPERIORE</span>
-</div>
-</div>
-<button class="w-full py-5 bg-primary text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('Mercedes Classe E')">
-                    PRENOTA ORA
-                </button>
-</div>
-</div>
-<!-- Mercedes Classe V Section -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-<div class="lg:col-span-5 order-2 lg:order-1 space-y-8">
-<div class="space-y-2">
-<span class="font-bold text-primary tracking-[0.3em] text-[10px] uppercase">MPV DI LUSSO</span>
-<h2 class="text-3xl font-semibold text-white uppercase" style="letter-spacing: 2px;">Mercedes Classe V</h2>
-</div>
-<p class="font-light text-on-surface-variant leading-relaxed">
-                    Ridefinire il viaggio di gruppo. La Classe V offre un'esperienza lounge mobile con configurazioni di sedute faccia a faccia, perfetta per delegazioni aziendali o tour familiari esclusivi.
-                </p>
-<div class="grid grid-cols-2 gap-8 border-y border-primary/10 py-8">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="groups">groups</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">7 PASSEGGERI</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="inventory_2">inventory_2</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">6 VALIGIE GRANDI</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="wifi">wifi</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">WI-FI A BORDO</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="table_restaurant">table_restaurant</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">LAYOUT CONFERENZA</span>
-</div>
-</div>
-<button class="w-full py-5 bg-primary text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('Mercedes Classe V')">
-                    PRENOTA ORA
-                </button>
-</div>
-<div class="lg:col-span-7 order-1 lg:order-2 relative group">
-<div class="absolute inset-0 bg-primary/5 rounded-none blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-<img alt="Mercedes Classe V Interni" class="w-full h-auto object-cover border border-primary/10 vehicle-glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0TJU3JkgRxaV-pxPt6M83QE_8k8G8rVM92V3Km5_X6EEgXjXlkA3CGJ4YGVUvw-6NNRk2fs_kGLj8efDh_fo3wk8toXlUJtUuLFI6WcVBXF_I9EVPdcznUih_fvHP1aJW4Z8BjLAaBeRW1fwsswcoHYGIKxeMy5WAtDJqDeXefYVlsoK8RuIlcci9NVNfO85VQpwhjfNM2qW174K4SxY8tiK58t1m-EE0xbjpXZCGWw6FuVOyQHGVvSjrRfG6cyXrqL6-GiBjgfLE"/>
-</div>
-</div>
-<!-- Service Details Grid -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<div class="bg-[#050505] border border-primary/10 p-10 flex flex-col items-center text-center group hover:border-primary/30 transition-colors">
-<span class="material-symbols-outlined text-primary text-4xl mb-6">verified</span>
-<h4 class="text-xl font-semibold text-white mb-4 uppercase tracking-wider">Puntualità</h4>
-<p class="text-on-surface-variant text-sm font-light leading-relaxed">Arrivo previsto 15 minuti prima di ogni prelievo programmato.</p>
-</div>
-<div class="bg-[#050505] border border-primary/10 p-10 flex flex-col items-center text-center group hover:border-primary/30 transition-colors">
-<span class="material-symbols-outlined text-primary text-4xl mb-6">security</span>
-<h4 class="text-xl font-semibold text-white mb-4 uppercase tracking-wider">Discrezione</h4>
-<p class="text-on-surface-variant text-sm font-light leading-relaxed">Chauffeur professionisti addestrati alla riservatezza e alla privacy d'élite.</p>
-</div>
-<div class="bg-[#050505] border border-primary/10 p-10 flex flex-col items-center text-center group hover:border-primary/30 transition-colors">
-<span class="material-symbols-outlined text-primary text-4xl mb-6">build_circle</span>
-<h4 class="text-xl font-semibold text-white mb-4 uppercase tracking-wider">Manutenzione Meticolosa</h4>
-<p class="text-on-surface-variant text-sm font-light leading-relaxed">Veicoli ispezionati e igienizzati quotidianamente per garantire i massimi standard di sicurezza, estetica e comfort.</p>
-</div>
-</div>
+
+<section class="py-20 px-6 md:px-16 bg-[#050505]">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            @foreach (var vehicle in Model.Vehicles)
+            {
+                <div class="charcoal-border bg-black overflow-hidden group hover:border-[#D4AF37] transition-all duration-500">
+                    <div class="relative h-72 overflow-hidden">
+                        <img alt="@vehicle.Name" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="@MediaUrlBuilder.Build(vehicle.GalleryImages.FirstOrDefault()?.ImageUrl)" />
+                        @if(vehicle.IsBookable) {
+                            <div class="absolute top-4 right-4 bg-black/80 px-4 py-2 border border-[#D4AF37]">
+                                <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase">PRENOTABILE</span>
+                            </div>
+                        }
+                    </div>
+                    <div class="p-10">
+                        <span class="text-[#D4AF37] text-[10px] font-bold tracking-[0.2em] uppercase mb-2 block">@vehicle.CategoryName</span>
+                        <h3 class="text-3xl font-semibold mb-4 text-white">@vehicle.Name @vehicle.Title</h3>
+                        <p class="text-gray-500 font-light mb-8 leading-relaxed">@vehicle.Description</p>
+
+                        <div class="flex gap-8 border-t border-[#1A1A1A] pt-8 mb-8">
+                            <span class="flex items-center gap-3 text-[12px] text-gray-400 font-bold tracking-wider uppercase">
+                                <span class="material-symbols-outlined text-primary text-xl">person</span> @vehicle.Seats Posti
+                            </span>
+                            <span class="flex items-center gap-3 text-[12px] text-gray-400 font-bold tracking-wider uppercase">
+                                <span class="material-symbols-outlined text-primary text-xl">luggage</span> @vehicle.Luggages Valigie
+                            </span>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4 mb-8">
+                            @foreach (var feature in vehicle.Features)
+                            {
+                                <span class="flex items-center gap-2 text-[10px] text-gray-500 font-semibold uppercase tracking-widest bg-[#111] px-3 py-2 rounded">
+                                    <span class="material-symbols-outlined text-sm text-primary">@feature.Icon</span> @feature.Name
+                                </span>
+                            }
+                        </div>
+
+                        @if(vehicle.IsBookable) {
+                            <a href="/#booking-form" class="w-full btn-secondary text-center">Prenota Questo Veicolo</a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </section>
-</main>
-
-<div class="hidden fixed inset-0 z-[100] modal-overlay flex items-center justify-center px-4 py-8 overflow-y-auto" id="bookingModal">
-<div class="bg-[#050505] border border-[#1A1A1A] w-full max-w-4xl p-8 md:p-12 relative">
-<button class="absolute top-6 right-6 text-primary hover:scale-110 transition-transform" onclick="closeBookingModal()">
-<span class="material-symbols-outlined text-4xl">close</span>
-</button>
-<div class="mb-12 text-left">
-<h2 class="section-title text-3xl md:text-4xl text-white mb-2">Prenotazione VIP</h2>
-<p class="text-gray-400 font-light text-lg">Ricevi un preventivo personalizzato per: <span class="text-primary font-semibold" id="selectedCarName"></span></p>
-</div>
-<form class="space-y-8">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="space-y-2">
-<label class="font-bold text-primary text-[10px] uppercase tracking-widest">Nome Completo</label>
-<input class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-primary focus:ring-0 text-white py-4 transition-all" placeholder="Mario Rossi" type="text"/>
-</div>
-<div class="space-y-2">
-<label class="font-bold text-primary text-[10px] uppercase tracking-widest">Email</label>
-<input class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-primary focus:ring-0 text-white py-4 transition-all" placeholder="mario@esempio.it" type="email"/>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="space-y-2">
-<label class="font-bold text-primary text-[10px] uppercase tracking-widest">Data del Servizio</label>
-<input class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-primary focus:ring-0 text-white py-4 transition-all [color-scheme:dark]" type="date"/>
-</div>
-<div class="space-y-2">
-<label class="font-bold text-primary text-[10px] uppercase tracking-widest">Tipo di Servizio</label>
-<select class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-primary focus:ring-0 text-white py-4 transition-all">
-<option class="bg-black">Transfer Aeroportuale</option>
-<option class="bg-black">Tour Personalizzato</option>
-<option class="bg-black">Evento Speciale</option>
-<option class="bg-black">Altro</option>
-</select>
-</div>
-</div>
-<div class="space-y-2">
-<label class="font-bold text-primary text-[10px] uppercase tracking-widest">Messaggio / Richieste Speciali</label>
-<textarea class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-primary focus:ring-0 text-white py-4 transition-all" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
-</div>
-<button class="w-full py-6 gold-bg text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8" type="submit">Invia Richiesta di Prenotazione</button>
-</form>
-</div>
-</div>
-
-@section Scripts {
-    <script>
-    function openBookingModal(carName) {
-        document.getElementById('selectedCarName').innerText = carName;
-        document.getElementById('bookingModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeBookingModal() {
-        document.getElementById('bookingModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        let modal = document.getElementById('bookingModal');
-        if (event.target == modal) {
-            closeBookingModal();
-        }
-    }
-</script>
-}

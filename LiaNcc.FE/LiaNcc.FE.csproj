@@ -10,4 +10,8 @@
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LiaNcc.Models\LiaNcc.Models.csproj" />
+  </ItemGroup>
+
 </Project>

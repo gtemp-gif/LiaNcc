@@ -1,135 +1,97 @@
-@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+@model TourDetailViewModel
 @{
-    ViewData["Title"] = "Sassi di Matera & Calanchi";
+    ViewData["Title"] = Model.Tour?.Name ?? "Dettaglio Tour";
+    Layout = "_Layout";
+    var tour = Model.Tour;
 }
 
-<!-- Hero Section -->
-<section class="relative h-screen w-full overflow-hidden flex items-center justify-center text-center">
-<div class="absolute inset-0 z-0">
-<img alt="Cinematic wide shot of Matera Sassi ancient city at dusk" class="w-full h-full object-cover cinematic-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd7q3AhslgLcmfBMcEsnhDx8T-fIMJhvHZpPxYi3N5LyVkBP8Iadn1M6EfhokdVbe4nqFQxy2utt2TjN0Uh0MaHokUAUkuXsEaLZ1bfCRlepuswN7CzmdHFCQMyegn-eV5sec4hBzxhYJREvucZ_hqQjwUW-a0yAyMaYS1s-WKCOd0GRrkYyQBp6EonPAJZ3f9jMKhtQNBJ1cL1JR-BvN1-xvR23yf-GAxc5g0D0tiOflbxH3zqHysrpSHD8DJf9tS2zY7rawlzoDx"/>
-<div class="absolute inset-0 hero-mask"></div>
-</div>
-<div class="relative z-10 max-w-5xl px-6">
-<span class="font-bold text-primary tracking-[0.4em] uppercase text-xs mb-6 block">Esclusività Mediterranea</span>
-<h1 class="text-4xl md:text-6xl font-medium text-white mb-8 tracking-tight uppercase" style="letter-spacing: 4px;">Sassi di Matera <br/> &amp; Calanchi</h1>
-<div class="w-24 h-1 bg-[#D4AF37] mx-auto"></div>
-</div>
-</section>
-<main class="max-w-7xl mx-auto px-6 md:px-16">
-<!-- L'Esperienza -->
-<section class="py-32 grid md:grid-cols-2 gap-16 items-center">
-<div class="space-y-10">
-<div class="text-left">
-<h2 class="text-4xl font-semibold text-white mb-4 section-title text-[24px]">L'Esperienza</h2>
-<div class="w-16 h-1 bg-[#D4AF37]"></div>
-</div>
-<div class="space-y-6 text-gray-400 font-light text-[15px] leading-relaxed">
-<p>Un viaggio nel tempo attraverso i Sassi di Matera, Patrimonio Mondiale dell'Umanità, dove la pietra racconta millenni di storia scolpita nel cuore della terra. Un'immersione totale nel silenzio mistico della Basilicata.</p>
-<p>Attraverseremo i Calanchi, cattedrali di argilla modellate dal vento, in un paesaggio lunare che ha ispirato registi e poeti. Con LIA NCC, ogni curva svela un segreto, ogni sosta è un momento di puro privilegio estetico.</p>
-</div>
-</div>
-<div class="charcoal-border p-1 hover:border-[#D4AF37] transition-all duration-700 bg-black">
-<img alt="Detailed architectural view of stone dwellings in Matera" class="w-full h-[500px] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm_E3LuAzl3c5We8jK6Ngff7L1F3WAGtES-C0Mc-KqE3ZqKjh5dsgw0Ij0N6QilEcv67q8CWzRng7dS9BfV-_MS4mvQlqh00I212n8f1foUrnib7D9V7Lx4gWaBtFh9CLJgVPIF_kCQMJGLWnbHSdXzyoH-A9CItC-LYrRStqYf6oEGGrXgWhNKViOD0ivjqsHPc5zFLk2v_j7t9mvT6PZE2v4WHmzAEtwgjDuKxzgCpwrYbRD8lUllVwfp2n3DMzzr0hmO-sX8C0C"/>
-</div>
-</section>
-<!-- Galleria Emozionale (Bento Grid Style) -->
-<section class="py-32">
-<div class="text-left mb-16">
-<span class="font-bold text-primary tracking-[0.3em] uppercase text-[10px] mb-2 block">Portfolio Visivo</span>
-<h2 class="text-4xl font-semibold text-white section-title text-[24px]">Galleria Emozionale</h2>
-<div class="w-16 h-1 bg-[#D4AF37] mt-4"></div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[800px]">
-<div class="md:col-span-8 relative overflow-hidden charcoal-border group">
-<img alt="Aerial view of Matera limestone buildings" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDisTLZ8Ne52A4V9gYxNrjFqFyYDoOLz61ZwcM4dzf32mlVT1lDCzwpwATvq7K3Tcjo8TP6a6x6b899ZbIIvjJq1evneNLQbJG5BLJjtV-OLoj6gaOhjYXK9RI_YWgDAm9z5szi6CFvQs_qqLG6qIjEVlI-DR_ZfBRWdNKJtjIAL2FtB45Bivk5vrb1_7LWmKA9-KL9qx_-zy4NqNwij4cWgGmkUC3_Ew3MKrbAqFBYqFuiIs66SFaHzFTvneirh0k5jEZI54ol-FY4"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-<span class="text-[10px] font-bold text-[#D4AF37] tracking-[0.4em] uppercase">Prospettive Antiche</span>
-</div>
-</div>
-<div class="md:col-span-4 relative overflow-hidden charcoal-border group">
-<img alt="Detail of luxury car interior" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArenUbClj6Ny8UzjJ6FfcYPDx11ecqRNAGQGxuM1Zpdud6udYLP8l0E57033phzoNKqcQJylSV170bO40btj-eMuCGMIRMsnRl3t7s4an1YEt9CqOD9x50WDxajtijmM7ecstCciqO4YZIO42PxCAfAkXjs8mgOBILWtE-adXbayUmYmPYh3VIqvYS45aN-3i2Vac-iuQ2ctCDqfnl2S3PD-SqT8Jmz-XAomtngsbID3Fc0bHTp19IWrIayjeRhzJCM82kKIF4VYtl"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-<span class="text-[10px] font-bold text-[#D4AF37] tracking-[0.4em] uppercase">Comfort Assoluto</span>
-</div>
-</div>
-<div class="md:col-span-4 relative overflow-hidden charcoal-border group">
-<img alt="Calanchi landscape Basilicata" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbsKDedGDxegJMpkz7iD1QujfTHKsmVwxHxCPVGYn-TCXTOQY21LtK5G1eOyKjjSKol_npeS_VUUDjiRFwDdntYF5bEmXahPZ_xrQjNYPOfLOYjMTZcFtQQdy934K4ViID8XJFg6HCwSJaO92bhpTaZbhd7tW2SfgB1gshv7MLEeIuhWevyP1yIsxf-5cP8-wGdvg-fP3IYcPyjmf4d685CxESy3AvaIMmkHhEjgiE2Riiv9jxnf0PogoynbjtVnslgAwkduQ8Tw14"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-<span class="text-[10px] font-bold text-[#D4AF37] tracking-[0.4em] uppercase">Materia Lunare</span>
-</div>
-</div>
-<div class="md:col-span-8 relative overflow-hidden charcoal-border group">
-<img alt="Luxury car in landscape" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY4grWgxUnEMErnswPU4YD3n9ecFzz8EdIimWB4Ai5ukezUEEpYtoyckHuUh5u6jWVwKpLWZtr-v2HIHSr16jWyWZtpwUL0YWJCARONY-JNL-jjOuZ8XpZdwcfEcQobzXt0PhsfWmIguT_h6sPlBJDCNGkjbfPO6zNSULI1cp7Gcs2EwlMCKHACxCvqAwuLJNvAxUPvdATC92zde3J10Vgs-iXKo-9_e5qrykkypfvkbgY5daff7fl9M7ShfEdbcEzZ39ZL6T1VIza"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-<span class="text-[10px] font-bold text-[#D4AF37] tracking-[0.4em] uppercase">Il Viaggio</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Dettagli del Viaggio -->
-<section class="py-32">
-<div class="text-left mb-16">
-<h2 class="text-4xl font-semibold text-white section-title text-[24px]">Dettagli del Viaggio</h2>
-<div class="w-16 h-1 bg-[#D4AF37] mt-4"></div>
-</div>
-<div class="grid md:grid-cols-3 gap-8">
-<div class="p-10 charcoal-border bg-black text-center space-y-6 hover:border-[#D4AF37] transition-all duration-500">
-<span class="material-symbols-outlined text-[#D4AF37] text-5xl">schedule</span>
-<h3 class="text-[10px] font-bold text-white uppercase tracking-[0.3em]">Durata</h3>
-<p class="text-gray-400 font-light text-[15px]">8 Ore / Intera Giornata</p>
-</div>
-<div class="p-10 charcoal-border bg-black text-center space-y-6 hover:border-[#D4AF37] transition-all duration-500">
-<span class="material-symbols-outlined text-[#D4AF37] text-5xl">location_on</span>
-<h3 class="text-[10px] font-bold text-white uppercase tracking-[0.3em]">Meeting Point</h3>
-<p class="text-gray-400 font-light text-[15px]">Pick-up presso Hotel o Residenza Privata</p>
-</div>
-<div class="p-10 charcoal-border bg-black text-center space-y-6 hover:border-[#D4AF37] transition-all duration-500">
-<span class="material-symbols-outlined text-[#D4AF37] text-5xl">directions_car</span>
-<h3 class="text-[10px] font-bold text-white uppercase tracking-[0.3em]">Veicoli</h3>
-<p class="text-gray-400 font-light text-[15px]">Mercedes-Benz Classe S o V-Class Luxury</p>
-</div>
-</div>
-</section>
-<!-- Richiesta Prenotazione -->
-<section class="py-32" id="reservations">
-<div class="max-w-4xl mx-auto">
-<div class="text-left mb-12">
-<h2 class="text-4xl font-semibold text-white mb-4 section-title text-[24px]">Richiesta Prenotazione VIP</h2>
-<p class="text-gray-400 font-light text-[15px]">Compila il modulo per ricevere un preventivo personalizzato immediato.</p>
-</div>
-<div class="bg-black p-8 md:p-20 relative charcoal-border">
-<form class="space-y-12">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="space-y-2">
-<label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Nome Completo</label>
-<input class="w-full input-underline text-white py-4 font-light text-[15px]" placeholder="Mario Rossi" type="text"/>
-</div>
-<div class="space-y-2">
-<label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Email</label>
-<input class="w-full input-underline text-white py-4 font-light text-[15px]" placeholder="mario@esempio.it" type="email"/>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="space-y-2">
-<label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data Desiderata</label>
-<input class="w-full input-underline text-white py-4 font-light text-[15px] [color-scheme:dark]" type="date"/>
-</div>
-<div class="space-y-2">
-<label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Numero Ospiti</label>
-<select class="w-full input-underline text-white py-4 font-light text-[15px] appearance-none cursor-pointer">
-<option class="bg-black">1 - 2 Persone</option>
-<option class="bg-black">3 - 5 Persone</option>
-<option class="bg-black">Privato Exclusive</option>
-</select>
-</div>
-</div>
-<div class="space-y-2">
-<label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Note Aggiuntive (Discrezione Garantita)</label>
-<textarea class="w-full input-underline text-white py-4 font-light text-[15px] resize-none" placeholder="Indica eventuali richieste particolari..." rows="3"></textarea>
-</div>
-<button class="w-full py-6 gold-bg text-black font-bold uppercase text-[12px] tracking-[0.3em] hover:bg-[#E5C158] transition-all" type="submit">Invia Richiesta di Prenotazione</button>
-</form>
-</div>
-</div>
-</section>
-</main>
+@if (tour != null)
+{
+    <!-- Hero Detail -->
+    <section class="relative h-[70vh] flex items-center justify-center text-center px-6 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img alt="@tour.Name" class="w-full h-full object-cover cinematic-img" src="@MediaUrlBuilder.Build(tour.CoverImageUrl)" />
+            <div class="absolute inset-0 hero-mask"></div>
+        </div>
+        <div class="relative z-10 max-w-5xl">
+            <span class="font-bold text-primary tracking-[0.4em] uppercase text-xs mb-6 block">@tour.TourCategory?.Name</span>
+            <h1 class="text-5xl md:text-7xl font-medium text-white mb-8 tracking-tight uppercase" style="letter-spacing: 5px;">@tour.HeroTitle</h1>
+            <p class="text-xl md:text-2xl text-on-surface-variant max-w-2xl mx-auto font-light">@tour.HeroSubtitle</p>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="py-32 px-6 md:px-16 bg-black">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div>
+                <h2 class="text-4xl md:text-5xl font-semibold text-white mb-12 section-title">L'Esperienza</h2>
+                <div class="prose prose-invert prose-lg max-w-none text-gray-400 font-light leading-loose">
+                    @tour.ExperienceDescription
+                </div>
+
+                <div class="mt-16 grid grid-cols-2 gap-8 border-t border-[#1A1A1A] pt-12">
+                    <div>
+                        <span class="text-[#D4AF37] font-bold text-[10px] uppercase tracking-widest block mb-4">Durata</span>
+                        <div class="flex items-center gap-3 text-white">
+                            <span class="material-symbols-outlined text-primary">schedule</span>
+                            <span class="text-xl">
+                                @if(tour.DurationDays > 0) { <span>@tour.DurationDays Giorni</span> }
+                                @if(tour.DurationHours > 0) { <span>@tour.DurationHours Ore</span> }
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-[#D4AF37] font-bold text-[10px] uppercase tracking-widest block mb-4">Punto di Incontro</span>
+                        <div class="flex items-center gap-3 text-white">
+                            <span class="material-symbols-outlined text-primary">location_on</span>
+                            <span class="text-xl">@tour.MeetingPoint</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="charcoal-border p-4">
+                    <img src="@MediaUrlBuilder.Build(tour.ExperienceImageUrl)" alt="Experience" class="w-full h-[600px] object-cover" />
+                </div>
+                <div class="absolute -bottom-10 -left-10 bg-[#D4AF37] p-12 hidden md:block">
+                    <span class="text-black font-bold text-4xl block mb-2">@(tour.Price?.ToString("C") ?? "N/D")</span>
+                    <span class="text-black/60 font-bold text-[10px] uppercase tracking-widest">Prezzo a persona</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    @if (tour.TourGalleryImages.Any())
+    {
+        <section class="py-32 bg-[#050505]">
+            <div class="px-6 md:px-16 max-w-7xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-semibold text-white mb-20 section-title text-center">Galleria</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    @foreach (var img in tour.TourGalleryImages.OrderBy(i => i.SortOrder))
+                    {
+                        <div class="h-80 overflow-hidden charcoal-border group">
+                            <img src="@MediaUrlBuilder.Build(img.ImageUrl)" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- Booking CTA -->
+    <section class="py-32 bg-black border-t border-[#1A1A1A]">
+        <div class="max-w-4xl mx-auto text-center px-6">
+            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-8 section-title">Pronto per l'avventura?</h2>
+            <p class="text-xl text-gray-400 mb-12 font-light">Prenota ora il tuo tour personalizzato e vivi un'esperienza indimenticabile.</p>
+            <a href="/#booking-form" class="bg-[#D4AF37] text-black px-16 py-6 font-bold uppercase text-sm tracking-[0.3em] hover:scale-105 transition-transform inline-block">Richiedi Informazioni</a>
+        </div>
+    </section>
+}
+else
+{
+    <div class="pt-40 pb-20 text-center">
+        <h1 class="text-4xl text-white">Tour non trovato</h1>
+        <a asp-action="Tours" class="text-primary mt-8 inline-block">Torna ai tour</a>
+    </div>
+}
