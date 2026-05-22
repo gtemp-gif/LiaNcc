@@ -13,6 +13,6 @@ namespace LiaNcc.Models.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
 
-        public CompanyProfile CompanyProfile { get; set; } = null!;
+        public CompanyProfile? CompanyProfile { get; set; }
     }
 }

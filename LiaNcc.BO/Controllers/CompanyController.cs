@@ -93,9 +93,6 @@ namespace LiaNcc.BO.Controllers
 
             if (ModelState.IsValid)
             {
-                var profile = await _companyApiClient.GetByIdAsync(id);
-                if (profile == null) return NotFound();
-
                 if (model.AboutImageFile != null)
                 {
                     var upload = await _filesApiClient.UploadFilesAsync(new System.Collections.Generic.List<Microsoft.AspNetCore.Http.IFormFile> { model.AboutImageFile }, "company", "CompanyProfile", id, "AboutImage");
@@ -105,20 +102,25 @@ namespace LiaNcc.BO.Controllers
                     }
                 }
 
-                profile.Name = model.Name;
-                profile.VatNumber = model.VatNumber;
-                profile.Address = model.Address;
-                profile.City = model.City;
-                profile.ZipCode = model.ZipCode;
-                profile.Country = model.Country;
-                profile.Latitude = model.Latitude;
-                profile.Longitude = model.Longitude;
-                profile.GoogleMapsUrl = model.GoogleMapsUrl;
-                profile.AboutTitle = model.AboutTitle;
-                profile.AboutDescription = model.AboutDescription;
-                profile.AboutImageUrl = model.AboutImageUrl;
+                // Create a clean DTO-like object for the API call to avoid validation issues with nested collections
+                var profileUpdate = new CompanyProfile
+                {
+                    Id = id,
+                    Name = model.Name,
+                    VatNumber = model.VatNumber,
+                    Address = model.Address,
+                    City = model.City,
+                    ZipCode = model.ZipCode,
+                    Country = model.Country,
+                    Latitude = model.Latitude,
+                    Longitude = model.Longitude,
+                    GoogleMapsUrl = model.GoogleMapsUrl,
+                    AboutTitle = model.AboutTitle,
+                    AboutDescription = model.AboutDescription,
+                    AboutImageUrl = model.AboutImageUrl
+                };
 
-                await _companyApiClient.UpdateAsync(id, profile);
+                await _companyApiClient.UpdateAsync(id, profileUpdate);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "CompanyProfile", id);
 
                 TempData["SuccessMessage"] = "Profilo aziendale aggiornato.";
