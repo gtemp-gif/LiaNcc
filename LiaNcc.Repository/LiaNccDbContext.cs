@@ -119,6 +119,7 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Label).HasMaxLength(100);
                 entity.Property(e => e.Title).HasMaxLength(200);
                 entity.Property(e => e.Url).HasMaxLength(500);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.HasOne(e => e.SitePage).WithMany(p => p.CallToActions).HasForeignKey(e => e.PageId).OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(e => e.PageSection).WithMany(s => s.CallToActions).HasForeignKey(e => e.SectionId).OnDelete(DeleteBehavior.ClientSetNull);
             });
@@ -145,6 +146,8 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
                 entity.Property(e => e.CoverImageUrl).HasMaxLength(1000);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsBookable).HasDefaultValue(true);
             });
 
             // Vehicles
@@ -158,6 +161,8 @@ namespace LiaNcc.Repository
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsBookable).HasDefaultValue(true);
                 entity.HasOne(e => e.VehicleCategory).WithMany(c => c.Vehicles).HasForeignKey(e => e.CategoryId).OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -181,6 +186,8 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
                 entity.Property(e => e.Slug).IsRequired().HasMaxLength(150);
                 entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsBookable).HasDefaultValue(true);
                 entity.HasOne(e => e.TourCategory).WithMany(c => c.Tours).HasForeignKey(e => e.CategoryId).OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasIndex(e => e.Slug).IsUnique();
             });

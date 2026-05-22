@@ -27,8 +27,8 @@ END
 -- Hero
 IF NOT EXISTS (SELECT 1 FROM PageSections WHERE Id = @HeroSectionId)
 BEGIN
-    INSERT INTO PageSections (Id, PageId, Name, Title, Description, SortOrder, IsActive)
-    VALUES (@HeroSectionId, @HomePageId, 'Hero', 'Esperienza Chauffeur Premium', 'Il Vertice del Trasporto Privato', 1, 1);
+    INSERT INTO PageSections (Id, PageId, Name, Title, Description, SortOrder, IsActive, ImageUrl)
+    VALUES (@HeroSectionId, @HomePageId, 'Hero', 'Esperienza Chauffeur Premium', 'Il Vertice del Trasporto Privato', 1, 1, 'https://lh3.googleusercontent.com/aida-public/AB6AXuABLx3pL6IWe1fmg1Mytk9zyigB_MJ_fExwdSaSwqMknbOfTcmaf0rpIm6WXV22AKYSA_iMCq5mE70DVqPkx4m6W1pjJtCnWbUwFFx35kKDyE4L5I4-k8I2TL6qpmBO9dDbaAz7DzAUeg0qeggH_Oi78bo9_NgfTSADO71wr0LX-5RPPhcLImPcJAs52atpzLpoDUeWEwBkaZ9DwWrDSqYdeoQOXfoKMODMHiq7ngFLLfQ_orO75Nzfe64ssA2_sjT_XD-YtW6g13q3');
 END
 
 -- About

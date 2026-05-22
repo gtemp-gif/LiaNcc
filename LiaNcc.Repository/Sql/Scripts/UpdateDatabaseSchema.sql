@@ -70,4 +70,19 @@ IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[To
 IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Tours]') AND name = N'VehicleId')
     ALTER TABLE [dbo].[Tours] ADD [VehicleId] UNIQUEIDENTIFIER NULL;
 
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Tours]') AND name = N'IsBookable')
+    ALTER TABLE [dbo].[Tours] ADD [IsBookable] BIT NOT NULL DEFAULT 1;
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Services]') AND name = N'IsActive')
+    ALTER TABLE [dbo].[Services] ADD [IsActive] BIT NOT NULL DEFAULT 1;
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Services]') AND name = N'IsBookable')
+    ALTER TABLE [dbo].[Services] ADD [IsBookable] BIT NOT NULL DEFAULT 1;
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Vehicles]') AND name = N'IsActive')
+    ALTER TABLE [dbo].[Vehicles] ADD [IsActive] BIT NOT NULL DEFAULT 1;
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Vehicles]') AND name = N'IsBookable')
+    ALTER TABLE [dbo].[Vehicles] ADD [IsBookable] BIT NOT NULL DEFAULT 1;
+
 GO
