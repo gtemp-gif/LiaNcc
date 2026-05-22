@@ -247,6 +247,7 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Longitude).HasPrecision(10, 7);
                 entity.Property(e => e.GoogleMapsUrl).HasMaxLength(1000);
                 entity.Property(e => e.AboutTitle).HasMaxLength(200);
+                entity.Property(e => e.AboutDescription).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.AboutImageUrl).HasMaxLength(1000);
             });
             modelBuilder.Entity<CompanyContact>(entity => {

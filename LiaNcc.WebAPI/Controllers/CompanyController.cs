@@ -40,6 +40,21 @@ namespace LiaNcc.WebAPI.Controllers
             return Ok(profile);
         }
 
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CompanyProfile>> GetCompanyById(Guid id, [FromQuery] string? culture)
+        {
+            var profile = await _companyRepository.GetCompanyProfileAsync();
+            if (profile == null || (id != Guid.Empty && profile.Id != id)) return NotFound();
+
+            if (!string.IsNullOrEmpty(culture))
+            {
+                await LocalizeCompanyProfile(profile, culture);
+            }
+
+            return Ok(profile);
+        }
+
         private async Task LocalizeCompanyProfile(CompanyProfile profile, string culture)
         {
             var localizationRepository = HttpContext.RequestServices.GetRequiredService<ILocalizedContentRepository>();

@@ -9,6 +9,7 @@ GO
 
 -- 2. FIXED GUIDs FOR CONSISTENCY
 DECLARE @HomePageId UNIQUEIDENTIFIER = 'A1B2C3D4-E5F6-4789-8012-34567890ABCD';
+DECLARE @CompanyProfileId UNIQUEIDENTIFIER = '7705ee36-bc18-45ee-b5a0-6da6ab542a1c';
 DECLARE @HeroSectionId UNIQUEIDENTIFIER = 'B2C3D4E5-F6A7-4890-9123-4567890ABCDE';
 DECLARE @AboutSectionId UNIQUEIDENTIFIER = 'C3D4E5F6-A7B8-4901-0234-567890ABCDEF';
 DECLARE @ServicesSectionId UNIQUEIDENTIFIER = 'D4E5F6A7-B8C9-4012-1345-67890ABCDEFG';
@@ -144,5 +145,21 @@ BEGIN
     SELECT 'CallToAction', @CtaFleetId, 'Label', 'en', 'Discover the Fleet'
     WHERE NOT EXISTS (SELECT 1 FROM LocalizedContents WHERE EntityId = @CtaFleetId AND ContentKey = 'Label' AND LanguageCode = 'en');
 END
+
+-- 7. COMPANY PROFILE
+IF NOT EXISTS (SELECT 1 FROM CompanyProfile WHERE Id = @CompanyProfileId)
+BEGIN
+    INSERT INTO CompanyProfile (Id, Name, VatNumber, Address, City, ZipCode, Country, Latitude, Longitude, GoogleMapsUrl, AboutTitle, AboutDescription)
+    VALUES (@CompanyProfileId, 'LiaNcc Chauffeur Service', '01234567890', 'Via delle Rimembranze', 'Grassano', '75014', 'Italia', 40.6358178, 16.2798153, 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3032.553259837731!2d16.2798153!3d40.6358178!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1338dfd6e64c3c39%3A0x6b77c4f4a3e9c8e!2sVia%20delle%20Rimembranze%2C%2075014%20Grassano%20MT!5e0!3m2!1sit!2sit!4v1710000000000!5m2!1sit!2sit', 'L''Eccellenza in Movimento', 'LIA NCC è un’azienda specializzata nel servizio di noleggio con conducente (NCC) e nell’organizzazione di transfer e tour personalizzati, operativa principalmente tra Basilicata e Puglia. Operativi dal 2009, mettiamo a disposizione dei nostri clienti anni di experience nel settore del trasporto persone, garantendo sempre servizi affidabili, puntuali e confortevoli.');
+END
+
+-- Company Profile Translations
+INSERT INTO LocalizedContents (EntityName, EntityId, ContentKey, LanguageCode, ContentValue)
+SELECT 'CompanyProfile', @CompanyProfileId, 'AboutTitle', 'en', 'Excellence in Motion'
+WHERE NOT EXISTS (SELECT 1 FROM LocalizedContents WHERE EntityId = @CompanyProfileId AND ContentKey = 'AboutTitle' AND LanguageCode = 'en');
+
+INSERT INTO LocalizedContents (EntityName, EntityId, ContentKey, LanguageCode, ContentValue)
+SELECT 'CompanyProfile', @CompanyProfileId, 'AboutDescription', 'en', 'LIA NCC is a company specialized in the chauffeur service (NCC) and in the organization of personalized transfers and tours, operating mainly between Basilicata and Puglia. Operating since 2009, we provide our customers with years of experience in the passenger transport sector, always guaranteeing reliable, punctual and comfortable services.'
+WHERE NOT EXISTS (SELECT 1 FROM LocalizedContents WHERE EntityId = @CompanyProfileId AND ContentKey = 'AboutDescription' AND LanguageCode = 'en');
 
 GO

@@ -364,6 +364,12 @@ CREATE TABLE CompanyProfile (
     City NVARCHAR(100) NULL,
     ZipCode NVARCHAR(20) NULL,
     Country NVARCHAR(100) NULL,
+    Latitude DECIMAL(10,7) NULL,
+    Longitude DECIMAL(10,7) NULL,
+    GoogleMapsUrl NVARCHAR(1000) NULL,
+    AboutTitle NVARCHAR(200) NULL,
+    AboutDescription NVARCHAR(MAX) NULL,
+    AboutImageUrl NVARCHAR(1000) NULL,
     CreatedAt DATETIME2 NOT NULL CONSTRAINT DF_CompanyProfile_CreatedAt DEFAULT SYSUTCDATETIME(),
     UpdatedAt DATETIME2 NULL
 );
