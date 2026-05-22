@@ -109,6 +109,7 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Title).HasMaxLength(200);
+                entity.Property(e => e.ImageUrl).HasMaxLength(1000);
                 entity.HasOne(e => e.SitePage).WithMany(p => p.PageSections).HasForeignKey(e => e.PageId).OnDelete(DeleteBehavior.Cascade);
             });
 

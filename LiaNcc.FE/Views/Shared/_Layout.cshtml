@@ -205,8 +205,13 @@
 <body class="font-body overflow-x-hidden selection:bg-primary/30 selection:text-on-primary-container">
     <!-- TopNavBar -->
     @{
-        var company = await CompanyApi.GetCompanyProfileAsync();
-        var contacts = await CompanyApi.GetContactsAsync();
+        CompanyProfile? company = null;
+        IEnumerable<CompanyContact> contacts = new List<CompanyContact>();
+        try {
+            company = await CompanyApi.GetCompanyProfileAsync();
+            contacts = await CompanyApi.GetContactsAsync();
+        } catch {}
+
         var phone = contacts.FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 333 715 9308";
         var phone2 = contacts.Skip(1).FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 350 576 3433";
         var email = contacts.FirstOrDefault(c => c.Type == "Email")?.Value ?? "liamoto@alice.it";
