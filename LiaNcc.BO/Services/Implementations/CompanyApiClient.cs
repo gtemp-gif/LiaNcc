@@ -29,5 +29,34 @@ namespace LiaNcc.BO.Services.Implementations
             var response = await _httpClient.PutAsJsonAsync(_endpointUrl, entity, _jsonSerializerOptions);
             EnsureValidResponse(response);
         }
+
+        public async Task<IEnumerable<CompanyContact>> GetCompanyContactsAsync()
+        {
+            SetBearerToken();
+            var response = await _httpClient.GetAsync($"{_endpointUrl}/contacts");
+            EnsureValidResponse(response);
+            return await response.Content.ReadFromJsonAsync<IEnumerable<CompanyContact>>(_jsonSerializerOptions) ?? new List<CompanyContact>();
+        }
+
+        public async Task CreateCompanyContactAsync(CompanyContact contact)
+        {
+            SetBearerToken();
+            var response = await _httpClient.PostAsJsonAsync($"{_endpointUrl}/contacts", contact, _jsonSerializerOptions);
+            EnsureValidResponse(response);
+        }
+
+        public async Task UpdateCompanyContactAsync(Guid id, CompanyContact contact)
+        {
+            SetBearerToken();
+            var response = await _httpClient.PutAsJsonAsync($"{_endpointUrl}/contacts/{id}", contact, _jsonSerializerOptions);
+            EnsureValidResponse(response);
+        }
+
+        public async Task DeleteCompanyContactAsync(Guid id)
+        {
+            SetBearerToken();
+            var response = await _httpClient.DeleteAsync($"{_endpointUrl}/contacts/{id}");
+            EnsureValidResponse(response);
+        }
     }
 }

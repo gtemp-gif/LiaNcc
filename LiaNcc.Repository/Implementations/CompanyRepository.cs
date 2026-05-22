@@ -19,12 +19,14 @@ namespace LiaNcc.Repository.Implementations
 
         public async Task<CompanyProfile?> GetCompanyProfileAsync()
         {
-            return await _context.CompanyProfiles.AsNoTracking().FirstOrDefaultAsync();
+            return await _context.CompanyProfiles.AsNoTracking()
+                .Include(p => p.CompanyContacts)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<CompanyContact>> GetCompanyContactsAsync()
         {
-            var profile = await GetCompanyProfileAsync();
+            var profile = await _context.CompanyProfiles.AsNoTracking().FirstOrDefaultAsync();
             if (profile == null) return new List<CompanyContact>();
 
             return await _context.CompanyContacts.AsNoTracking()
@@ -49,6 +51,12 @@ namespace LiaNcc.Repository.Implementations
                 existing.City = profile.City;
                 existing.ZipCode = profile.ZipCode;
                 existing.Country = profile.Country;
+                existing.Latitude = profile.Latitude;
+                existing.Longitude = profile.Longitude;
+                existing.GoogleMapsUrl = profile.GoogleMapsUrl;
+                existing.AboutTitle = profile.AboutTitle;
+                existing.AboutDescription = profile.AboutDescription;
+                existing.AboutImageUrl = profile.AboutImageUrl;
                 existing.UpdatedAt = DateTime.UtcNow;
                 _context.CompanyProfiles.Update(existing);
                 await _context.SaveChangesAsync();

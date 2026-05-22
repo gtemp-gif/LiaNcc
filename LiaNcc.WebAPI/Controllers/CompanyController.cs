@@ -22,15 +22,32 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<CompanyProfile>> GetCompany()
+        public async Task<ActionResult<CompanyProfile>> GetCompany([FromQuery] string? culture)
         {
             var profile = await _companyRepository.GetCompanyProfileAsync();
             if (profile == null)
             {
                 // Return an empty profile if not found to avoid 404 in BO
-                return Ok(new CompanyProfile { Name = "LiaNcc" });
+                var newProfile = new CompanyProfile { Name = "LiaNcc" };
+                return Ok(newProfile);
             }
+
+            if (!string.IsNullOrEmpty(culture))
+            {
+                await LocalizeCompanyProfile(profile, culture);
+            }
+
             return Ok(profile);
+        }
+
+        private async Task LocalizeCompanyProfile(CompanyProfile profile, string culture)
+        {
+            var localizationRepository = HttpContext.RequestServices.GetRequiredService<ILocalizedContentRepository>();
+            var resolver = HttpContext.RequestServices.GetRequiredService<LiaNcc.WebAPI.Helpers.ILocalizationResolver>();
+
+            var translations = await localizationRepository.GetByEntityAsync("CompanyProfile", profile.Id, culture);
+            profile.AboutTitle = resolver.Resolve(translations, "AboutTitle", profile.AboutTitle ?? "", culture);
+            profile.AboutDescription = resolver.Resolve(translations, "AboutDescription", profile.AboutDescription ?? "", culture);
         }
 
         [AllowAnonymous]

@@ -4,29 +4,134 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Gestione Azienda</h2>
+    <h2><span class="material-symbols-outlined">business</span> @ViewData["Title"]</h2>
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-gold"><span class="material-symbols-outlined">edit</span> Modifica</a>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <h4 class="card-title mb-4">Profilo Principale</h4>
-        <div class="row mb-3">
-            <div class="col-sm-3 text-muted">Nome Azienda</div>
-            <div class="col-sm-9 fw-bold">@Model.Name</div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-sm-3 text-muted">Partita IVA</div>
-            <div class="col-sm-9">@(Model.VatNumber ?? "-")</div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-sm-3 text-muted">Indirizzo</div>
-            <div class="col-sm-9">
-                @(Model.Address ?? "-")<br />
-                @(Model.ZipCode ?? "") @(Model.City ?? "") <br />
-                @(Model.Country ?? "")
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4 class="card-title mb-4 text-gold"><span class="material-symbols-outlined">info</span> Dati Aziendali</h4>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">Nome Azienda</div>
+                    <div class="col-sm-8 fw-bold">@Model.Name</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">Partita IVA</div>
+                    <div class="col-sm-8">@(Model.VatNumber ?? "Non impostata")</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">Indirizzo</div>
+                    <div class="col-sm-8">
+                        @if (!string.IsNullOrEmpty(Model.Address))
+                        {
+                            @Model.Address<br />
+                            @Model.ZipCode @Model.City<br />
+                            @Model.Country
+                        }
+                        else
+                        {
+                            <span class="text-muted">Non impostato</span>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4 class="card-title mb-4 text-gold"><span class="material-symbols-outlined">contact_phone</span> Contatti</h4>
+                @if (Model.CompanyContacts != null && Model.CompanyContacts.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var contact in Model.CompanyContacts.OrderBy(c => c.SortOrder))
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    @{
+                                        string icon = contact.Type.ToLower() switch
+                                        {
+                                            "email" or "pec" => "mail",
+                                            "phone" or "cellulare" => "phone",
+                                            "whatsapp" => "chat",
+                                            "website" or "sito" => "language",
+                                            "instagram" => "photo_camera",
+                                            "facebook" => "groups",
+                                            "linkedin" => "business_center",
+                                            _ => "contact_support"
+                                        };
+                                    }
+                                    <span class="material-symbols-outlined text-gold align-middle me-2">@icon</span>
+                                    <span class="text-muted small me-2">@contact.Type:</span>
+                                    <strong>@contact.Value</strong>
+                                    @if (contact.IsPrimary)
+                                    {
+                                        <span class="badge bg-gold ms-2">Primario</span>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">Nessun contatto configurato.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4 class="card-title mb-4 text-gold"><span class="material-symbols-outlined">location_on</span> Posizione</h4>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">Latitudine</div>
+                    <div class="col-sm-8">@(Model.Latitude?.ToString() ?? "-")</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-muted">Longitudine</div>
+                    <div class="col-sm-8">@(Model.Longitude?.ToString() ?? "-")</div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.GoogleMapsUrl))
+                {
+                    <div class="mt-4">
+                        <a href="@Model.GoogleMapsUrl" target="_blank" class="btn btn-outline-gold w-100">
+                            <span class="material-symbols-outlined">map</span> Apri su Google Maps
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4 class="card-title mb-4 text-gold"><span class="material-symbols-outlined">group</span> Chi Siamo</h4>
+                <div class="mb-3">
+                    <div class="fw-bold mb-1">@Model.AboutTitle</div>
+                    <div class="text-muted small">@(string.IsNullOrEmpty(Model.AboutDescription) ? "Nessuna descrizione impostata" : Model.AboutDescription)</div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.AboutImageUrl))
+                {
+                    <div class="text-center mt-3">
+                        <img src="@MediaUrlHelper.GetAbsoluteUrl(Model.AboutImageUrl)" class="img-fluid rounded border" style="max-height: 200px;" />
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-light text-center py-4 border-dashed">
+                        <span class="material-symbols-outlined d-block mb-2 text-muted">image</span>
+                        Nessuna immagine caricata
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 </div>

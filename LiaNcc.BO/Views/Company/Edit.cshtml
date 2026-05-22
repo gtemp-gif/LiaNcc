@@ -7,10 +7,11 @@
 
 <div class="card shadow-sm mt-4">
     <div class="card-body">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="Id" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+            <h4 class="mb-3 text-gold">Dati Aziendali</h4>
             <div class="mb-3">
                 <label asp-for="Name" class="form-label">Nome Azienda</label>
                 <input asp-for="Name" class="form-control" />
@@ -44,11 +45,149 @@
                 </div>
             </div>
 
+            <hr class="my-4" />
+            <h4 class="mb-3 text-gold">Posizione</h4>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Latitude" class="form-label">Latitudine</label>
+                    <input asp-for="Latitude" type="number" step="0.0000001" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Longitude" class="form-label">Longitudine</label>
+                    <input asp-for="Longitude" type="number" step="0.0000001" class="form-control" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="GoogleMapsUrl" class="form-label">Google Maps URL</label>
+                <input asp-for="GoogleMapsUrl" class="form-control" placeholder="https://maps.google.com/..." />
+            </div>
+
+            <hr class="my-4" />
+            <h4 class="mb-3 text-gold">Chi Siamo</h4>
+            <div class="mb-3">
+                <label asp-for="AboutTitle" class="form-label">Titolo</label>
+                <input asp-for="AboutTitle" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="AboutDescription" class="form-label">Descrizione</label>
+                <textarea asp-for="AboutDescription" class="form-control" rows="5"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Immagine Sezione</label>
+                @if (!string.IsNullOrEmpty(Model.AboutImageUrl))
+                {
+                    <div class="mb-2">
+                        <img src="@MediaUrlHelper.GetAbsoluteUrl(Model.AboutImageUrl)" class="img-thumbnail" style="max-height: 150px;" />
+                    </div>
+                }
+                <input type="file" name="AboutImageFile" class="form-control" accept="image/*" />
+                <input type="hidden" asp-for="AboutImageUrl" />
+            </div>
+
             <partial name="_LocalizationFields" model="Model.Translations" />
 
-            <div class="mt-4">
-                <button type="submit" class="btn btn-gold">Salva</button>
+            <div class="mt-4 border-top pt-4">
+                <button type="submit" class="btn btn-gold btn-lg px-5">Salva Tutto</button>
+                <a asp-action="Index" class="btn btn-secondary btn-lg">Annulla</a>
             </div>
         </form>
+    </div>
+</div>
+
+<div class="card shadow-sm mt-5">
+    <div class="card-body">
+        <h4 class="mb-4 text-gold">Gestione Contatti</h4>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Valore</th>
+                        <th class="text-center">Primario</th>
+                        <th class="text-center">Ordine</th>
+                        <th class="text-end">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var contact in Model.Contacts)
+                    {
+                        <tr>
+                            <td>@contact.Type</td>
+                            <td><strong>@contact.Value</strong></td>
+                            <td class="text-center">
+                                @if (contact.IsPrimary) { <span class="badge bg-gold">SI</span> } else { <span class="text-muted small">NO</span> }
+                            </td>
+                            <td class="text-center">@contact.SortOrder</td>
+                            <td class="text-end">
+                                <form asp-action="DeleteContact" method="post" class="d-inline" onsubmit="return confirm('Eliminare questo contatto?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@contact.Id" />
+                                    <input type="hidden" name="companyId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><span class="material-symbols-outlined">delete</span></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <button type="button" class="btn btn-outline-gold mt-2" data-bs-toggle="modal" data-bs-target="#addContactModal">
+            <span class="material-symbols-outlined">add</span> Aggiungi Contatto
+        </button>
+    </div>
+</div>
+
+<!-- Modal Aggiungi Contatto -->
+<div class="modal fade" id="addContactModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="AddContact" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="companyId" value="@Model.Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuovo Contatto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Tipo</label>
+                        <select name="type" class="form-select" required>
+                            <option value="Email">Email</option>
+                            <option value="Phone">Cellulare</option>
+                            <option value="WhatsApp">WhatsApp</option>
+                            <option value="PEC">PEC</option>
+                            <option value="Website">Sito Web</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="Facebook">Facebook</option>
+                            <option value="LinkedIn">LinkedIn</option>
+                            <option value="TikTok">TikTok</option>
+                            <option value="YouTube">YouTube</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Valore</label>
+                        <input type="text" name="value" class="form-control" required placeholder="Es: info@liancc.it o +39 123..." />
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Ordine</label>
+                            <input type="number" name="sortOrder" class="form-control" value="0" />
+                        </div>
+                        <div class="col-6 mb-3 pt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="isPrimary" value="true">
+                                <label class="form-check-label">Contatto Primario</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="submit" class="btn btn-gold">Aggiungi</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

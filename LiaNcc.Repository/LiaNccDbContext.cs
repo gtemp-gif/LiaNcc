@@ -243,6 +243,11 @@ namespace LiaNcc.Repository
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Latitude).HasPrecision(10, 7);
+                entity.Property(e => e.Longitude).HasPrecision(10, 7);
+                entity.Property(e => e.GoogleMapsUrl).HasMaxLength(1000);
+                entity.Property(e => e.AboutTitle).HasMaxLength(200);
+                entity.Property(e => e.AboutImageUrl).HasMaxLength(1000);
             });
             modelBuilder.Entity<CompanyContact>(entity => {
                 entity.HasKey(e => e.Id);

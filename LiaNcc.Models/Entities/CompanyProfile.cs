@@ -12,6 +12,12 @@ namespace LiaNcc.Models.Entities
         public string? City { get; set; }
         public string? ZipCode { get; set; }
         public string? Country { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
+        public string? GoogleMapsUrl { get; set; }
+        public string? AboutTitle { get; set; }
+        public string? AboutDescription { get; set; }
+        public string? AboutImageUrl { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
 
