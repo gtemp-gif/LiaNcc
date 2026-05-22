@@ -113,7 +113,7 @@
             <a class="group font-display uppercase text-[#D4AF37] text-[12px] tracking-[0.2em] transition-all duration-300 hover:underline hover:underline-offset-4" asp-action="Tours" asp-controller="Home">MOSTRA TUTTI I TOUR <span class="inline-block transition-transform duration-300 group-hover:translate-x-2">➔</span></a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach (var tour in Model.FeaturedTours)
+            @foreach (var tour in Model.FeaturedTours.Take(3))
             {
                 <a class="relative h-[500px] group overflow-hidden block" asp-action="TourDetail" asp-controller="Home" asp-route-slug="@tour.Slug">
                     <img alt="@tour.Name" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src="@MediaUrlBuilder.Build(tour.CoverImageUrl)" />
@@ -256,7 +256,7 @@
 </section>
 
 <!-- Contatti Rapidi -->
-<section class="py-32 bg-[#050505]" id="contatti-rapidi">
+<section class="py-32 bg-[#050505]" id="contatti">
     <div class="px-6 md:px-16 max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
             <div class="text-left">

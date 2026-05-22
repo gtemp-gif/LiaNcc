@@ -225,7 +225,7 @@
             <a asp-action="Fleet" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Fleet" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Flotta</a>
             <a href="/Home/Index#servizi" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Servizi</a>
             <a asp-action="Tours" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Tours" || ViewContext.RouteData.Values["Action"]?.ToString() == "TourDetail" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Tour</a>
-            <a href="#contatti" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Contatti</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="contatti" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Contatti</a>
 
             @{
                 var isItalian = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "it";
