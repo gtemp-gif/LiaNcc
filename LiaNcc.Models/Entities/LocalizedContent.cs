@@ -13,6 +13,6 @@ namespace LiaNcc.Models.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
 
-        public Language Language { get; set; } = null!;
+        public Language? Language { get; set; }
     }
 }
