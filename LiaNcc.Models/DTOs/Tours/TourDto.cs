@@ -23,9 +23,19 @@ namespace LiaNcc.Models.DTOs.Tours
         public Guid? VehicleId { get; set; }
         public string? VehicleName { get; set; }
         public bool IsFeatured { get; set; }
+        public bool IsBookable { get; set; }
         public bool IsActive { get; set; }
         public int SortOrder { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+
+        public List<TourGalleryImageDto> GalleryImages { get; set; } = new();
+    }
+
+    public class TourGalleryImageDto
+    {
+        public Guid Id { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
+        public int SortOrder { get; set; }
     }
 }

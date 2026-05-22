@@ -14,5 +14,7 @@ namespace LiaNcc.BO.Services.Interfaces
         Task UpdateTourAsync(Guid id, Tour tour);
         Task DeleteTourAsync(Guid id);
         Task<IEnumerable<TourCategory>> GetCategoriesAsync();
+        Task<IEnumerable<TourGalleryImageDto>> GetTourGalleryAsync(Guid tourId);
+        Task DeleteGalleryImageAsync(Guid imageId);
     }
 }

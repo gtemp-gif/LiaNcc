@@ -92,12 +92,24 @@ namespace LiaNcc.BO.Controllers
                     MeetingPoint = model.MeetingPoint,
                     VehicleId = model.VehicleId,
                     IsFeatured = model.IsFeatured,
+                    IsBookable = model.IsBookable,
                     IsActive = model.IsActive,
                     SortOrder = model.SortOrder
                 };
 
                 var createdTour = await _toursApiClient.CreateTourAsync(tour);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Tour", createdTour.Id);
+
+                // Gallery upload
+                if (model.NewGalleryImages != null && model.NewGalleryImages.Any())
+                {
+                    var galleryUpload = await _filesApiClient.UploadFilesAsync(model.NewGalleryImages, "tours", "Tours", createdTour.Id, "Gallery");
+                    if (galleryUpload == null || galleryUpload.UploadedFiles.Count == 0)
+                    {
+                        TempData["WarningMessage"] = "Tour creato, ma si è verificato un errore durante il caricamento della galleria.";
+                    }
+                }
+
                 TempData["SuccessMessage"] = "Tour creato con successo.";
                 return RedirectToAction(nameof(Index));
             }
@@ -130,8 +142,10 @@ namespace LiaNcc.BO.Controllers
                 MeetingPoint = tour.MeetingPoint,
                 VehicleId = tour.VehicleId,
                 IsFeatured = tour.IsFeatured,
+                IsBookable = tour.IsBookable,
                 IsActive = tour.IsActive,
                 SortOrder = tour.SortOrder,
+                ExistingGalleryImages = tour.GalleryImages,
                 AvailableCategories = await GetCategoriesSelectList(),
                 AvailableVehicles = await GetVehiclesSelectList()
             };
@@ -179,12 +193,24 @@ namespace LiaNcc.BO.Controllers
                     MeetingPoint = model.MeetingPoint,
                     VehicleId = model.VehicleId,
                     IsFeatured = model.IsFeatured,
+                    IsBookable = model.IsBookable,
                     IsActive = model.IsActive,
                     SortOrder = model.SortOrder
                 };
 
                 await _toursApiClient.UpdateTourAsync(id, tour);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Tour", id);
+
+                // Gallery upload
+                if (model.NewGalleryImages != null && model.NewGalleryImages.Any())
+                {
+                    var galleryUpload = await _filesApiClient.UploadFilesAsync(model.NewGalleryImages, "tours", "Tours", id, "Gallery");
+                    if (galleryUpload == null || galleryUpload.UploadedFiles.Count == 0)
+                    {
+                        TempData["WarningMessage"] = "Tour aggiornato, ma si è verificato un errore durante il caricamento delle nuove immagini della galleria.";
+                    }
+                }
+
                 TempData["SuccessMessage"] = "Tour aggiornato con successo.";
                 return RedirectToAction(nameof(Index));
             }
@@ -201,6 +227,21 @@ namespace LiaNcc.BO.Controllers
             await _toursApiClient.DeleteTourAsync(id);
             TempData["SuccessMessage"] = "Tour eliminato con successo.";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteGalleryImage(Guid imageId)
+        {
+            try
+            {
+                await _toursApiClient.DeleteGalleryImageAsync(imageId);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         private async Task<IEnumerable<SelectListItem>> GetCategoriesSelectList()
