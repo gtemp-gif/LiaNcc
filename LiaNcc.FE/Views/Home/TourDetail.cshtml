@@ -1,17 +1,23 @@
+@using LiaNcc.FE.Services
+@model LiaNcc.FE.Models.ViewModels.TourDetailViewModel
+@inject IMediaUrlBuilder MediaUrlBuilder
 @{ Layout = "~/Views/Shared/_Layout.cshtml"; }
 @{
-    ViewData["Title"] = "Sassi di Matera & Calanchi";
+    ViewData["Title"] = Model.Tour?.Name ?? "Dettaglio Tour";
 }
 
 <!-- Hero Section -->
 <section class="relative h-screen w-full overflow-hidden flex items-center justify-center text-center">
 <div class="absolute inset-0 z-0">
-<img alt="Cinematic wide shot of Matera Sassi ancient city at dusk" class="w-full h-full object-cover cinematic-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd7q3AhslgLcmfBMcEsnhDx8T-fIMJhvHZpPxYi3N5LyVkBP8Iadn1M6EfhokdVbe4nqFQxy2utt2TjN0Uh0MaHokUAUkuXsEaLZ1bfCRlepuswN7CzmdHFCQMyegn-eV5sec4hBzxhYJREvucZ_hqQjwUW-a0yAyMaYS1s-WKCOd0GRrkYyQBp6EonPAJZ3f9jMKhtQNBJ1cL1JR-BvN1-xvR23yf-GAxc5g0D0tiOflbxH3zqHysrpSHD8DJf9tS2zY7rawlzoDx"/>
+@if(!string.IsNullOrEmpty(Model.Tour?.CoverImageUrl))
+{
+    <img alt="@Model.Tour.Name" class="w-full h-full object-cover cinematic-img" src="@MediaUrlBuilder.Build(Model.Tour.CoverImageUrl)"/>
+}
 <div class="absolute inset-0 hero-mask"></div>
 </div>
 <div class="relative z-10 max-w-5xl px-6">
-<span class="font-bold text-primary tracking-[0.4em] uppercase text-xs mb-6 block">Esclusività Mediterranea</span>
-<h1 class="text-4xl md:text-6xl font-medium text-white mb-8 tracking-tight uppercase" style="letter-spacing: 4px;">Sassi di Matera <br/> &amp; Calanchi</h1>
+<span class="font-bold text-primary tracking-[0.4em] uppercase text-xs mb-6 block">@(Model.Tour?.HeroSubtitle ?? "Esclusività Mediterranea")</span>
+<h1 class="text-4xl md:text-6xl font-medium text-white mb-8 tracking-tight uppercase" style="letter-spacing: 4px;">@Html.Raw(Model.Tour?.HeroTitle ?? Model.Tour?.Name)</h1>
 <div class="w-24 h-1 bg-[#D4AF37] mx-auto"></div>
 </div>
 </section>
@@ -24,48 +30,40 @@
 <div class="w-16 h-1 bg-[#D4AF37]"></div>
 </div>
 <div class="space-y-6 text-gray-400 font-light text-[15px] leading-relaxed">
-<p>Un viaggio nel tempo attraverso i Sassi di Matera, Patrimonio Mondiale dell'Umanità, dove la pietra racconta millenni di storia scolpita nel cuore della terra. Un'immersione totale nel silenzio mistico della Basilicata.</p>
-<p>Attraverseremo i Calanchi, cattedrali di argilla modellate dal vento, in un paesaggio lunare che ha ispirato registi e poeti. Con LIA NCC, ogni curva svela un segreto, ogni sosta è un momento di puro privilegio estetico.</p>
+    @Html.Raw(Model.Tour?.ExperienceDescription ?? Model.Tour?.Description)
 </div>
 </div>
 <div class="charcoal-border p-1 hover:border-[#D4AF37] transition-all duration-700 bg-black">
-<img alt="Detailed architectural view of stone dwellings in Matera" class="w-full h-[500px] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm_E3LuAzl3c5We8jK6Ngff7L1F3WAGtES-C0Mc-KqE3ZqKjh5dsgw0Ij0N6QilEcv67q8CWzRng7dS9BfV-_MS4mvQlqh00I212n8f1foUrnib7D9V7Lx4gWaBtFh9CLJgVPIF_kCQMJGLWnbHSdXzyoH-A9CItC-LYrRStqYf6oEGGrXgWhNKViOD0ivjqsHPc5zFLk2v_j7t9mvT6PZE2v4WHmzAEtwgjDuKxzgCpwrYbRD8lUllVwfp2n3DMzzr0hmO-sX8C0C"/>
+    @if(!string.IsNullOrEmpty(Model.Tour?.ExperienceImageUrl))
+    {
+        <img alt="@Model.Tour.Name" class="w-full h-[500px] object-cover" src="@MediaUrlBuilder.Build(Model.Tour.ExperienceImageUrl)"/>
+    }
 </div>
 </section>
 <!-- Galleria Emozionale (Bento Grid Style) -->
-<section class="py-32">
-<div class="text-left mb-16">
-<span class="font-bold text-primary tracking-[0.3em] uppercase text-[10px] mb-2 block">Portfolio Visivo</span>
-<h2 class="text-4xl font-semibold text-white section-title text-[24px]">Galleria Emozionale</h2>
-<div class="w-16 h-1 bg-[#D4AF37] mt-4"></div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[800px]">
-<div class="md:col-span-8 relative overflow-hidden charcoal-border group">
-<img alt="Aerial view of Matera limestone buildings" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDisTLZ8Ne52A4V9gYxNrjFqFyYDoOLz61ZwcM4dzf32mlVT1lDCzwpwATvq7K3Tcjo8TP6a6x6b899ZbIIvjJq1evneNLQbJG5BLJjtV-OLoj6gaOhjYXK9RI_YWgDAm9z5szi6CFvQs_qqLG6qIjEVlI-DR_ZfBRWdNKJtjIAL2FtB45Bivk5vrb1_7LWmKA9-KL9qx_-zy4NqNwij4cWgGmkUC3_Ew3MKrbAqFBYqFuiIs66SFaHzFTvneirh0k5jEZI54ol-FY4"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-<span class="text-[10px] font-bold text-[#D4AF37] tracking-[0.4em] uppercase">Prospettive Antiche</span>
-</div>
-</div>
-<div class="md:col-span-4 relative overflow-hidden charcoal-border group">
-<img alt="Detail of luxury car interior" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArenUbClj6Ny8UzjJ6FfcYPDx11ecqRNAGQGxuM1Zpdud6udYLP8l0E57033phzoNKqcQJylSV170bO40btj-eMuCGMIRMsnRl3t7s4an1YEt9CqOD9x50WDxajtijmM7ecstCciqO4YZIO42PxCAfAkXjs8mgOBILWtE-adXbayUmYmPYh3VIqvYS45aN-3i2Vac-iuQ2ctCDqfnl2S3PD-SqT8Jmz-XAomtngsbID3Fc0bHTp19IWrIayjeRhzJCM82kKIF4VYtl"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-<span class="text-[10px] font-bold text-[#D4AF37] tracking-[0.4em] uppercase">Comfort Assoluto</span>
-</div>
-</div>
-<div class="md:col-span-4 relative overflow-hidden charcoal-border group">
-<img alt="Calanchi landscape Basilicata" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbsKDedGDxegJMpkz7iD1QujfTHKsmVwxHxCPVGYn-TCXTOQY21LtK5G1eOyKjjSKol_npeS_VUUDjiRFwDdntYF5bEmXahPZ_xrQjNYPOfLOYjMTZcFtQQdy934K4ViID8XJFg6HCwSJaO92bhpTaZbhd7tW2SfgB1gshv7MLEeIuhWevyP1yIsxf-5cP8-wGdvg-fP3IYcPyjmf4d685CxESy3AvaIMmkHhEjgiE2Riiv9jxnf0PogoynbjtVnslgAwkduQ8Tw14"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-<span class="text-[10px] font-bold text-[#D4AF37] tracking-[0.4em] uppercase">Materia Lunare</span>
-</div>
-</div>
-<div class="md:col-span-8 relative overflow-hidden charcoal-border group">
-<img alt="Luxury car in landscape" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY4grWgxUnEMErnswPU4YD3n9ecFzz8EdIimWB4Ai5ukezUEEpYtoyckHuUh5u6jWVwKpLWZtr-v2HIHSr16jWyWZtpwUL0YWJCARONY-JNL-jjOuZ8XpZdwcfEcQobzXt0PhsfWmIguT_h6sPlBJDCNGkjbfPO6zNSULI1cp7Gcs2EwlMCKHACxCvqAwuLJNvAxUPvdATC92zde3J10Vgs-iXKo-9_e5qrykkypfvkbgY5daff7fl9M7ShfEdbcEzZ39ZL6T1VIza"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-<span class="text-[10px] font-bold text-[#D4AF37] tracking-[0.4em] uppercase">Il Viaggio</span>
-</div>
-</div>
-</div>
-</section>
+@if(Model.Tour?.TourGalleryImages != null && Model.Tour.TourGalleryImages.Any())
+{
+    <section class="py-32">
+        <div class="text-left mb-16">
+            <span class="font-bold text-primary tracking-[0.3em] uppercase text-[10px] mb-2 block">Portfolio Visivo</span>
+            <h2 class="text-4xl font-semibold text-white section-title text-[24px]">Galleria Emozionale</h2>
+            <div class="w-16 h-1 bg-[#D4AF37] mt-4"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[800px]">
+            @{
+                var index = 0;
+                foreach(var img in Model.Tour.TourGalleryImages.OrderBy(i => i.SortOrder))
+                {
+                    var colClass = index % 4 == 0 || index % 4 == 3 ? "md:col-span-8" : "md:col-span-4";
+                    <div class="@colClass relative overflow-hidden charcoal-border group">
+                        <img alt="@Model.Tour.Name" class="w-full h-full object-cover hover:scale-105 transition-all duration-1000" src="@MediaUrlBuilder.Build(img.ImageUrl)"/>
+                    </div>
+                    index++;
+                }
+            }
+        </div>
+    </section>
+}
 <!-- Dettagli del Viaggio -->
 <section class="py-32">
 <div class="text-left mb-16">
@@ -73,21 +71,21 @@
 <div class="w-16 h-1 bg-[#D4AF37] mt-4"></div>
 </div>
 <div class="grid md:grid-cols-3 gap-8">
-<div class="p-10 charcoal-border bg-black text-center space-y-6 hover:border-[#D4AF37] transition-all duration-500">
-<span class="material-symbols-outlined text-[#D4AF37] text-5xl">schedule</span>
-<h3 class="text-[10px] font-bold text-white uppercase tracking-[0.3em]">Durata</h3>
-<p class="text-gray-400 font-light text-[15px]">8 Ore / Intera Giornata</p>
-</div>
-<div class="p-10 charcoal-border bg-black text-center space-y-6 hover:border-[#D4AF37] transition-all duration-500">
-<span class="material-symbols-outlined text-[#D4AF37] text-5xl">location_on</span>
-<h3 class="text-[10px] font-bold text-white uppercase tracking-[0.3em]">Meeting Point</h3>
-<p class="text-gray-400 font-light text-[15px]">Pick-up presso Hotel o Residenza Privata</p>
-</div>
-<div class="p-10 charcoal-border bg-black text-center space-y-6 hover:border-[#D4AF37] transition-all duration-500">
-<span class="material-symbols-outlined text-[#D4AF37] text-5xl">directions_car</span>
-<h3 class="text-[10px] font-bold text-white uppercase tracking-[0.3em]">Veicoli</h3>
-<p class="text-gray-400 font-light text-[15px]">Mercedes-Benz Classe S o V-Class Luxury</p>
-</div>
+    <div class="p-10 charcoal-border bg-black text-center space-y-6 hover:border-[#D4AF37] transition-all duration-500">
+        <span class="material-symbols-outlined text-[#D4AF37] text-5xl">schedule</span>
+        <h3 class="text-[10px] font-bold text-white uppercase tracking-[0.3em]">Durata</h3>
+        <p class="text-gray-400 font-light text-[15px]">@(Model.Tour?.DurationDays > 0 ? $"{Model.Tour.DurationDays} Giorni " : "")@(Model.Tour?.DurationHours > 0 ? $"{Model.Tour.DurationHours} Ore" : "")</p>
+    </div>
+    <div class="p-10 charcoal-border bg-black text-center space-y-6 hover:border-[#D4AF37] transition-all duration-500">
+        <span class="material-symbols-outlined text-[#D4AF37] text-5xl">location_on</span>
+        <h3 class="text-[10px] font-bold text-white uppercase tracking-[0.3em]">Meeting Point</h3>
+        <p class="text-gray-400 font-light text-[15px]">@(Model.Tour?.MeetingPoint ?? "Pick-up presso Hotel o Residenza Privata")</p>
+    </div>
+    <div class="p-10 charcoal-border bg-black text-center space-y-6 hover:border-[#D4AF37] transition-all duration-500">
+        <span class="material-symbols-outlined text-[#D4AF37] text-5xl">directions_car</span>
+        <h3 class="text-[10px] font-bold text-white uppercase tracking-[0.3em]">Veicoli</h3>
+        <p class="text-gray-400 font-light text-[15px]">@(Model.Tour?.Vehicle?.Name ?? "Mercedes-Benz Classe S o V-Class Luxury")</p>
+    </div>
 </div>
 </section>
 <!-- Richiesta Prenotazione -->
@@ -124,10 +122,10 @@
 </div>
 </div>
 <div class="space-y-2">
-<label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Note Aggiuntive (Discrezione Garantita)</label>
-<textarea class="w-full input-underline text-white py-4 font-light text-[15px] resize-none" placeholder="Indica eventuali richieste particolari..." rows="3"></textarea>
+<label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Preferenze Speciali</label>
+<textarea class="w-full input-underline text-white py-4 font-light text-[15px]" placeholder="Indica eventuali richieste alimentari, preferenze musicali o altre esigenze speciali..." rows="4"></textarea>
 </div>
-<button class="w-full py-6 gold-bg text-black font-bold uppercase text-[12px] tracking-[0.3em] hover:bg-[#E5C158] transition-all" type="submit">Invia Richiesta di Prenotazione</button>
+<button class="w-full py-6 gold-bg text-black font-bold uppercase tracking-[0.2em] hover:bg-[#E5C158] transition-colors mt-8 text-[12px]" type="submit">INVIA RICHIESTA</button>
 </form>
 </div>
 </div>

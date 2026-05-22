@@ -12,60 +12,20 @@
             theme: {
                 extend: {
                     colors: {
-                        "surface-variant": "#353535",
-                        "surface-container-lowest": "#0e0e0e",
-                        "primary-fixed": "#ffe088",
-                        "inverse-on-surface": "#313030",
-                        "on-tertiary-fixed-variant": "#454747",
-                        "on-tertiary-container": "#434546",
-                        "on-secondary-fixed-variant": "#474747",
-                        "surface-tint": "#e9c349",
-                        error: "#ffb4ab",
-                        "on-surface": "#e5e2e1",
-                        "on-tertiary-fixed": "#1a1c1c",
-                        "surface-container-low": "#1c1b1b",
-                        "on-primary-fixed": "#241a00",
-                        "error-container": "#93000a",
-                        "tertiary-fixed": "#e2e2e2",
-                        "surface-container-high": "#2a2a2a",
-                        "primary-fixed-dim": "#e9c349",
-                        surface: "#131313",
-                        "on-background": "#e5e2e1",
-                        "on-secondary-fixed": "#1b1b1b",
-                        "on-primary": "#3c2f00",
-                        "tertiary-fixed-dim": "#c6c6c7",
-                        "surface-bright": "#393939",
-                        "on-secondary-container": "#b5b5b5",
-                        "on-error-container": "#ffdad6",
-                        tertiary: "#cecece",
-                        "surface-container-highest": "#353535",
-                        "surface-dim": "#131313",
-                        "on-tertiary": "#2f3131",
-                        background: "#131313",
-                        primary: "#f2ca50",
-                        "outline-variant": "#4d4635",
-                        "on-surface-variant": "#d0c5af",
-                        "inverse-surface": "#e5e2e1",
-                        "secondary-container": "#474747",
-                        "on-primary-container": "#554300",
-                        "secondary-fixed": "#e2e2e2",
-                        "surface-container": "#20201f",
-                        "on-secondary": "#303030",
-                        secondary: "#c6c6c6",
-                        "on-error": "#690005",
-                        "inverse-primary": "#735c00",
-                        "primary-container": "#d4af37",
-                        outline: "#99907c",
-                        "on-primary-fixed-variant": "#574500",
-                        "secondary-fixed-dim": "#c6c6c6",
-                        "tertiary-container": "#b2b3b3"
+                        primary: {
+                            DEFAULT: "#D4AF37", // Oro caldo
+                            dark: "#B8860B" // Oro scuro
+                        },
+                        on: {
+                            primary: "#000000",
+                            surface: "#FFFFFF",
+                            "surface-variant": "#9CA3AF"
+                        }
                     },
-                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
-                    spacing: { unit: "8px", "container-max": "1440px", "section-gap": "128px", margin: "64px", gutter: "24px", "element-gap": "32px", "section-padding": "120px" },
                     fontFamily: {
-                        sans: ["Montserrat", "sans-serif"],
-                        display: ["Montserrat", "sans-serif"],
-                        body: ["Montserrat", "sans-serif"]
+                        sans: ['Montserrat', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                        body: ['Montserrat', 'sans-serif'],
                     }
                 }
             }
@@ -73,122 +33,75 @@
     </script>
     <style>
         body {
+            font-family: 'Montserrat', sans-serif;
             background-color: #000000;
-            color: #e2e2e2;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 400;
+            color: #FFFFFF;
         }
-
-        h1, h2, h3 {
-            font-weight: 600;
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
         }
-
-        .section-title {
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        .light-text {
-            font-weight: 300;
-        }
-
-        .gold-border {
-            border: 1px solid #D4AF37;
-        }
-
-        .gold-text {
-            color: #D4AF37;
-        }
-
-        .gold-bg {
-            background-color: #D4AF37;
-        }
-
-        .charcoal-border {
-            border: 1px solid #1A1A1A;
-        }
-
-        .glass-effect {
-            backdrop-filter: blur(20px);
-            background: rgba(0, 0, 0, 0.7);
-        }
-
         .hero-mask {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.9) 100%);
+            background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.2) 100%),
+                        linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
         }
-
-        .cinematic-img {
-            filter: grayscale(20%) contrast(110%);
+        .btn-primary {
+            @@apply px-8 py-4 bg-primary text-black font-semibold uppercase tracking-widest text-sm transition-all duration-300 hover:bg-primary-dark hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:-translate-y-1;
         }
-
-        .modal-overlay {
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-        }
-
-        /* Secondary Button Style */
         .btn-secondary {
-            background-color: transparent;
-            border: 1px solid #D4AF37;
-            color: #D4AF37;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 12px 32px;
-            white-space: nowrap;
-            transition: all 0.4s ease;
-            display: inline-block;
-            text-align: center;
+            @@apply px-8 py-4 bg-transparent border border-primary text-primary font-semibold uppercase tracking-widest text-sm transition-all duration-300 hover:bg-primary hover:text-black;
         }
-
-            .btn-secondary:hover {
-                background-color: #D4AF37;
-                color: #121212;
-            }
-
+        .section-title {
+            @@apply font-bold uppercase tracking-[0.2em] relative inline-block;
+        }
+        .section-title::after {
+            content: '';
+            @@apply absolute -bottom-4 left-0 w-12 h-1 bg-primary;
+        }
+        .gold-border-focus:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 1px #D4AF37;
+        }
+        .charcoal-bg {
+            background-color: #111111;
+        }
+        .charcoal-border {
+            border: 1px solid #222222;
+        }
         .input-underline {
+            background: transparent;
             border: none;
-            border-bottom: 1px solid #1A1A1A;
-            background: transparent !important;
-            transition: border-color 0.4s ease;
+            border-bottom: 1px solid #333;
+            border-radius: 0;
+            padding-left: 0;
+            padding-right: 0;
         }
-
-            .input-underline:focus {
-                outline: none;
-                border-bottom: 1px solid #D4AF37;
-                box-shadow: none;
-                ring: 0;
-            }
-
-        .btn-ghost {
-            background-color: transparent;
-            border: 1px solid #D4AF37;
-            color: #D4AF37;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 12px 32px;
-            white-space: nowrap;
-            transition: all 0.4s ease;
-            display: inline-block;
-            text-align: center;
+        .input-underline:focus {
+            box-shadow: none;
+            border-bottom-color: #D4AF37;
         }
-        .btn-ghost:hover {
-            background-color: #D4AF37;
-            color: #000000;
-        }
-
         .luxury-gradient-bg {
-            background: radial-gradient(circle at 50% -20%, #1A1A1A 0%, #000000 100%);
+            background: radial-gradient(circle at top center, #1a1a1a 0%, #000000 100%);
         }
         .vehicle-glow {
-            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.15));
+            filter: drop-shadow(0 0 30px rgba(255,255,255,0.05));
         }
-
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        .cinematic-img {
+            filter: contrast(1.1) saturate(1.1) brightness(0.9);
+        }
+        .modal-overlay {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+        }
+        .tour-card {
+            background: linear-gradient(145deg, #111 0%, #050505 100%);
+        }
+        .gold-bg {
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+        }
+        .mt-section-gap {
+            margin-top: 8rem; /* 128px */
         }
         .noir-gradient {
             background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
@@ -228,6 +141,16 @@
 
     @RenderBody()
 
+    @inject LiaNcc.FE.Services.ILiaNccApiClient ApiClient
+    @{
+        var currentCulture = ViewContext.HttpContext.Request.Query["culture"].ToString();
+        if (string.IsNullOrEmpty(currentCulture))
+        {
+            currentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+        }
+        var companyProfile = await ApiClient.GetCompanyProfileAsync(currentCulture);
+    }
+
     <!-- Footer -->
     <footer class="w-full bg-[#000000] border-t border-[#1A1A1A] mt-32" id="contatti">
         <div class="w-full py-20 px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-12 max-w-7xl mx-auto items-center">
@@ -237,7 +160,7 @@
                         <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="~/img/LiaNcc_logo.jpeg" />
                     </a>
                 </div>
-                <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-8 text-[15px]">© @DateTime.Now.Year LIA NCC. L'ECCELLENZA IN MOVIMENTO.</p>
+                <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-8 text-[15px]">© @DateTime.Now.Year @(companyProfile?.Name ?? "LIA NCC"). L'ECCELLENZA IN MOVIMENTO.</p>
             </div>
             <div class="grid grid-cols-2 gap-8">
                 <div class="flex flex-col gap-4">
@@ -245,9 +168,19 @@
                     <a href="#" class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all">Termini e Condizioni</a>
                 </div>
                 <div class="flex flex-col gap-4 text-right">
-                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 333 715 9308</p>
-                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 350 576 3433</p>
-                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 text-[15px]">liamoto@alice.it</p>
+                    @if(companyProfile?.CompanyContacts != null && companyProfile.CompanyContacts.Any())
+                    {
+                        foreach(var contact in companyProfile.CompanyContacts)
+                        {
+                            <p class="font-bold text-[10px] tracking-[0.2em] uppercase @(contact.Type == "Phone" || contact.Type == "WhatsApp" ? "text-[#D4AF37]" : "text-gray-600") text-[15px]">@contact.Value</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 333 715 9308</p>
+                        <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 350 576 3433</p>
+                        <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 text-[15px]">liamoto@alice.it</p>
+                    }
                 </div>
             </div>
         </div>

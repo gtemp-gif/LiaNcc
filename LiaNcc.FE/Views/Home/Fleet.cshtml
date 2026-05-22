@@ -1,93 +1,80 @@
+@using LiaNcc.FE.Services
+@model LiaNcc.FE.Models.ViewModels.FleetPageViewModel
+@inject IMediaUrlBuilder MediaUrlBuilder
 @{
     ViewData["Title"] = "La Nostra Flotta";
     Layout = "_Layout";
+    var heroSection = Model.CmsPage?.PageSections?.FirstOrDefault(s => s.Name == "Hero");
 }
 
 <main class="luxury-gradient-bg pt-32">
 <!-- Hero Section -->
 <section class="px-12 py-24 max-w-screen-2xl mx-auto text-center">
-<h1 class="section-title text-4xl md:text-5xl text-white mb-6">LA NOSTRA FLOTTA</h1>
+<h1 class="section-title text-4xl md:text-5xl text-white mb-6">@(heroSection?.Title ?? "LA NOSTRA FLOTTA")</h1>
 <p class="font-light text-lg text-on-surface-variant max-w-2xl mx-auto opacity-80">
-            Sperimenta l'eccellenza del servizio chauffeur italiano con la nostra selezione curata di veicoli prestigiosi, progettati per il massimo del comfort e dello stile.
-        </p>
+    @Html.Raw(heroSection?.Description ?? "Sperimenta l'eccellenza del servizio chauffeur italiano con la nostra selezione curata di veicoli prestigiosi, progettati per il massimo del comfort e dello stile.")
+</p>
 <div class="w-24 h-px bg-primary mx-auto mt-12 opacity-50"></div>
 </section>
 <!-- Fleet Grid -->
 <section class="px-12 pb-32 max-w-screen-2xl mx-auto space-y-48">
-<!-- Mercedes Classe E Section -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-<div class="lg:col-span-7 relative group">
-<div class="absolute inset-0 bg-primary/5 rounded-none blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-<img alt="Mercedes Classe E" class="w-full h-auto object-cover border border-primary/10 vehicle-glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCq9m_lL7UpgjqZL_32ZTlaB2QFW5jaNbJNHlAtf1CDZD1JDvhBn5zP0p7fkUMcgHHncxWfgPE_kkiS_63jGZ5w3Pd9D6dN5Rp9LEK5oVUQtNMhYc126zsfgvza3MJWPRZa7m3EtbJ6LvwC5ZhnHWR8uzv-OVEeENJ3THYFOQmpH9v5wK7pnIwsfgLpOg6z-aXJggBJ-TR8l1tGvB4Wq6btcGB85Z4-a2Xo32OnrSHXjBRsxSDX-u69TpheRjoPi62aMB53VfkYSd0"/>
-</div>
-<div class="lg:col-span-5 space-y-8">
-<div class="space-y-2">
-<span class="font-bold text-primary tracking-[0.3em] text-[10px] uppercase">BERLINA EXECUTIVE</span>
-<h2 class="text-3xl font-semibold text-white uppercase" style="letter-spacing: 2px;">Mercedes Classe E</h2>
-</div>
-<p class="font-light text-on-surface-variant leading-relaxed">
-                    Il gold standard del viaggio d'affari. Combinando eleganza intramontabile e tecnologia all'avanguardia, la Classe E offre un ambiente sereno per il lavoro o il relax durante il transito.
+@if(Model.Vehicles != null && Model.Vehicles.Any())
+{
+    var index = 0;
+    foreach(var vehicle in Model.Vehicles)
+    {
+        var isEven = index % 2 == 0;
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            @if(isEven)
+            {
+                <div class="lg:col-span-7 relative group">
+                    <div class="absolute inset-0 bg-primary/5 rounded-none blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                    <img alt="@vehicle.Name" class="w-full h-auto object-cover border border-primary/10 vehicle-glow" src="@MediaUrlBuilder.Build(null)"/>
+                </div>
+            }
+            <div class="lg:col-span-5 space-y-8 @(!isEven ? "lg:order-first lg:col-start-1" : "")">
+                <div class="space-y-2">
+                    <span class="font-bold text-primary tracking-[0.3em] text-[10px] uppercase">@(vehicle.Title ?? "VEICOLO LUSSO")</span>
+                    <h2 class="text-3xl font-semibold text-white uppercase" style="letter-spacing: 2px;">@vehicle.Name</h2>
+                </div>
+                <p class="font-light text-on-surface-variant leading-relaxed">
+                    @Html.Raw(vehicle.Description)
                 </p>
-<div class="grid grid-cols-2 gap-8 border-y border-primary/10 py-8">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">3 PASSEGGERI</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="luggage">luggage</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">2 VALIGIE GRANDI</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">CHAUFFEUR PROFESSIONISTA</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="airline_seat_recline_extra">airline_seat_recline_extra</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">COMFORT SUPERIORE</span>
-</div>
-</div>
-<button class="w-full py-5 bg-primary text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('Mercedes Classe E')">
-                    PRENOTA ORA
-                </button>
-</div>
-</div>
-<!-- Mercedes Classe V Section -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-<div class="lg:col-span-5 order-2 lg:order-1 space-y-8">
-<div class="space-y-2">
-<span class="font-bold text-primary tracking-[0.3em] text-[10px] uppercase">MPV DI LUSSO</span>
-<h2 class="text-3xl font-semibold text-white uppercase" style="letter-spacing: 2px;">Mercedes Classe V</h2>
-</div>
-<p class="font-light text-on-surface-variant leading-relaxed">
-                    Ridefinire il viaggio di gruppo. La Classe V offre un'esperienza lounge mobile con configurazioni di sedute faccia a faccia, perfetta per delegazioni aziendali o tour familiari esclusivi.
-                </p>
-<div class="grid grid-cols-2 gap-8 border-y border-primary/10 py-8">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="groups">groups</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">7 PASSEGGERI</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="inventory_2">inventory_2</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">6 VALIGIE GRANDI</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="wifi">wifi</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">WI-FI A BORDO</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary" data-icon="table_restaurant">table_restaurant</span>
-<span class="font-bold text-[10px] uppercase tracking-widest">LAYOUT CONFERENZA</span>
-</div>
-</div>
-<button class="w-full py-5 bg-primary text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('Mercedes Classe V')">
-                    PRENOTA ORA
-                </button>
-</div>
-<div class="lg:col-span-7 order-1 lg:order-2 relative group">
-<div class="absolute inset-0 bg-primary/5 rounded-none blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-<img alt="Mercedes Classe V Interni" class="w-full h-auto object-cover border border-primary/10 vehicle-glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0TJU3JkgRxaV-pxPt6M83QE_8k8G8rVM92V3Km5_X6EEgXjXlkA3CGJ4YGVUvw-6NNRk2fs_kGLj8efDh_fo3wk8toXlUJtUuLFI6WcVBXF_I9EVPdcznUih_fvHP1aJW4Z8BjLAaBeRW1fwsswcoHYGIKxeMy5WAtDJqDeXefYVlsoK8RuIlcci9NVNfO85VQpwhjfNM2qW174K4SxY8tiK58t1m-EE0xbjpXZCGWw6FuVOyQHGVvSjrRfG6cyXrqL6-GiBjgfLE"/>
-</div>
-</div>
+                <div class="grid grid-cols-2 gap-8 border-y border-primary/10 py-8">
+                    <div class="flex items-center gap-4">
+                        <span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+                        <span class="font-bold text-[10px] uppercase tracking-widest">@vehicle.Seats PASSEGGERI</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="material-symbols-outlined text-primary" data-icon="luggage">luggage</span>
+                        <span class="font-bold text-[10px] uppercase tracking-widest">@vehicle.Luggages VALIGIE GRANDI</span>
+                    </div>
+                    @if(vehicle.VehicleFeatures != null && vehicle.VehicleFeatures.Any())
+                    {
+                        foreach(var feature in vehicle.VehicleFeatures)
+                        {
+                            <div class="flex items-center gap-4">
+                                @if(!string.IsNullOrEmpty(feature.Icon))
+                                {
+                                    <span class="material-symbols-outlined text-primary" data-icon="@feature.Icon">@feature.Icon</span>
+                                }
+                                <span class="font-bold text-[10px] uppercase tracking-widest">@feature.Name</span>
+                            </div>
+                        }
+                    }
+                </div>
+                @if(vehicle.IsBookable)
+                {
+                    <button class="w-full py-5 bg-primary text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('@vehicle.Name')">
+                        PRENOTA ORA
+                    </button>
+                }
+            </div>
+        </div>
+        index++;
+    }
+}
+
 <!-- Service Details Grid -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div class="bg-[#050505] border border-primary/10 p-10 flex flex-col items-center text-center group hover:border-primary/30 transition-colors">
@@ -135,12 +122,12 @@
 <input class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-primary focus:ring-0 text-white py-4 transition-all [color-scheme:dark]" type="date"/>
 </div>
 <div class="space-y-2">
-<label class="font-bold text-primary text-[10px] uppercase tracking-widest">Tipo di Servizio</label>
-<select class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-primary focus:ring-0 text-white py-4 transition-all">
-<option class="bg-black">Transfer Aeroportuale</option>
-<option class="bg-black">Tour Personalizzato</option>
-<option class="bg-black">Evento Speciale</option>
-<option class="bg-black">Altro</option>
+<label class="font-bold text-primary text-[10px] uppercase tracking-widest">Numero Passeggeri</label>
+<select class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-primary focus:ring-0 text-white py-4 transition-all appearance-none cursor-pointer">
+<option class="bg-black">1 Passeggero</option>
+<option class="bg-black">2 Passeggeri</option>
+<option class="bg-black">3 Passeggeri</option>
+<option class="bg-black">4+ Passeggeri</option>
 </select>
 </div>
 </div>
@@ -148,15 +135,13 @@
 <label class="font-bold text-primary text-[10px] uppercase tracking-widest">Messaggio / Richieste Speciali</label>
 <textarea class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-primary focus:ring-0 text-white py-4 transition-all" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
 </div>
-<button class="w-full py-6 gold-bg text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8" type="submit">Invia Richiesta di Prenotazione</button>
+<button class="w-full py-6 bg-primary text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8" type="submit">Richiedi Preventivo</button>
 </form>
 </div>
 </div>
-
-@section Scripts {
-    <script>
+<script>
     function openBookingModal(carName) {
-        document.getElementById('selectedCarName').innerText = carName;
+        document.getElementById('selectedCarName').textContent = carName;
         document.getElementById('bookingModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
@@ -166,12 +151,10 @@
         document.body.style.overflow = 'auto';
     }
 
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        let modal = document.getElementById('bookingModal');
-        if (event.target == modal) {
+    // Chiudi modale cliccando fuori
+    document.getElementById('bookingModal').addEventListener('click', function(e) {
+        if (e.target === this) {
             closeBookingModal();
         }
-    }
+    });
 </script>
-}
