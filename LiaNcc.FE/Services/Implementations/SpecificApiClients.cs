@@ -137,7 +137,7 @@ namespace LiaNcc.FE.Services.Implementations
         public ContactMessagesApiClient(HttpClient httpClient) { _httpClient = httpClient; }
         public async Task CreateAsync(ContactMessage message)
         {
-            var response = await _httpClient.PostAsJsonAsync("contactmessages", message);
+            var response = await _httpClient.PostAsJsonAsync("/contactmessages", message);
             response.EnsureSuccessStatusCode();
         }
     }
@@ -148,7 +148,7 @@ namespace LiaNcc.FE.Services.Implementations
         public BookingsApiClient(HttpClient httpClient) { _httpClient = httpClient; }
         public async Task CreateAsync(Booking booking)
         {
-            var response = await _httpClient.PostAsJsonAsync("bookings", booking);
+            var response = await _httpClient.PostAsJsonAsync("/bookings", booking);
             response.EnsureSuccessStatusCode();
         }
     }
