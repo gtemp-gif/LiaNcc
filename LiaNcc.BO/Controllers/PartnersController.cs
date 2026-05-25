@@ -15,12 +15,16 @@ namespace LiaNcc.BO.Controllers
 
         private readonly List<string> _translatableKeys = new List<string> { "Name" };
 
+        private readonly IApplicationLoggerService _logger;
+
         public PartnersController(
             IPartnersApiClient partnersApiClient,
+            IApplicationLoggerService applicationLogger,
             ILanguagesApiClient languagesApiClient,
             ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _partnersApiClient = partnersApiClient;
+            _logger = applicationLogger;
             _languagesApiClient = languagesApiClient;
             _localizedContentsApiClient = localizedContentsApiClient;
         }
@@ -98,6 +102,7 @@ namespace LiaNcc.BO.Controllers
 
                 await _partnersApiClient.UpdateAsync(id, partner);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Partner", id);
+                await _logger.LogInfoAsync("Partners", "UpdatePartner", $"Partner {partner.Name} updated via BO", id, "Partner");
                 TempData["SuccessMessage"] = "Partner aggiornato.";
                 return RedirectToAction(nameof(Index));
             }

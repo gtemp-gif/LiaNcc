@@ -20,15 +20,18 @@ namespace LiaNcc.WebAPI.Controllers
         private readonly IFileStorageService _fileStorageService;
         private readonly IMediaRepository _mediaRepository;
         private readonly ILogger<FilesController> _logger;
+        private readonly IApplicationLoggerService _appLogger;
 
         public FilesController(
             IFileStorageService fileStorageService,
             IMediaRepository mediaRepository,
-            ILogger<FilesController> logger)
+            ILogger<FilesController> logger,
+            IApplicationLoggerService appLogger)
         {
             _fileStorageService = fileStorageService;
             _mediaRepository = mediaRepository;
             _logger = logger;
+            _appLogger = appLogger;
         }
 
         [HttpGet]
@@ -130,6 +133,7 @@ namespace LiaNcc.WebAPI.Controllers
                     }
 
                     response.UploadedFiles.Add(uploadedFile);
+                    await _appLogger.LogInfoAsync("Media", "UploadFile", $"File {uploadedFile.FileName} uploaded to {request.Folder}", mediaAsset.Id, "MediaAsset");
                     _logger.LogInformation("File uploaded and registered: {FileName}", uploadedFile.FileName);
                 }
 

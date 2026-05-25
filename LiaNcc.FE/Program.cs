@@ -1,16 +1,30 @@
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/lia-fe-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 30)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<LiaNcc.FE.Helpers.CorrelationIdHandler>();
 
 var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7001/api/";
 
 builder.Services.AddHttpClient("LiaNccApi", client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
-}).ConfigurePrimaryHttpMessageHandler((sp) =>
+}).AddHttpMessageHandler<LiaNcc.FE.Helpers.CorrelationIdHandler>()
+.ConfigurePrimaryHttpMessageHandler((sp) =>
 {
     var handler = new HttpClientHandler();
     var env = sp.GetRequiredService<IWebHostEnvironment>();
@@ -47,6 +61,11 @@ builder.Services.AddScoped<LiaNcc.FE.Services.Interfaces.IContactMessagesApiClie
 builder.Services.AddScoped<LiaNcc.FE.Services.Interfaces.IBookingsApiClient, LiaNcc.FE.Services.Implementations.BookingsApiClient>(sp =>
     new LiaNcc.FE.Services.Implementations.BookingsApiClient(sp.GetRequiredService<IHttpClientFactory>().CreateClient("LiaNccApi")));
 
+builder.Services.AddScoped<LiaNcc.FE.Services.Interfaces.ILogsApiClient, LiaNcc.FE.Services.Implementations.LogsApiClient>(sp =>
+    new LiaNcc.FE.Services.Implementations.LogsApiClient(sp.GetRequiredService<IHttpClientFactory>().CreateClient("LiaNccApi")));
+
+builder.Services.AddScoped<LiaNcc.FE.Services.Interfaces.IApplicationLoggerService, LiaNcc.FE.Services.Implementations.ApplicationLoggerService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -58,6 +77,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<LiaNcc.FE.Middleware.CorrelationIdMiddleware>();
 app.UseRouting();
 
 var supportedCultures = new[] { "it", "en" };

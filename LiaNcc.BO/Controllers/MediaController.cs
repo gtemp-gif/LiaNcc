@@ -11,9 +11,12 @@ namespace LiaNcc.BO.Controllers
     {
         private readonly IMediaAssetsApiClient _mediaAssetsApiClient;
 
-        public MediaController(IMediaAssetsApiClient mediaAssetsApiClient)
+        private readonly IApplicationLoggerService _logger;
+
+        public MediaController(IMediaAssetsApiClient mediaAssetsApiClient, IApplicationLoggerService applicationLogger)
         {
             _mediaAssetsApiClient = mediaAssetsApiClient;
+            _logger = applicationLogger;
         }
 
         public async Task<IActionResult> Index()

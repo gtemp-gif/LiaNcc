@@ -16,15 +16,18 @@ namespace LiaNcc.WebAPI.Controllers
         private readonly IServiceRepository _serviceRepository;
         private readonly ILocalizedContentRepository _localizationRepository;
         private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
         public ServicesController(
             IServiceRepository serviceRepository,
             ILocalizedContentRepository localizationRepository,
-            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver,
+            LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _serviceRepository = serviceRepository;
             _localizationRepository = localizationRepository;
             _resolver = resolver;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -110,6 +113,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<Service>> CreateService(Service service)
         {
             await _serviceRepository.CreateAsync(service);
+            await _logger.LogInfoAsync("Services", "CreateService", $"Service {service.Name} created", service.Id, "Service");
             return Ok(service);
         }
 
@@ -118,6 +122,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != service.Id) return BadRequest();
             await _serviceRepository.UpdateAsync(service);
+            await _logger.LogInfoAsync("Services", "UpdateService", $"Service {service.Name} updated", service.Id, "Service");
             return NoContent();
         }
 
@@ -125,6 +130,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteService(Guid id)
         {
             await _serviceRepository.DeleteAsync(id);
+            await _logger.LogInfoAsync("Services", "DeleteService", $"Service {id} deleted", id, "Service");
             return NoContent();
         }
     }

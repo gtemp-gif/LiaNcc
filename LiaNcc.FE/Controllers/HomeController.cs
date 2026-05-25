@@ -10,6 +10,7 @@ namespace LiaNcc.FE.Controllers
     public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IApplicationLoggerService _appLogger;
         private readonly ISitePagesApiClient _sitePagesApi;
         private readonly IServicesApiClient _servicesApi;
         private readonly IVehiclesApiClient _vehiclesApi;
@@ -19,6 +20,7 @@ namespace LiaNcc.FE.Controllers
 
         public HomeController(
             ILogger<HomeController> logger,
+            IApplicationLoggerService applicationLogger,
             ISitePagesApiClient sitePagesApi,
             IServicesApiClient servicesApi,
             IVehiclesApiClient vehiclesApi,
@@ -27,6 +29,7 @@ namespace LiaNcc.FE.Controllers
             ICompanyApiClient companyApi)
         {
             _logger = logger;
+            _appLogger = applicationLogger;
             _sitePagesApi = sitePagesApi;
             _servicesApi = servicesApi;
             _vehiclesApi = vehiclesApi;
@@ -39,12 +42,12 @@ namespace LiaNcc.FE.Controllers
         {
             var culture = CurrentCulture;
             var model = new HomeViewModel();
-            try { model.Page = await _sitePagesApi.GetFullBySlugAsync("home", culture); } catch (Exception ex) { _logger.LogError(ex, "Error loading CMS page"); }
-            try { model.FeaturedServices = await _servicesApi.GetFeaturedAsync(culture); } catch (Exception ex) { _logger.LogError(ex, "Error loading services"); }
-            try { model.FeaturedVehicles = await _vehiclesApi.GetFeaturedAsync(culture); } catch (Exception ex) { _logger.LogError(ex, "Error loading vehicles"); }
-            try { model.FeaturedTours = await _toursApi.GetFeaturedAsync(culture); } catch (Exception ex) { _logger.LogError(ex, "Error loading tours"); }
-            try { model.Partners = await _partnersApi.GetActiveAsync(); } catch (Exception ex) { _logger.LogError(ex, "Error loading partners"); }
-            try { model.Company = await _companyApi.GetCompanyProfileAsync(); } catch (Exception ex) { _logger.LogError(ex, "Error loading company profile"); }
+            try { model.Page = await _sitePagesApi.GetFullBySlugAsync("home", culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("CMS", "LoadHome", "Error loading CMS page", ex); }
+            try { model.FeaturedServices = await _servicesApi.GetFeaturedAsync(culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Services", "LoadFeatured", "Error loading services", ex); }
+            try { model.FeaturedVehicles = await _vehiclesApi.GetFeaturedAsync(culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Vehicles", "LoadFeatured", "Error loading vehicles", ex); }
+            try { model.FeaturedTours = await _toursApi.GetFeaturedAsync(culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Tours", "LoadFeatured", "Error loading tours", ex); }
+            try { model.Partners = await _partnersApi.GetActiveAsync(); } catch (Exception ex) { await _appLogger.LogErrorAsync("Partners", "LoadActive", "Error loading partners", ex); }
+            try { model.Company = await _companyApi.GetCompanyProfileAsync(); } catch (Exception ex) { await _appLogger.LogErrorAsync("Company", "LoadProfile", "Error loading company profile", ex); }
 
             return View(model);
         }
@@ -53,7 +56,7 @@ namespace LiaNcc.FE.Controllers
         {
             var culture = CurrentCulture;
             var model = new FleetViewModel();
-            try { model.Vehicles = await _vehiclesApi.GetActiveAsync(culture); } catch (Exception ex) { _logger.LogError(ex, "Error loading vehicles"); }
+            try { model.Vehicles = await _vehiclesApi.GetActiveAsync(culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Vehicles", "LoadFleet", "Error loading vehicles", ex); }
             return View(model);
         }
 
@@ -61,7 +64,7 @@ namespace LiaNcc.FE.Controllers
         {
             var culture = CurrentCulture;
             var model = new ToursViewModel();
-            try { model.Tours = await _toursApi.GetActiveAsync(culture); } catch (Exception ex) { _logger.LogError(ex, "Error loading tours"); }
+            try { model.Tours = await _toursApi.GetActiveAsync(culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Tours", "LoadTours", "Error loading tours", ex); }
             return View(model);
         }
 
@@ -69,7 +72,7 @@ namespace LiaNcc.FE.Controllers
         {
             var culture = CurrentCulture;
             Tour? tour = null;
-            try { tour = await _toursApi.GetDetailBySlugAsync(slug, culture); } catch (Exception ex) { _logger.LogError(ex, "Error loading tour detail"); }
+            try { tour = await _toursApi.GetDetailBySlugAsync(slug, culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Tours", "LoadTourDetail", $"Error loading tour {slug}", ex); }
 
             if (tour == null) return NotFound();
 

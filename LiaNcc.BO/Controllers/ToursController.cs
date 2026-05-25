@@ -25,14 +25,18 @@ namespace LiaNcc.BO.Controllers
             "ExperienceDescription", "MeetingPoint"
         };
 
+        private readonly IApplicationLoggerService _logger;
+
         public ToursController(
             IToursApiClient toursApiClient,
+            IApplicationLoggerService applicationLogger,
             IVehiclesApiClient vehiclesApiClient,
             IFilesApiClient filesApiClient,
             ILanguagesApiClient languagesApiClient,
             ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _toursApiClient = toursApiClient;
+            _logger = applicationLogger;
             _vehiclesApiClient = vehiclesApiClient;
             _filesApiClient = filesApiClient;
             _languagesApiClient = languagesApiClient;
@@ -200,6 +204,7 @@ namespace LiaNcc.BO.Controllers
 
                 await _toursApiClient.UpdateTourAsync(id, tour);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Tour", id);
+                await _logger.LogInfoAsync("Tours", "UpdateTour", $"Tour {tour.Name} updated via BO", id, "Tour");
 
                 // Gallery upload
                 if (model.NewGalleryImages != null && model.NewGalleryImages.Any())

@@ -12,8 +12,19 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IO;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/lia-webapi-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 30)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
@@ -65,6 +76,7 @@ builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection(
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IApplicationLoggerService, ApplicationLoggerService>();
 builder.Services.AddScoped<LiaNcc.WebAPI.Helpers.ILocalizationResolver, LiaNcc.WebAPI.Helpers.LocalizationResolver>();
 
 // Configure CORS
@@ -113,6 +125,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<LiaNcc.WebAPI.Middleware.ExceptionLoggingMiddleware>();
 app.UseStaticFiles();
 
 var fileStoragePath = Path.Combine(builder.Environment.ContentRootPath, "LiaNccFiles");

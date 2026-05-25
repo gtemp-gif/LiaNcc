@@ -14,10 +14,12 @@ namespace LiaNcc.WebAPI.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyRepository _companyRepository;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
-        public CompanyController(ICompanyRepository companyRepository)
+        public CompanyController(ICompanyRepository companyRepository, LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _companyRepository = companyRepository;
+            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -76,6 +78,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<CompanyProfile>> UpdateCompany(CompanyProfile profile)
         {
             var updated = await _companyRepository.CreateOrUpdateProfileAsync(profile);
+            await _logger.LogInfoAsync("Company", "UpdateProfile", "Company profile updated", updated.Id, "CompanyProfile");
             return Ok(updated);
         }
 
@@ -83,6 +86,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<CompanyContact>> CreateContact(CompanyContact contact)
         {
             await _companyRepository.CreateContactAsync(contact);
+            await _logger.LogInfoAsync("Company", "CreateContact", $"Contact {contact.Type} added", contact.Id, "CompanyContact");
             return Ok(contact);
         }
 
@@ -91,6 +95,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != contact.Id) return BadRequest();
             await _companyRepository.UpdateContactAsync(contact);
+            await _logger.LogInfoAsync("Company", "UpdateContact", $"Contact {contact.Type} updated", contact.Id, "CompanyContact");
             return NoContent();
         }
 
@@ -98,6 +103,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteContact(Guid id)
         {
             await _companyRepository.DeleteContactAsync(id);
+            await _logger.LogInfoAsync("Company", "DeleteContact", $"Contact {id} deleted", id, "CompanyContact");
             return NoContent();
         }
     }

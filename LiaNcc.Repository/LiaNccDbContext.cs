@@ -35,6 +35,7 @@ namespace LiaNcc.Repository
         public DbSet<CompanyProfile> CompanyProfiles { get; set; } = null!;
         public DbSet<CompanyContact> CompanyContacts { get; set; } = null!;
         public DbSet<Partner> Partners { get; set; } = null!;
+        public DbSet<ApplicationLog> ApplicationLogs { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -261,6 +262,21 @@ namespace LiaNcc.Repository
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
+            });
+
+            // ApplicationLogs
+            modelBuilder.Entity<ApplicationLog>(entity => {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
+                entity.Property(e => e.Source).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Level).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+
+                entity.HasIndex(e => e.CreatedAt);
+                entity.HasIndex(e => e.Level);
+                entity.HasIndex(e => e.Source);
+                entity.HasIndex(e => e.Area);
+                entity.HasIndex(e => e.CorrelationId);
             });
         }
     }

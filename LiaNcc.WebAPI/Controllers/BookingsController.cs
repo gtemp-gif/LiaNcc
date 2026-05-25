@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LiaNcc.Models.DTOs.Requests;
 using LiaNcc.Models.Entities;
 using LiaNcc.Repository.Interfaces;
+using LiaNcc.WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,15 +18,18 @@ namespace LiaNcc.WebAPI.Controllers
         private readonly IBookingRepository _bookingRepository;
         private readonly ILocalizedContentRepository _localizationRepository;
         private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
+        private readonly IApplicationLoggerService _logger;
 
         public BookingsController(
             IBookingRepository bookingRepository,
             ILocalizedContentRepository localizationRepository,
-            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver,
+            IApplicationLoggerService logger)
         {
             _bookingRepository = bookingRepository;
             _localizationRepository = localizationRepository;
             _resolver = resolver;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -63,6 +67,7 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _bookingRepository.CreateAsync(booking);
+            await _logger.LogInfoAsync("Bookings", "CreateBooking", $"Booking created for {booking.FullName}", booking.Id, "Booking");
             return Ok(booking);
         }
 
@@ -78,6 +83,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] string status)
         {
             await _bookingRepository.UpdateStatusAsync(id, status);
+            await _logger.LogInfoAsync("Bookings", "UpdateStatus", $"Booking {id} status updated to {status}", id, "Booking");
             return NoContent();
         }
 

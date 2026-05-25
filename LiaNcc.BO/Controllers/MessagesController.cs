@@ -10,9 +10,12 @@ namespace LiaNcc.BO.Controllers
     {
         private readonly IContactMessagesApiClient _contactMessagesApiClient;
 
-        public MessagesController(IContactMessagesApiClient contactMessagesApiClient)
+        private readonly IApplicationLoggerService _logger;
+
+        public MessagesController(IContactMessagesApiClient contactMessagesApiClient, IApplicationLoggerService applicationLogger)
         {
             _contactMessagesApiClient = contactMessagesApiClient;
+            _logger = applicationLogger;
         }
 
         public async Task<IActionResult> Index()

@@ -21,13 +21,17 @@ namespace LiaNcc.BO.Controllers
 
         private readonly List<string> _translatableKeys = new List<string> { "Name", "Title", "Description" };
 
+        private readonly IApplicationLoggerService _logger;
+
         public VehiclesController(
             IVehiclesApiClient vehiclesApiClient,
+            IApplicationLoggerService applicationLogger,
             IFilesApiClient filesApiClient,
             ILanguagesApiClient languagesApiClient,
             ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _vehiclesApiClient = vehiclesApiClient;
+            _logger = applicationLogger;
             _filesApiClient = filesApiClient;
             _languagesApiClient = languagesApiClient;
             _localizedContentsApiClient = localizedContentsApiClient;
@@ -167,8 +171,8 @@ namespace LiaNcc.BO.Controllers
                 }
 
                 await _vehiclesApiClient.UpdateVehicleAsync(id, request);
-
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Vehicle", id);
+                await _logger.LogInfoAsync("Vehicles", "UpdateVehicle", $"Vehicle {request.Name} updated via BO", id, "Vehicle");
 
                 if (model.NewGalleryImages != null && model.NewGalleryImages.Count > 0)
                 {

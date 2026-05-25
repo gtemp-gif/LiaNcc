@@ -16,13 +16,17 @@ namespace LiaNcc.BO.Controllers
 
         private readonly System.Collections.Generic.List<string> _translatableKeys = new System.Collections.Generic.List<string> { "Name", "Address", "AboutTitle", "AboutDescription" };
 
+        private readonly IApplicationLoggerService _logger;
+
         public CompanyController(
             ICompanyApiClient companyApiClient,
+            IApplicationLoggerService applicationLogger,
             ILanguagesApiClient languagesApiClient,
             ILocalizedContentsApiClient localizedContentsApiClient,
             IFilesApiClient filesApiClient)
         {
             _companyApiClient = companyApiClient;
+            _logger = applicationLogger;
             _languagesApiClient = languagesApiClient;
             _localizedContentsApiClient = localizedContentsApiClient;
             _filesApiClient = filesApiClient;
@@ -122,6 +126,8 @@ namespace LiaNcc.BO.Controllers
 
                 await _companyApiClient.UpdateAsync(id, profileUpdate);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "CompanyProfile", id);
+
+                await _logger.LogInfoAsync("Company", "UpdateProfile", "Company profile updated via BO", id, "CompanyProfile");
 
                 TempData["SuccessMessage"] = "Profilo aziendale aggiornato.";
                 return RedirectToAction(nameof(Index));

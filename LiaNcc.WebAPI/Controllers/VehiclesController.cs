@@ -19,17 +19,20 @@ namespace LiaNcc.WebAPI.Controllers
         private readonly IMediaRepository _mediaRepository;
         private readonly ILocalizedContentRepository _localizationRepository;
         private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
         public VehiclesController(
             IVehicleRepository vehicleRepository,
             IMediaRepository mediaRepository,
             ILocalizedContentRepository localizationRepository,
-            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver,
+            LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _vehicleRepository = vehicleRepository;
             _mediaRepository = mediaRepository;
             _localizationRepository = localizationRepository;
             _resolver = resolver;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -163,6 +166,7 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _vehicleRepository.CreateAsync(vehicle);
+            await _logger.LogInfoAsync("Vehicles", "CreateVehicle", $"Vehicle {vehicle.Name} created", vehicle.Id, "Vehicle");
 
             foreach (var f in request.Features)
             {
@@ -196,6 +200,7 @@ namespace LiaNcc.WebAPI.Controllers
             vehicle.SortOrder = request.SortOrder;
 
             await _vehicleRepository.UpdateAsync(vehicle);
+            await _logger.LogInfoAsync("Vehicles", "UpdateVehicle", $"Vehicle {vehicle.Name} updated", vehicle.Id, "Vehicle");
 
             await _vehicleRepository.ClearFeaturesAsync(id);
             foreach (var f in request.Features)
@@ -216,6 +221,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteVehicle(Guid id)
         {
             await _vehicleRepository.DeleteAsync(id);
+            await _logger.LogInfoAsync("Vehicles", "DeleteVehicle", $"Vehicle {id} deleted", id, "Vehicle");
             return NoContent();
         }
 
@@ -223,6 +229,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteGalleryImage(Guid imageId)
         {
             await _mediaRepository.RemoveMediaFromEntityAsync(imageId);
+            await _logger.LogInfoAsync("Vehicles", "DeleteGalleryImage", $"Gallery image {imageId} removed", imageId, "VehicleGalleryImage");
             return NoContent();
         }
 

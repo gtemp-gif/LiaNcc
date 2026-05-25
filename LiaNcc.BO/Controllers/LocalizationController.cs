@@ -10,9 +10,12 @@ namespace LiaNcc.BO.Controllers
     {
         private readonly ILanguagesApiClient _languagesApiClient;
 
-        public LocalizationController(ILanguagesApiClient languagesApiClient)
+        private readonly IApplicationLoggerService _logger;
+
+        public LocalizationController(ILanguagesApiClient languagesApiClient, IApplicationLoggerService applicationLogger)
         {
             _languagesApiClient = languagesApiClient;
+            _logger = applicationLogger;
         }
 
         public async Task<IActionResult> Index()

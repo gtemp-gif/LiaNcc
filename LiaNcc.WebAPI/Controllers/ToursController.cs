@@ -19,17 +19,20 @@ namespace LiaNcc.WebAPI.Controllers
         private readonly IMediaRepository _mediaRepository;
         private readonly ILocalizedContentRepository _localizationRepository;
         private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
         public ToursController(
             ITourRepository tourRepository,
             IMediaRepository mediaRepository,
             ILocalizedContentRepository localizationRepository,
-            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver,
+            LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _tourRepository = tourRepository;
             _mediaRepository = mediaRepository;
             _localizationRepository = localizationRepository;
             _resolver = resolver;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -140,6 +143,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<Tour>> CreateTour(Tour tour)
         {
             await _tourRepository.CreateAsync(tour);
+            await _logger.LogInfoAsync("Tours", "CreateTour", $"Tour {tour.Name} created", tour.Id, "Tour");
             return Ok(tour);
         }
 
@@ -148,6 +152,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != tour.Id) return BadRequest();
             await _tourRepository.UpdateAsync(tour);
+            await _logger.LogInfoAsync("Tours", "UpdateTour", $"Tour {tour.Name} updated", tour.Id, "Tour");
             return NoContent();
         }
 
@@ -170,6 +175,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteTour(Guid id)
         {
             await _tourRepository.DeleteAsync(id);
+            await _logger.LogInfoAsync("Tours", "DeleteTour", $"Tour {id} deleted", id, "Tour");
             return NoContent();
         }
 
@@ -177,6 +183,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteGalleryImage(Guid imageId)
         {
             await _mediaRepository.RemoveMediaFromEntityAsync(imageId);
+            await _logger.LogInfoAsync("Tours", "DeleteGalleryImage", $"Gallery image {imageId} removed", imageId, "TourGalleryImage");
             return NoContent();
         }
 
