@@ -58,6 +58,7 @@ namespace LiaNcc.BO.Controllers
                 };
                 var createdPage = await _sitePagesApiClient.CreateAsync(sitePage);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "SitePage", createdPage.Id);
+                await _logger.LogInfoAsync("CMS", "CreatePage", $"Page {createdPage.Name} created via BO", createdPage.Id, "SitePage");
                 TempData["SuccessMessage"] = "Pagina creata con successo.";
                 return RedirectToAction(nameof(Index));
             }

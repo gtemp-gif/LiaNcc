@@ -92,6 +92,7 @@ namespace LiaNcc.BO.Controllers
                 var vehicle = await _vehiclesApiClient.CreateVehicleAsync(request);
 
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Vehicle", vehicle.Id);
+                await _logger.LogInfoAsync("Vehicles", "CreateVehicle", $"Vehicle {vehicle.Name} created via BO", vehicle.Id, "Vehicle");
 
                 if (model.NewGalleryImages != null && model.NewGalleryImages.Count > 0)
                 {

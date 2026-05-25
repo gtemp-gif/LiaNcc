@@ -103,6 +103,7 @@ namespace LiaNcc.BO.Controllers
 
                 var createdTour = await _toursApiClient.CreateTourAsync(tour);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Tour", createdTour.Id);
+                await _logger.LogInfoAsync("Tours", "CreateTour", $"Tour {createdTour.Name} created via BO", createdTour.Id, "Tour");
 
                 // Gallery upload
                 if (model.NewGalleryImages != null && model.NewGalleryImages.Any())

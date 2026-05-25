@@ -18,7 +18,7 @@ namespace LiaNcc.BO.Services.Implementations
 
         public async Task<LoginResponse?> LoginAsync(LoginRequest request)
         {
-            var response = await _httpClient.PostAsJsonAsync("/auth/login", request);
+            var response = await _httpClient.PostAsJsonAsync("auth/login", request);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<LoginResponse>();

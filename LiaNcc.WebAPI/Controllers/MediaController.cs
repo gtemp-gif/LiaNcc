@@ -14,10 +14,12 @@ namespace LiaNcc.WebAPI.Controllers
     public class MediaController : ControllerBase
     {
         private readonly IMediaRepository _mediaRepository;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
-        public MediaController(IMediaRepository mediaRepository)
+        public MediaController(IMediaRepository mediaRepository, LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _mediaRepository = mediaRepository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -59,6 +61,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteMedia(Guid id)
         {
             await _mediaRepository.DeleteAsync(id);
+            await _logger.LogInfoAsync("Media", "DeleteMedia", $"Media asset {id} deleted", id, "MediaAsset");
             return NoContent();
         }
 
@@ -66,6 +69,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> RemoveMediaFromEntity(Guid id)
         {
             await _mediaRepository.RemoveMediaFromEntityAsync(id);
+            await _logger.LogInfoAsync("Media", "RemoveMediaFromEntity", $"Media association {id} removed", id, "EntityMedia");
             return NoContent();
         }
     }

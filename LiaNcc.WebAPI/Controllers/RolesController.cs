@@ -17,10 +17,12 @@ namespace LiaNcc.WebAPI.Controllers
     public class RolesController : ControllerBase
     {
         private readonly IRoleRepository _roleRepository;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
-        public RolesController(IRoleRepository roleRepository)
+        public RolesController(IRoleRepository roleRepository, LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _roleRepository = roleRepository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -70,6 +72,7 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _roleRepository.CreateAsync(role);
+            await _logger.LogInfoAsync("Auth", "CreateRole", $"Role {role.Name} created", role.Id, "Role");
 
             return CreatedAtAction(nameof(GetRole), new { id = role.Id }, new RoleResponse
             {
@@ -111,6 +114,7 @@ namespace LiaNcc.WebAPI.Controllers
             // Implementing logical deletion for safety
             role.IsActive = false;
             await _roleRepository.UpdateAsync(role);
+            await _logger.LogInfoAsync("Auth", "DeleteRole", $"Role {id} logically deleted", id, "Role");
 
             return NoContent();
         }

@@ -58,6 +58,7 @@ namespace LiaNcc.BO.Controllers
                 };
                 var createdPartner = await _partnersApiClient.CreateAsync(partner);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Partner", createdPartner.Id);
+                await _logger.LogInfoAsync("Partners", "CreatePartner", $"Partner {createdPartner.Name} created via BO", createdPartner.Id, "Partner");
                 TempData["SuccessMessage"] = "Partner creato.";
                 return RedirectToAction(nameof(Index));
             }
