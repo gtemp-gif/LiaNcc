@@ -47,7 +47,11 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<CompanyProfile>> GetCompanyById(Guid id, [FromQuery] string? culture)
         {
             var profile = await _companyRepository.GetCompanyProfileAsync();
-            if (profile == null || (id != Guid.Empty && profile.Id != id)) return NotFound();
+            if (profile == null)
+            {
+                var newProfile = new CompanyProfile { Id = id, Name = "LiaNcc" };
+                return Ok(newProfile);
+            }
 
             if (!string.IsNullOrEmpty(culture))
             {
