@@ -25,6 +25,9 @@ namespace LiaNcc.FE.Services.Interfaces
         Task<IEnumerable<TourDto>> GetFeaturedAsync(string? culture = null);
         Task<Tour?> GetDetailAsync(Guid id, string? culture = null);
         Task<Tour?> GetDetailBySlugAsync(string slug, string? culture = null);
+
+        // --- RIGA AGGIUNTA PER LA GALLERIA ---
+        Task<IEnumerable<TourGalleryImageDto>> GetTourGalleryAsync(Guid id);
     }
 
     public interface IPartnersApiClient : IApiClient<Partner, Guid>
