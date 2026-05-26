@@ -22,12 +22,14 @@ builder.Host.UseSerilog();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var pathBase = builder.Configuration["AppSettings:PathBase"] ?? "";
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Auth/Login";
-        options.LogoutPath = "/Auth/Logout";
-        options.AccessDeniedPath = "/Auth/AccessDenied";
+        options.LoginPath = $"{pathBase}/Auth/Login";
+        options.LogoutPath = $"{pathBase}/Auth/Logout";
+        options.AccessDeniedPath = $"{pathBase}/Auth/AccessDenied";
         options.Cookie.Name = "LiaNcc.BO.Auth";
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
@@ -99,6 +101,11 @@ builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILogsApiClient, Lia
 builder.Services.AddScoped<LiaNcc.BO.Services.Interfaces.IApplicationLoggerService, LiaNcc.BO.Services.Implementations.ApplicationLoggerService>();
 
 var app = builder.Build();
+
+if (!string.IsNullOrWhiteSpace(pathBase))
+{
+    app.UsePathBase(pathBase);
+}
 
 // Initialize MediaUrlHelper
 LiaNcc.BO.Helpers.MediaUrlHelper.Initialize(app.Configuration);

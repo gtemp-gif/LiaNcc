@@ -75,13 +75,6 @@ namespace LiaNcc.FE.Services.Implementations
             if (!string.IsNullOrEmpty(culture)) url += $"?culture={culture}";
             return await _httpClient.GetFromJsonAsync<Tour>(url, _jsonSerializerOptions);
         }
-
-        // METODO AGGIUNTO QUI DENTRO NELLA POSIZIONE CORRETTA!
-        public async Task<IEnumerable<TourGalleryImageDto>> GetTourGalleryAsync(Guid id)
-        {
-            var url = $"tours/{id}/gallery";
-            return await _httpClient.GetFromJsonAsync<IEnumerable<TourGalleryImageDto>>(url, _jsonSerializerOptions) ?? Array.Empty<TourGalleryImageDto>();
-        }
     }
 
     public class PartnersApiClient : BaseApiClient<Partner, Guid>, IPartnersApiClient

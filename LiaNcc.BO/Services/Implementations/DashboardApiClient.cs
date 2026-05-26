@@ -17,16 +17,7 @@ namespace LiaNcc.BO.Services.Implementations
         {
             SetBearerToken();
             var response = await _httpClient.GetAsync($"{_endpointUrl}/summary");
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                var httpContext = _httpContextAccessor.HttpContext;
-                if (httpContext != null)
-                {
-                    httpContext.Response.Redirect("/Auth/Login");
-                    await httpContext.Response.CompleteAsync();
-                    return null;
-                }
-            }
+            EnsureValidResponse(response);
             if (!response.IsSuccessStatusCode) return null;
             return await response.Content.ReadFromJsonAsync<DashboardSummaryDto>(_jsonSerializerOptions);
         }

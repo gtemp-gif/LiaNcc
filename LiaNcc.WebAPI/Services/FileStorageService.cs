@@ -97,12 +97,17 @@ namespace LiaNcc.WebAPI.Services
                 ? $"{_options.PublicBasePath}/{uniqueFileName}"
                 : $"{_options.PublicBasePath}/{folder}/{uniqueFileName}";
 
+            var baseUrl = _options.PublicBaseUrl?.TrimEnd('/');
+            var absoluteUrl = string.IsNullOrEmpty(baseUrl)
+                ? relativePath
+                : $"{baseUrl}/{(string.IsNullOrEmpty(folder) ? uniqueFileName : folder + "/" + uniqueFileName)}";
+
             return new UploadedFileDto
             {
                 FileName = uniqueFileName,
                 OriginalFileName = file.FileName,
                 RelativePath = relativePath,
-                Url = relativePath,
+                Url = absoluteUrl,
                 Extension = extension,
                 MimeType = GetMimeType(filePath),
                 SizeBytes = file.Length,
@@ -168,12 +173,17 @@ namespace LiaNcc.WebAPI.Services
                 ? $"{_options.PublicBasePath}/{fileInfo.Name}"
                 : $"{_options.PublicBasePath}/{folder}/{fileInfo.Name}";
 
+            var baseUrl = _options.PublicBaseUrl?.TrimEnd('/');
+            var absoluteUrl = string.IsNullOrEmpty(baseUrl)
+                ? relativePath
+                : $"{baseUrl}/{(string.IsNullOrEmpty(folder) ? fileInfo.Name : folder + "/" + fileInfo.Name)}";
+
             return new FileMetadataDto
             {
                 FileName = fileInfo.Name,
                 OriginalFileName = fileInfo.Name, // We don't store original name in FS, could be improved if needed
                 RelativePath = relativePath,
-                Url = relativePath,
+                Url = absoluteUrl,
                 Extension = fileInfo.Extension,
                 MimeType = GetMimeType(fileInfo.FullName),
                 SizeBytes = fileInfo.Length,

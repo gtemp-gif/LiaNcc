@@ -169,10 +169,11 @@
                     var item = btn.closest('.gallery-item');
                     var id = item.getAttribute('data-id');
 
-                    fetch('/Tours/DeleteGalleryImage?imageId=' + id, {
+                    fetch('@Url.Action("DeleteGalleryImage", "Tours")?imageId=' + id, {
                         method: 'POST',
                         headers: {
-                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value,
+                            'X-Requested-With': 'XMLHttpRequest'
                         }
                     }).then(response => {
                         if (response.ok) {

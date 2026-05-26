@@ -118,11 +118,20 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+var pathBase = builder.Configuration["AppSettings:PathBase"];
+if (!string.IsNullOrWhiteSpace(pathBase))
+{
+    app.UsePathBase(pathBase);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint($"{(string.IsNullOrEmpty(pathBase) ? "" : pathBase)}/swagger/v1/swagger.json", "LiaNcc.WebAPI v1");
+    });
 }
 
 app.UseHttpsRedirection();
