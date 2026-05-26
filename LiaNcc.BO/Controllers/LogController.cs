@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace LiaNcc.BO.Controllers
 {
     [Authorize]
-    public class LogsController : Controller
+    public class LogController : Controller
     {
         private readonly ILogsApiClient _logsApiClient;
 
-        public LogsController(ILogsApiClient logsApiClient)
+        public LogController(ILogsApiClient logsApiClient)
         {
             _logsApiClient = logsApiClient;
         }

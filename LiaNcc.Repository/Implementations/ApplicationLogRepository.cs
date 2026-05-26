@@ -51,9 +51,9 @@ namespace LiaNcc.Repository.Implementations
 
             if (!string.IsNullOrEmpty(filter.Search))
             {
-                query = query.Where(l => l.Message.Contains(filter.Search)
-                                      || l.ExceptionMessage.Contains(filter.Search)
-                                      || l.UserEmail.Contains(filter.Search));
+                query = query.Where(l => (l.Message != null && l.Message.Contains(filter.Search))
+                                      || (l.ExceptionMessage != null && l.ExceptionMessage.Contains(filter.Search))
+                                      || (l.UserEmail != null && l.UserEmail.Contains(filter.Search)));
             }
 
             var totalCount = await query.CountAsync();
