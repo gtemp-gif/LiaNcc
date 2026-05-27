@@ -19,7 +19,9 @@ namespace LiaNcc.BO.Controllers
 
         public async Task<IActionResult> Index(ApplicationLogFilterRequest filter)
         {
+            if (filter.Page <= 0) filter.Page = 1;
             filter.PageSize = 50;
+
             var result = await _logsApiClient.GetLogsAsync(filter);
             ViewBag.Filter = filter;
             return View(result);

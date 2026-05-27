@@ -122,7 +122,24 @@ namespace LiaNcc.BO.Services.Implementations
         public async Task<PagedResult<ApplicationLog>> GetLogsAsync(ApplicationLogFilterRequest filter)
         {
             SetBearerToken();
-            var query = $"?source={filter.Source}&area={filter.Area}&level={filter.Level}&action={filter.Action}&search={filter.Search}&page={filter.Page}&pageSize={filter.PageSize}";
+            var queryParams = new List<string>
+            {
+                $"source={Uri.EscapeDataString(filter.Source ?? "")}",
+                $"area={Uri.EscapeDataString(filter.Area ?? "")}",
+                $"level={Uri.EscapeDataString(filter.Level ?? "")}",
+                $"action={Uri.EscapeDataString(filter.Action ?? "")}",
+                $"entityName={Uri.EscapeDataString(filter.EntityName ?? "")}",
+                $"correlationId={Uri.EscapeDataString(filter.CorrelationId ?? "")}",
+                $"search={Uri.EscapeDataString(filter.Search ?? "")}",
+                $"page={filter.Page}",
+                $"pageSize={filter.PageSize}"
+            };
+
+            if (filter.EntityId.HasValue) queryParams.Add($"entityId={filter.EntityId}");
+            if (filter.FromDate.HasValue) queryParams.Add($"fromDate={filter.FromDate.Value:yyyy-MM-dd}");
+            if (filter.ToDate.HasValue) queryParams.Add($"toDate={filter.ToDate.Value:yyyy-MM-dd}");
+
+            var query = "?" + string.Join("&", queryParams);
             var response = await _httpClient.GetAsync($"{_endpointUrl}{query}");
             EnsureValidResponse(response);
             return await response.Content.ReadFromJsonAsync<PagedResult<ApplicationLog>>(_jsonSerializerOptions) ?? new PagedResult<ApplicationLog>();
