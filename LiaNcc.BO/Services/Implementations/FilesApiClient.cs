@@ -46,6 +46,8 @@ namespace LiaNcc.BO.Services.Implementations
             if (entityId != null) content.Add(new StringContent(entityId.ToString()!), "EntityId");
             if (mediaType != null) content.Add(new StringContent(mediaType), "MediaType");
 
+            var fileNames = string.Join(", ", files.Select(f => f.FileName));
+
             foreach (var file in files)
             {
                 var fileContent = new StreamContent(file.OpenReadStream());

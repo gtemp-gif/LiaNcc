@@ -145,8 +145,13 @@ namespace LiaNcc.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error uploading files");
-                return StatusCode(500, "Internal server error during upload");
+                var fileNames = request.Files != null ? string.Join(", ", request.Files.Select(f => f.FileName)) : "none";
+                var errorMsg = $"Error uploading files. Folder: {request.Folder}, Entity: {request.EntityName}, Id: {request.EntityId}, Files: [{fileNames}]";
+
+                _logger.LogError(ex, errorMsg);
+                await _appLogger.LogErrorAsync("Media", "UploadFile", errorMsg, ex,null, request.EntityId, request.EntityName);
+
+                return StatusCode(500, $"Internal server error during upload: {ex.Message}");
             }
         }
 

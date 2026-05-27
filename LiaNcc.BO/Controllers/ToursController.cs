@@ -168,16 +168,25 @@ namespace LiaNcc.BO.Controllers
 
             if (ModelState.IsValid)
             {
-                if (model.CoverImageFile != null)
+                bool uploadError = false;
+                try
                 {
-                    var upload = await _filesApiClient.UploadFilesAsync(new List<Microsoft.AspNetCore.Http.IFormFile> { model.CoverImageFile }, "tours", "Tours", id, "Cover");
-                    if (upload?.UploadedFiles.Count > 0) model.CoverImageUrl = upload.UploadedFiles[0].Url;
-                }
+                    if (model.CoverImageFile != null)
+                    {
+                        var upload = await _filesApiClient.UploadFilesAsync(new List<Microsoft.AspNetCore.Http.IFormFile> { model.CoverImageFile }, "tours", "Tours", id, "Cover");
+                        if (upload?.UploadedFiles.Count > 0) model.CoverImageUrl = upload.UploadedFiles[0].Url;
+                    }
 
-                if (model.ExperienceImageFile != null)
+                    if (model.ExperienceImageFile != null)
+                    {
+                        var upload = await _filesApiClient.UploadFilesAsync(new List<Microsoft.AspNetCore.Http.IFormFile> { model.ExperienceImageFile }, "tours", "Tours", id, "Experience");
+                        if (upload?.UploadedFiles.Count > 0) model.ExperienceImageUrl = upload.UploadedFiles[0].Url;
+                    }
+                }
+                catch (Exception ex)
                 {
-                    var upload = await _filesApiClient.UploadFilesAsync(new List<Microsoft.AspNetCore.Http.IFormFile> { model.ExperienceImageFile }, "tours", "Tours", id, "Experience");
-                    if (upload?.UploadedFiles.Count > 0) model.ExperienceImageUrl = upload.UploadedFiles[0].Url;
+                    await _logger.LogErrorAsync("Tours", "EditUpload", "Error uploading main images during tour edit", ex,null, id, "Tour");
+                    uploadError = true;
                 }
 
                 var tour = new Tour
@@ -210,14 +219,29 @@ namespace LiaNcc.BO.Controllers
                 // Gallery upload
                 if (model.NewGalleryImages != null && model.NewGalleryImages.Any())
                 {
-                    var galleryUpload = await _filesApiClient.UploadFilesAsync(model.NewGalleryImages, "tours", "Tours", id, "Gallery");
-                    if (galleryUpload == null || galleryUpload.UploadedFiles.Count == 0)
+                    try
                     {
-                        TempData["WarningMessage"] = "Tour aggiornato, ma si è verificato un errore durante il caricamento delle nuove immagini della galleria.";
+                        var galleryUpload = await _filesApiClient.UploadFilesAsync(model.NewGalleryImages, "tours", "Tours", id, "Gallery");
+                        if (galleryUpload == null || galleryUpload.UploadedFiles.Count == 0)
+                        {
+                            uploadError = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await _logger.LogErrorAsync("Tours", "EditGalleryUpload", "Error uploading gallery images during tour edit", ex,null, id, "Tour");
+                        uploadError = true;
                     }
                 }
 
-                TempData["SuccessMessage"] = "Tour aggiornato con successo.";
+                if (uploadError)
+                {
+                    TempData["WarningMessage"] = "Tour salvato, ma si è verificato un errore durante il caricamento di alcune immagini.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "Tour aggiornato con successo.";
+                }
                 return RedirectToAction(nameof(Index));
             }
 

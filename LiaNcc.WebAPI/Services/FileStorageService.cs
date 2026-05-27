@@ -20,7 +20,15 @@ namespace LiaNcc.WebAPI.Services
         public FileStorageService(IOptions<FileStorageOptions> options, IWebHostEnvironment env)
         {
             _options = options.Value;
-            _rootPath = Path.Combine(env.ContentRootPath, _options.RootPath);
+
+            if (Path.IsPathRooted(_options.RootPath))
+            {
+                _rootPath = _options.RootPath;
+            }
+            else
+            {
+                _rootPath = Path.Combine(env.ContentRootPath, _options.RootPath);
+            }
 
             if (!Directory.Exists(_rootPath))
             {

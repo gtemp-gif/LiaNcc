@@ -113,7 +113,7 @@ LiaNcc.BO.Helpers.MediaUrlHelper.Initialize(app.Configuration);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler($"{pathBase}/Home/Error");
     app.UseHsts();
 }
 
