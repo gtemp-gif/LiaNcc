@@ -3,6 +3,8 @@ using LiaNcc.BO.Controllers.Base;
 using LiaNcc.BO.Services.Interfaces;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Diagnostics;
+using LiaNcc.BO.Models;
 
 namespace LiaNcc.BO.Controllers
 {
@@ -25,6 +27,12 @@ namespace LiaNcc.BO.Controllers
             }
 
             return View(summary);
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
