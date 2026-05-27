@@ -44,6 +44,8 @@ namespace LiaNcc.BO.Services.Implementations
             if (entityId != null) content.Add(new StringContent(entityId.ToString()!), "EntityId");
             if (mediaType != null) content.Add(new StringContent(mediaType), "MediaType");
 
+            var fileNames = string.Join(", ", files.Select(f => f.FileName));
+
             foreach (var file in files)
             {
                 var fileContent = new StreamContent(file.OpenReadStream());
@@ -52,7 +54,15 @@ namespace LiaNcc.BO.Services.Implementations
             }
 
             var response = await _httpClient.PostAsync($"{_endpointUrl}/upload", content);
-            response.EnsureSuccessStatusCode();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorBody = await response.Content.ReadAsStringAsync();
+                var errorMessage = $"Upload file failed. StatusCode: {response.StatusCode}. Body: {errorBody}. " +
+                                  $"Details: Folder={folder}, Entity={entityName}, Id={entityId}, Type={mediaType}, Files=[{fileNames}]";
+
+                throw new Exception(errorMessage);
+            }
 
             return (await response.Content.ReadFromJsonAsync<FileUploadResponse>(_jsonSerializerOptions))!;
         }

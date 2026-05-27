@@ -9,13 +9,19 @@ namespace LiaNcc.FE.Helpers
 
     public class MediaUrlBuilder : IMediaUrlBuilder
     {
-        private readonly string _baseUrl;
+        private readonly string _fileBaseUrl;
 
         public MediaUrlBuilder(IConfiguration configuration)
         {
-            var apiBaseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7001/api/";
-            // BaseUrl for media should be the root of the API, not /api/
-            _baseUrl = apiBaseUrl.Replace("/api/", "/").TrimEnd('/');
+            // Use FileStorage:PublicBaseUrl if available, else fallback to PublicSiteBaseUrl + /LiaNccFiles
+            var fileUrl = configuration["FileStorage:PublicBaseUrl"]?.TrimEnd('/');
+
+            if (string.IsNullOrEmpty(fileUrl))
+            {
+                var siteUrl = configuration["ApiSettings:PublicBaseUrl"]?.TrimEnd('/');
+                fileUrl = $"{siteUrl}/LiaNccFiles";
+            }
+            _fileBaseUrl = fileUrl;
         }
 
         public string? Build(string? url)
@@ -23,8 +29,22 @@ namespace LiaNcc.FE.Helpers
             if (string.IsNullOrEmpty(url)) return null;
             if (url.StartsWith("http://") || url.StartsWith("https://")) return url;
 
+            // Standardize path: should be relative to LiaNccFiles or start with /LiaNccFiles
+            if (url.StartsWith("/LiaNccFiles/"))
+            {
+                // If it already contains the base, we just need the domain part
+                var domain = _fileBaseUrl.Replace("/LiaNccFiles", "");
+                return $"{domain}{url}";
+            }
+
+            if (url.StartsWith("LiaNccFiles/"))
+            {
+                var domain = _fileBaseUrl.Replace("/LiaNccFiles", "");
+                return $"{domain}/{url}";
+            }
+
             var path = url.StartsWith("/") ? url : "/" + url;
-            return _baseUrl + path;
+            return _fileBaseUrl + path;
         }
     }
 }

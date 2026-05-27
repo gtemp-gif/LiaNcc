@@ -4,8 +4,6 @@ using LiaNcc.FE.Services.Interfaces;
 using LiaNcc.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic; // Aggiunto per List<>
-using System.Linq; // Aggiunto per .Any()
 
 namespace LiaNcc.FE.Controllers
 {
@@ -74,43 +72,9 @@ namespace LiaNcc.FE.Controllers
         {
             var culture = CurrentCulture;
             Tour? tour = null;
-
-            // 1. Chiamata originale: Recupera i dati base del tour
-            try
-            {
-                tour = await _toursApi.GetDetailBySlugAsync(slug, culture);
-            }
-            catch (Exception ex)
-            {
-                await _appLogger.LogErrorAsync("Tours", "LoadTourDetail", $"Error loading tour {slug}", ex);
-            }
+            try { tour = await _toursApi.GetDetailBySlugAsync(slug, culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Tours", "LoadTourDetail", $"Error loading tour {slug}", ex); }
 
             if (tour == null) return NotFound();
-
-            // 2. NUOVA CHIAMATA: Recupera la galleria usando l'ID del tour
-            try
-            {
-                var gallery = await _toursApi.GetTourGalleryAsync(tour.Id);
-                if (gallery != null && gallery.Any())
-                {
-                    // Crea la lista se è null
-                    tour.TourGalleryImages ??= new List<TourGalleryImage>();
-
-                    // Incolla le immagini ricevute nell'oggetto Tour
-                    foreach (var img in gallery)
-                    {
-                        tour.TourGalleryImages.Add(new TourGalleryImage
-                        {
-                            ImageUrl = img.ImageUrl,
-                            SortOrder = img.SortOrder
-                        });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                await _appLogger.LogErrorAsync("Tours", "LoadTourGallery", $"Error loading gallery for tour {tour.Id}", ex);
-            }
 
             var model = new TourDetailViewModel
             {
