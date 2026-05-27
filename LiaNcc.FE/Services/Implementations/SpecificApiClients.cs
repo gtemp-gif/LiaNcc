@@ -106,9 +106,30 @@ namespace LiaNcc.FE.Services.Implementations
             return await _httpClient.GetFromJsonAsync<CompanyProfile>("company", _jsonSerializerOptions);
         }
 
-        public async Task<IEnumerable<CompanyContact>> GetContactsAsync()
+        //public async Task<IEnumerable<CompanyContact>> GetContactsAsync()
+        //{
+        //    return await _httpClient.GetFromJsonAsync<IEnumerable<CompanyContact>>("company/contacts", _jsonSerializerOptions) ?? Array.Empty<CompanyContact>();
+        //}
+
+        public async Task<List<CompanyContactDto>> GetContactsAsync()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<CompanyContact>>("company/contacts", _jsonSerializerOptions) ?? Array.Empty<CompanyContact>();
+            try
+            {
+                var response = await _httpClient.GetAsync("company/contacts");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    // loggare StatusCode e ReasonPhrase
+                    return new List<CompanyContactDto>();
+                }
+
+                return await response.Content.ReadFromJsonAsync<List<CompanyContactDto>>()
+                       ?? new List<CompanyContactDto>();
+            }
+            catch
+            {
+                return new List<CompanyContactDto>();
+            }
         }
     }
 
@@ -130,7 +151,17 @@ namespace LiaNcc.FE.Services.Implementations
             return await _httpClient.GetFromJsonAsync<SitePage>(url, _jsonSerializerOptions);
         }
     }
-
+    public class CompanyContactDto
+    {
+        public Guid Id { get; set; }
+        public Guid CompanyId { get; set; }
+        public string? Type { get; set; }
+        public string? Value { get; set; }
+        public bool IsPrimary { get; set; }
+        public int SortOrder { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+    }
     public class ContactMessagesApiClient : IContactMessagesApiClient
     {
         private readonly HttpClient _httpClient;

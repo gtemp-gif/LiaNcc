@@ -1,9 +1,10 @@
+using LiaNcc.FE.Services.Implementations;
+using LiaNcc.Models.DTOs.Tours;
+using LiaNcc.Models.DTOs.Vehicles;
+using LiaNcc.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LiaNcc.Models.Entities;
-using LiaNcc.Models.DTOs.Vehicles;
-using LiaNcc.Models.DTOs.Tours;
 
 namespace LiaNcc.FE.Services.Interfaces
 {
@@ -35,7 +36,7 @@ namespace LiaNcc.FE.Services.Interfaces
     public interface ICompanyApiClient
     {
         Task<CompanyProfile?> GetCompanyProfileAsync();
-        Task<IEnumerable<CompanyContact>> GetContactsAsync();
+        Task<List<CompanyContactDto>> GetContactsAsync();
     }
 
     public interface ISitePagesApiClient : IApiClient<SitePage, Guid>

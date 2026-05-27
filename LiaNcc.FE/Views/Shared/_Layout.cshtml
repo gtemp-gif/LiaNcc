@@ -1,3 +1,4 @@
+@using LiaNcc.FE.Services.Implementations
 <!DOCTYPE html>
 <html class="dark scroll-smooth" lang="it">
 <head>
@@ -206,7 +207,7 @@
     <!-- TopNavBar -->
     @{
         CompanyProfile? company = null;
-        IEnumerable<CompanyContact> contacts = new List<CompanyContact>();
+        List<CompanyContactDto> contacts = new List<CompanyContactDto>();
         try {
             company = await CompanyApi.GetCompanyProfileAsync();
             contacts = await CompanyApi.GetContactsAsync();

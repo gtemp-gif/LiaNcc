@@ -13,9 +13,11 @@ namespace LiaNcc.BO.Services.Implementations
 {
     public class FilesApiClient : BaseApiClient<object, Guid>, IFilesApiClient
     {
-        public FilesApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        private readonly ILogger<FilesApiClient> _logger;
+        public FilesApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, ILogger<FilesApiClient> logger)
             : base(httpClient, httpContextAccessor, "files")
         {
+            _logger = logger;
         }
 
         public async Task<FileListResponse> GetFilesAsync(string? folder = null, string? search = null, string? extension = null, int page = 1, int pageSize = 20)
@@ -51,8 +53,21 @@ namespace LiaNcc.BO.Services.Implementations
                 content.Add(fileContent, "Files", file.FileName);
             }
 
-            var response = await _httpClient.PostAsync($"{_endpointUrl}/upload", content);
-            response.EnsureSuccessStatusCode();
+           // var response = await _httpClient.PostAsync($"{_endpointUrl}upload", content);
+            var response = await _httpClient.PostAsync("files/upload", content);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError(
+                    "Upload file failed. StatusCode: {StatusCode}. Body: {Body}",
+                    response.StatusCode,
+                    responseBody);
+
+                throw new InvalidOperationException(
+                    $"Upload file failed with status {(int)response.StatusCode}: {responseBody}");
+            }
 
             return (await response.Content.ReadFromJsonAsync<FileUploadResponse>(_jsonSerializerOptions))!;
         }
