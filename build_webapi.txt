@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  LiaNcc.Models -> /app/LiaNcc.Models/bin/Debug/net9.0/LiaNcc.Models.dll
+  LiaNcc.Repository -> /app/LiaNcc.Repository/bin/Debug/net9.0/LiaNcc.Repository.dll
+/app/LiaNcc.WebAPI/Controllers/FilesController.cs(152,85): error CS1503: Argument 5: cannot convert from 'System.Guid?' to 'int?' [/app/LiaNcc.WebAPI/LiaNcc.WebAPI.csproj]
+/app/LiaNcc.WebAPI/Controllers/FilesController.cs(152,103): error CS1503: Argument 6: cannot convert from 'string' to 'System.Guid?' [/app/LiaNcc.WebAPI/LiaNcc.WebAPI.csproj]
+
+Build FAILED.
+
+/app/LiaNcc.WebAPI/Controllers/FilesController.cs(152,85): error CS1503: Argument 5: cannot convert from 'System.Guid?' to 'int?' [/app/LiaNcc.WebAPI/LiaNcc.WebAPI.csproj]
+/app/LiaNcc.WebAPI/Controllers/FilesController.cs(152,103): error CS1503: Argument 6: cannot convert from 'string' to 'System.Guid?' [/app/LiaNcc.WebAPI/LiaNcc.WebAPI.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:03.42
