@@ -1,10 +1,9 @@
-using LiaNcc.FE.Services.Implementations;
-using LiaNcc.Models.DTOs.Tours;
-using LiaNcc.Models.DTOs.Vehicles;
-using LiaNcc.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LiaNcc.Models.Entities;
+using LiaNcc.Models.DTOs.Vehicles;
+using LiaNcc.Models.DTOs.Tours;
 
 namespace LiaNcc.FE.Services.Interfaces
 {
@@ -26,8 +25,6 @@ namespace LiaNcc.FE.Services.Interfaces
         Task<IEnumerable<TourDto>> GetFeaturedAsync(string? culture = null);
         Task<Tour?> GetDetailAsync(Guid id, string? culture = null);
         Task<Tour?> GetDetailBySlugAsync(string slug, string? culture = null);
-        // --- RIGA AGGIUNTA PER LA GALLERIA ---
-        Task<IEnumerable<TourGalleryImageDto>> GetTourGalleryAsync(Guid id);
     }
 
     public interface IPartnersApiClient : IApiClient<Partner, Guid>
@@ -38,7 +35,7 @@ namespace LiaNcc.FE.Services.Interfaces
     public interface ICompanyApiClient
     {
         Task<CompanyProfile?> GetCompanyProfileAsync();
-        Task<List<CompanyContactDto>> GetContactsAsync();
+        Task<IEnumerable<CompanyContact>> GetContactsAsync();
     }
 
     public interface ISitePagesApiClient : IApiClient<SitePage, Guid>
