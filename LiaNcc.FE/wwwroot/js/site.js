@@ -118,3 +118,18 @@ async function login(email, password) {
         return false;
     }
 }
+
+
+
+    // Inizializzazione globale per tutti i calendari VIP del sito
+    document.addEventListener('DOMContentLoaded', function() {
+    
+        // Cerca tutti gli input con la classe "luxury-datepicker" e li attiva
+        flatpickr(".luxury-datepicker", {
+            locale: "it",           
+            dateFormat: "d/m/Y",    
+            minDate: "today",       
+            disableMobile: "true"   
+        });
+
+    });
