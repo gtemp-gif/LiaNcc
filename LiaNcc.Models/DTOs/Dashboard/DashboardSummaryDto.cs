@@ -54,4 +54,16 @@ namespace LiaNcc.Models.DTOs.Dashboard
         public bool IsRead { get; set; }
         public DateTime CreatedAt { get; set; }
     }
+
+    public class CompanyContactDto
+    {
+        public Guid Id { get; set; }
+        public Guid CompanyId { get; set; }
+        public string? Type { get; set; }
+        public string? Value { get; set; }
+        public bool IsPrimary { get; set; }
+        public int SortOrder { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+    }
 }

@@ -1,10 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using LiaNcc.Models.DTOs.Dashboard;
 using LiaNcc.Models.Entities;
 using LiaNcc.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LiaNcc.WebAPI.Controllers
 {
@@ -73,9 +74,42 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("contacts")]
-        public async Task<ActionResult<IEnumerable<CompanyContact>>> GetContacts()
+        public async Task<ActionResult<IEnumerable<CompanyContactDto>>> GetContacts()
         {
-            return Ok(await _companyRepository.GetCompanyContactsAsync());
+            try
+            {
+                var contacts = await _companyRepository.GetCompanyContactsAsync();
+
+                var result = contacts.Select(c => new CompanyContactDto
+                {
+                    Id = c.Id,
+                    CompanyId = c.CompanyId,
+                    Type = c.Type,
+                    Value = c.Value,
+                    IsPrimary = c.IsPrimary,
+                    SortOrder = c.SortOrder,
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt
+                }).ToList();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                await _logger.LogErrorAsync(
+                    "Company",
+                    "GetContacts",
+                    "Errore durante il recupero dei contatti aziendali",
+                    ex,
+                    500,
+                    null,
+                    "CompanyContact");
+
+                return StatusCode(500, new
+                {
+                    message = "Errore durante il recupero dei contatti aziendali."
+                });
+            }
         }
 
         [HttpPut]

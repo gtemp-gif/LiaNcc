@@ -65,7 +65,7 @@
                             <td>
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary"><span class="material-symbols-outlined">edit</span></a>
                                 <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questo tour?');">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger"><span class="material-symbols-outlined">edit</span></button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><span class="material-symbols-outlined">delete</span></button>
                                 </form>
                             </td>
                         </tr>

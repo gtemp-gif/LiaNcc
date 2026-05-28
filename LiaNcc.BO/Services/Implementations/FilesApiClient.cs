@@ -13,9 +13,11 @@ namespace LiaNcc.BO.Services.Implementations
 {
     public class FilesApiClient : BaseApiClient<object, Guid>, IFilesApiClient
     {
-        public FilesApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        private readonly ILogger<FilesApiClient> _logger;
+        public FilesApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, ILogger<FilesApiClient> logger)
             : base(httpClient, httpContextAccessor, "files")
         {
+            _logger = logger;
         }
 
         public async Task<FileListResponse> GetFilesAsync(string? folder = null, string? search = null, string? extension = null, int page = 1, int pageSize = 20)
@@ -52,16 +54,24 @@ namespace LiaNcc.BO.Services.Implementations
                 fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
                 content.Add(fileContent, "Files", file.FileName);
             }
+            // var response = await _httpClient.PostAsync($"{_endpointUrl}upload", content);
+            var response = await _httpClient.PostAsync("files/upload", content);
 
-            var response = await _httpClient.PostAsync($"{_endpointUrl}/upload", content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            // var response = await _httpClient.PostAsync($"{_endpointUrl}/upload", content);
 
             if (!response.IsSuccessStatusCode)
             {
+
                 var errorBody = await response.Content.ReadAsStringAsync();
                 var errorMessage = $"Upload file failed. StatusCode: {response.StatusCode}. Body: {errorBody}. " +
                                   $"Details: Folder={folder}, Entity={entityName}, Id={entityId}, Type={mediaType}, Files=[{fileNames}]";
-
-                throw new Exception(errorMessage);
+                _logger.LogError(
+                   errorMessage,
+                   response.StatusCode,
+                   responseBody);
+                throw new InvalidOperationException(
+                   $"Upload file failed with status {(int)response.StatusCode}: {responseBody}");
             }
 
             return (await response.Content.ReadFromJsonAsync<FileUploadResponse>(_jsonSerializerOptions))!;

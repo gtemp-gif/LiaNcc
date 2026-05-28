@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using LiaNcc.FE.Services.Interfaces;
+using LiaNcc.Models.DTOs.Dashboard;
 using LiaNcc.Models.DTOs.Tours;
 using LiaNcc.Models.DTOs.Vehicles;
 using LiaNcc.Models.Entities;
@@ -75,7 +76,15 @@ namespace LiaNcc.FE.Services.Implementations
             if (!string.IsNullOrEmpty(culture)) url += $"?culture={culture}";
             return await _httpClient.GetFromJsonAsync<Tour>(url, _jsonSerializerOptions);
         }
-    }
+        // METODO AGGIUNTO QUI DENTRO NELLA POSIZIONE CORRETTA!
+        public async Task<IEnumerable<TourGalleryImageDto>> GetTourGalleryAsync(Guid id)
+        {
+            var url = $"tours/{id}/gallery";
+            return await _httpClient.GetFromJsonAsync<IEnumerable<TourGalleryImageDto>>(url, _jsonSerializerOptions) ?? Array.Empty<TourGalleryImageDto>();
+        }
+
+
+}
 
     public class PartnersApiClient : BaseApiClient<Partner, Guid>, IPartnersApiClient
     {
@@ -106,10 +115,28 @@ namespace LiaNcc.FE.Services.Implementations
             return await _httpClient.GetFromJsonAsync<CompanyProfile>("company", _jsonSerializerOptions);
         }
 
-        public async Task<IEnumerable<CompanyContact>> GetContactsAsync()
+
+        public async Task<List<CompanyContactDto>> GetContactsAsync()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<CompanyContact>>("company/contacts", _jsonSerializerOptions) ?? Array.Empty<CompanyContact>();
-        }
+      
+                try
+                {
+                    var response = await _httpClient.GetAsync("company/contacts");
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        // loggare StatusCode e ReasonPhrase
+                        return new List<CompanyContactDto>();
+                    }
+
+                    return await response.Content.ReadFromJsonAsync<List<CompanyContactDto>>()
+                           ?? new List<CompanyContactDto>();
+                }
+                catch
+                {
+                    return new List<CompanyContactDto>();
+                }
+            }
     }
 
     public class SitePagesApiClient : BaseApiClient<SitePage, Guid>, ISitePagesApiClient
