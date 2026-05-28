@@ -73,43 +73,11 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("contacts")]
-        public async Task<ActionResult<IEnumerable<CompanyContactDto>>> GetContacts()
+        public async Task<ActionResult<IEnumerable<CompanyContact>>> GetContacts()
         {
-            try
-            {
-                var contacts = await _companyRepository.GetCompanyContactsAsync();
-
-                var result = contacts.Select(c => new CompanyContactDto
-                {
-                    Id = c.Id,
-                    CompanyId = c.CompanyId,
-                    Type = c.Type,
-                    Value = c.Value,
-                    IsPrimary = c.IsPrimary,
-                    SortOrder = c.SortOrder,
-                    CreatedAt = c.CreatedAt,
-                    UpdatedAt = c.UpdatedAt
-                }).ToList();
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                await _logger.LogErrorAsync(
-                    "Company",
-                    "GetContacts",
-                    "Errore durante il recupero dei contatti aziendali",
-                    ex,
-                    500,
-                    null,
-                    "CompanyContact");
-
-                return StatusCode(500, new
-                {
-                    message = "Errore durante il recupero dei contatti aziendali."
-                });
-            }
+            return Ok(await _companyRepository.GetCompanyContactsAsync());
         }
+
         [HttpPut]
         public async Task<ActionResult<CompanyProfile>> UpdateCompany(CompanyProfile profile)
         {
@@ -143,16 +111,4 @@ namespace LiaNcc.WebAPI.Controllers
             return NoContent();
         }
     }
-    public class CompanyContactDto
-    {
-        public Guid Id { get; set; }
-        public Guid CompanyId { get; set; }
-        public string? Type { get; set; }
-        public string? Value { get; set; }
-        public bool IsPrimary { get; set; }
-        public int SortOrder { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-    }
-
 }

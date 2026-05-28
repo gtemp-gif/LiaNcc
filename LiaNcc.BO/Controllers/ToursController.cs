@@ -185,7 +185,7 @@ namespace LiaNcc.BO.Controllers
                 }
                 catch (Exception ex)
                 {
-                    await _logger.LogErrorAsync("Tours", "EditUpload", "Error uploading main images during tour edit", ex,null, id, "Tour");
+                    await _logger.LogErrorAsync("Tours", "EditUpload", "Error uploading main images during tour edit", ex, null, id, "Tour");
                     uploadError = true;
                 }
 
@@ -229,7 +229,7 @@ namespace LiaNcc.BO.Controllers
                     }
                     catch (Exception ex)
                     {
-                        await _logger.LogErrorAsync("Tours", "EditGalleryUpload", "Error uploading gallery images during tour edit", ex,null, id, "Tour");
+                        await _logger.LogErrorAsync("Tours", "EditGalleryUpload", "Error uploading gallery images during tour edit", ex, null, id, "Tour");
                         uploadError = true;
                     }
                 }
