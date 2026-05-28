@@ -18,6 +18,7 @@ namespace LiaNcc.FE.Models
     public class FleetViewModel
     {
         public IEnumerable<VehicleDto> Vehicles { get; set; } = new List<VehicleDto>();
+        public IEnumerable<Service> Services { get; set; } = new List<Service>();
     }
 
     public class ToursViewModel

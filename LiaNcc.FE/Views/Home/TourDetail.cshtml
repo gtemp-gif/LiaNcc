@@ -7,7 +7,6 @@
 
 @if (tour != null)
 {
-    <!-- Hero Detail -->
     <section class="relative h-[70vh] flex items-center justify-center text-center px-6 overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img alt="@tour.Name" class="w-full h-full object-cover cinematic-img" src="@MediaUrlBuilder.Build(tour.CoverImageUrl)" />
@@ -20,7 +19,6 @@
         </div>
     </section>
 
-    <!-- Experience Section -->
     <section class="py-32 px-6 md:px-16 bg-black">
         <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
@@ -42,6 +40,9 @@
             </div>
         </div>
     </section>
+
+            
+       
     <section class="py-20 bg-black border-t border-[#1A1A1A]">
         <div class="max-w-7xl mx-auto px-6 md:px-16">
             <h2 class="text-white text-xl font-bold uppercase tracking-widest mb-10">
