@@ -30,16 +30,16 @@ namespace LiaNcc.WebAPI.Controllers
 
                 if (response == null)
                 {
-                    await _logger.LogWarningAsync("Auth", "LoginFailed", $"Failed login attempt for {request.Email}");
+                    await _logger.LogInformationAsync("Auth", "Login", $"Failed login attempt for user: {request.Email}", "Auth", "User", null, "LoginFailed");
                     return Unauthorized(new { Message = "Credenziali non valide." });
                 }
 
-                await _logger.LogInfoAsync("Auth", "LoginSuccess", $"User {request.Email} logged in", null, "User");
+                await _logger.LogInformationAsync("Auth", "Login", $"User logged in: {request.Email}", "Auth", "User", null, "LoginSuccess");
                 return Ok(response);
             }
             catch (System.Exception ex)
             {
-                await _logger.LogErrorAsync("Auth", "LoginError", $"Error during login for {request.Email}", ex);
+                await _logger.LogErrorAsync("Auth", "Login", $"Exception during login for user: {request.Email}", ex);
                 return StatusCode(500, "Internal server error during login");
             }
         }

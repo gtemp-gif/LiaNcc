@@ -37,11 +37,13 @@ namespace LiaNcc.BO.Controllers
 
             try
             {
-                await _mediaAssetsApiClient.UploadMediaAsync(file);
+                var result = await _mediaAssetsApiClient.UploadMediaAsync(file);
+                await _logger.LogInformationAsync("Media", "Upload", $"Media file uploaded: {file.FileName}", "Media", "MediaAsset");
                 TempData["SuccessMessage"] = "Media caricato con successo.";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                await _logger.LogErrorAsync("Media", "Upload", $"Error uploading media file: {file.FileName}", ex);
                 TempData["ErrorMessage"] = "Errore durante il caricamento.";
             }
 
@@ -53,6 +55,7 @@ namespace LiaNcc.BO.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             await _mediaAssetsApiClient.DeleteAsync(id);
+            await _logger.LogInformationAsync("Media", "Delete", "Media asset deleted", "Media", "MediaAsset", id);
             TempData["SuccessMessage"] = "Media eliminato.";
             return RedirectToAction(nameof(Index));
         }

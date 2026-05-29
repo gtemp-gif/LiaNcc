@@ -67,7 +67,7 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _bookingRepository.CreateAsync(booking);
-            await _logger.LogInfoAsync("Bookings", "CreateBooking", $"Booking created for {booking.FullName}", booking.Id, "Booking");
+            await _logger.LogInformationAsync("Bookings", "CreateBooking", $"Booking created for {booking.FullName}", "Bookings", "Booking", booking.Id);
             return Ok(booking);
         }
 
@@ -83,7 +83,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] string status)
         {
             await _bookingRepository.UpdateStatusAsync(id, status);
-            await _logger.LogInfoAsync("Bookings", "UpdateStatus", $"Booking {id} status updated to {status}", id, "Booking");
+            await _logger.LogInformationAsync("Bookings", "UpdateStatus", $"Booking {id} status updated to {status}", "Bookings", "Booking", id);
             return NoContent();
         }
 

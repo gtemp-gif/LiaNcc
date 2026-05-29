@@ -143,7 +143,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<Tour>> CreateTour(Tour tour)
         {
             await _tourRepository.CreateAsync(tour);
-            await _logger.LogInfoAsync("Tours", "CreateTour", $"Tour {tour.Name} created", tour.Id, "Tour");
+            await _logger.LogInformationAsync("Tours", "CreateTour", $"Tour {tour.Name} created", "Tours", "Tour", tour.Id);
             return Ok(tour);
         }
 
@@ -152,7 +152,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != tour.Id) return BadRequest();
             await _tourRepository.UpdateAsync(tour);
-            await _logger.LogInfoAsync("Tours", "UpdateTour", $"Tour {tour.Name} updated", tour.Id, "Tour");
+            await _logger.LogInformationAsync("Tours", "UpdateTour", $"Tour {tour.Name} updated", "Tours", "Tour", tour.Id);
             return NoContent();
         }
 
@@ -175,7 +175,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteTour(Guid id)
         {
             await _tourRepository.DeleteAsync(id);
-            await _logger.LogInfoAsync("Tours", "DeleteTour", $"Tour {id} deleted", id, "Tour");
+            await _logger.LogInformationAsync("Tours", "DeleteTour", $"Tour {id} deleted", "Tours", "Tour", id);
             return NoContent();
         }
 
@@ -183,7 +183,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteGalleryImage(Guid imageId)
         {
             await _mediaRepository.RemoveMediaFromEntityAsync(imageId);
-            await _logger.LogInfoAsync("Tours", "DeleteGalleryImage", $"Gallery image {imageId} removed", imageId, "TourGalleryImage");
+            await _logger.LogInformationAsync("Tours", "DeleteGalleryImage", $"Gallery image {imageId} removed", "Tours", "TourGalleryImage", imageId);
             return NoContent();
         }
 

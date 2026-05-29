@@ -267,16 +267,37 @@ namespace LiaNcc.Repository
             // ApplicationLogs
             modelBuilder.Entity<ApplicationLog>(entity => {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
-                entity.Property(e => e.Source).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Timestamp).HasDefaultValueSql("SYSUTCDATETIME()");
+                entity.Property(e => e.ProjectName).IsRequired().HasMaxLength(150);
                 entity.Property(e => e.Level).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+                entity.Property(e => e.Area).HasMaxLength(150);
+                entity.Property(e => e.Controller).HasMaxLength(150);
+                entity.Property(e => e.Action).HasMaxLength(150);
+                entity.Property(e => e.UserId).HasMaxLength(100);
+                entity.Property(e => e.UserName).HasMaxLength(256);
+                entity.Property(e => e.EntityName).HasMaxLength(150);
+                entity.Property(e => e.EntityId).HasMaxLength(100);
+                entity.Property(e => e.EventType).HasMaxLength(100);
+                entity.Property(e => e.CorrelationId).HasMaxLength(100);
+                entity.Property(e => e.RequestPath).HasMaxLength(500);
+                entity.Property(e => e.HttpMethod).HasMaxLength(20);
+                entity.Property(e => e.IpAddress).HasMaxLength(100);
+                entity.Property(e => e.UserAgent).HasMaxLength(1000);
 
-                entity.HasIndex(e => e.CreatedAt);
+                entity.Ignore(e => e.Source);
+                entity.Ignore(e => e.CreatedAt);
+                entity.Ignore(e => e.ExceptionMessage);
+                entity.Ignore(e => e.AdditionalData);
+                entity.Ignore(e => e.UserEmail);
+
+                entity.HasIndex(e => e.Timestamp);
                 entity.HasIndex(e => e.Level);
-                entity.HasIndex(e => e.Source);
+                entity.HasIndex(e => e.ProjectName);
                 entity.HasIndex(e => e.Area);
+                entity.HasIndex(e => e.EventType);
                 entity.HasIndex(e => e.CorrelationId);
+                entity.HasIndex(e => e.StatusCode);
             });
         }
     }

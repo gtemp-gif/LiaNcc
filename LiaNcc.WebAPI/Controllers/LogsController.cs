@@ -25,13 +25,13 @@ namespace LiaNcc.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<ApplicationLog>>> GetLogs([FromQuery] ApplicationLogFilterRequest filter)
+        public async Task<ActionResult<PaginatedLogsResponse>> GetLogs([FromQuery] ApplicationLogFilterRequest filter)
         {
             return Ok(await _repository.GetPagedAsync(filter));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ApplicationLog>> GetLog(Guid id)
+        public async Task<ActionResult<ApplicationLogDto>> GetLog(long id)
         {
             var log = await _repository.GetByIdAsync(id);
             if (log == null) return NotFound();
@@ -47,10 +47,10 @@ namespace LiaNcc.WebAPI.Controllers
         }
 
         [HttpDelete("cleanup")]
-        [Authorize(Roles = "Admin")]
+        [Authorize] // Allow cleanup
         public async Task<IActionResult> Cleanup([FromQuery] int olderThanDays = 30)
         {
-            await _repository.DeleteOldLogsAsync(DateTime.UtcNow.AddDays(-olderThanDays));
+            await _repository.DeleteOlderThanAsync(DateTime.UtcNow.AddDays(-olderThanDays));
             return NoContent();
         }
 

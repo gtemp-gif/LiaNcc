@@ -24,12 +24,12 @@ namespace LiaNcc.FE.Controllers
             try
             {
                 await _contactApi.CreateAsync(message);
-                await _logger.LogInfoAsync("Contact", "SendMessage", $"Message from {message.FullName} sent");
+                await _logger.LogInformationAsync("Contact", "SendMessage", $"Message from {message.FullName} sent", "Contact", "ContactMessage", message.Id);
                 return Ok(new { success = true, message = "Messaggio inviato con successo." });
             }
             catch (Exception ex)
             {
-                await _logger.LogErrorAsync("Contact", "SendMessageError", "Error sending contact message", ex);
+                await _logger.LogErrorAsync("Contact", "SendMessage", "Error sending contact message", ex, 500, "Contact", "ContactMessage");
                 return StatusCode(500, new { success = false, message = "Errore durante l'invio del messaggio." });
             }
         }
@@ -55,12 +55,12 @@ namespace LiaNcc.FE.Controllers
             try
             {
                 await _bookingsApi.CreateAsync(booking);
-                await _logger.LogInfoAsync("Bookings", "CreateBooking", $"Booking from {booking.FullName} sent");
+                await _logger.LogInformationAsync("Bookings", "CreateBooking", $"Booking from {booking.FullName} sent", "Bookings", "Booking", booking.Id);
                 return Ok(new { success = true, message = "Prenotazione inviata con successo." });
             }
             catch (Exception ex)
             {
-                await _logger.LogErrorAsync("Bookings", "CreateBookingError", "Error sending booking request", ex);
+                await _logger.LogErrorAsync("Bookings", "CreateBooking", "Error sending booking request", ex, 500, "Bookings", "Booking");
                 return StatusCode(500, new { success = false, message = "Errore durante l'invio della prenotazione." });
             }
         }

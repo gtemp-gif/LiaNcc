@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LiaNcc.Models.DTOs.Requests;
 using LiaNcc.BO.Services.Interfaces;
 using System.Collections.Generic;
+using LiaNcc.Models.Enums;
 
 namespace LiaNcc.BO.Controllers
 {
@@ -45,7 +46,7 @@ namespace LiaNcc.BO.Controllers
 
             if (response == null || string.IsNullOrEmpty(response.Token))
             {
-                await _logger.LogWarningAsync("Auth", "LoginFailed", $"Failed login attempt for {model.Email}");
+                await _logger.LogWarningAsync("Auth", "Login", $"Failed login attempt for {model.Email}", eventType: ApplicationEventType.Login, additionalData: new { Email = model.Email });
                 ModelState.AddModelError(string.Empty, "Credenziali non valide o errore di connessione.");
                 return View(model);
             }
@@ -74,7 +75,7 @@ namespace LiaNcc.BO.Controllers
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-            await _logger.LogInfoAsync("Auth", "Login", $"User {model.Email} logged in to BO");
+            await _logger.LogInformationAsync("Auth", "Login", $"User {model.Email} logged in to BO", eventType: ApplicationEventType.Login);
 
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
@@ -89,7 +90,7 @@ namespace LiaNcc.BO.Controllers
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            await _logger.LogInfoAsync("Auth", "Logout", $"User {email} logged out");
+            await _logger.LogInformationAsync("Auth", "Logout", $"User {email} logged out", eventType: ApplicationEventType.Logout);
             return RedirectToAction("Login", "Auth");
         }
 

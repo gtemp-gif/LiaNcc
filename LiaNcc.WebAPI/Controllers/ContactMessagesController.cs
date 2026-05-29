@@ -57,7 +57,7 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _contactMessageRepository.CreateAsync(message);
-            await _logger.LogInfoAsync("Contact", "CreateMessage", $"Contact message from {message.FullName}", message.Id, "ContactMessage");
+            await _logger.LogInformationAsync("Contact", "CreateMessage", $"Contact message from {message.FullName}", "Contact", "ContactMessage", message.Id);
             return Ok(message);
         }
 

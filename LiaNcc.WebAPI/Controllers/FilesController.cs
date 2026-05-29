@@ -133,7 +133,7 @@ namespace LiaNcc.WebAPI.Controllers
                     }
 
                     response.UploadedFiles.Add(uploadedFile);
-                    await _appLogger.LogInfoAsync("Media", "UploadFile", $"File {uploadedFile.FileName} uploaded to {request.Folder}", mediaAsset.Id, "MediaAsset");
+                    await _appLogger.LogInformationAsync("Media", "UploadFile", $"File {uploadedFile.FileName} uploaded to {request.Folder}", "Files", "MediaAsset", mediaAsset.Id);
                     _logger.LogInformation("File uploaded and registered: {FileName}", uploadedFile.FileName);
                 }
 
@@ -149,7 +149,7 @@ namespace LiaNcc.WebAPI.Controllers
                 var errorMsg = $"Error uploading files. Folder: {request.Folder}, Entity: {request.EntityName}, Id: {request.EntityId}, Files: [{fileNames}]";
 
                 _logger.LogError(ex, errorMsg);
-                await _appLogger.LogErrorAsync("Media", "UploadFile", errorMsg, ex, null, request.EntityId, request.EntityName);
+                await _appLogger.LogErrorAsync("Media", "UploadFile", errorMsg, ex, null, "Files", request.EntityName, request.EntityId);
 
                 return StatusCode(500, $"Internal server error during upload: {ex.Message}");
             }

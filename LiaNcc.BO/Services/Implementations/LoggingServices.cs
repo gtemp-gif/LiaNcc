@@ -18,18 +18,18 @@ namespace LiaNcc.BO.Services.Implementations
         private readonly ILogsApiClient _logsApiClient;
         private readonly ILogger<ApplicationLoggerService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly string _source;
+        private readonly string _projectName;
 
         public ApplicationLoggerService(
             ILogsApiClient logsApiClient,
             ILogger<ApplicationLoggerService> logger,
             IHttpContextAccessor httpContextAccessor,
-            string source = "BO")
+            string projectName = "LiaNcc.BO")
         {
             _logsApiClient = logsApiClient;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
-            _source = source;
+            _projectName = projectName;
         }
 
         public async Task LogAsync(CreateApplicationLogRequest request)
@@ -38,25 +38,29 @@ namespace LiaNcc.BO.Services.Implementations
             {
                 var httpContext = _httpContextAccessor.HttpContext;
 
-                request.Source = string.IsNullOrEmpty(request.Source) ? _source : request.Source;
+                request.ProjectName = string.IsNullOrEmpty(request.ProjectName) ? _projectName : request.ProjectName;
                 request.UserId ??= httpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                request.UserEmail ??= httpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
+                request.UserName ??= httpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
                 request.CorrelationId ??= httpContext?.Items["CorrelationId"]?.ToString();
+                request.RequestPath ??= httpContext?.Request?.Path;
+                request.HttpMethod ??= httpContext?.Request?.Method;
+                request.IpAddress ??= httpContext?.Connection?.RemoteIpAddress?.ToString();
+                request.UserAgent ??= httpContext?.Request?.Headers["User-Agent"].ToString();
 
                 // 1. Write to standard logger (file/console via Serilog)
                 var logLevel = request.Level switch
                 {
                     "Trace" => LogLevel.Trace,
                     "Debug" => LogLevel.Debug,
-                    "Info" => LogLevel.Information,
+                    "Information" => LogLevel.Information,
                     "Warning" => LogLevel.Warning,
                     "Error" => LogLevel.Error,
                     "Critical" => LogLevel.Critical,
                     _ => LogLevel.Information
                 };
 
-                _logger.Log(logLevel, "[{Source}] {Area} - {Action}: {Message} {Exception}",
-                    request.Source, request.Area, request.Action, request.Message, request.ExceptionMessage);
+                _logger.Log(logLevel, "[{ProjectName}] {Area}.{Controller}.{Action} - {EventType}: {Message} {Exception}",
+                    request.ProjectName, request.Area, request.Controller, request.Action, request.EventType, request.Message, request.Exception);
 
                 // 2. Send to WebAPI
                 await _logsApiClient.CreateLogAsync(request);
@@ -67,95 +71,120 @@ namespace LiaNcc.BO.Services.Implementations
             }
         }
 
-        public Task LogInfoAsync(string area, string action, string message, Guid? entityId = null, string? entityName = null, object? additionalData = null)
+        public async Task LogInformationAsync(string area, string action, string message, string? controller = null, string? entityName = null, object? entityId = null, string? eventType = null, object? additionalData = null)
         {
-            return LogAsync(new CreateApplicationLogRequest
+            await LogAsync(new CreateApplicationLogRequest
             {
-                Level = "Info",
+                Level = "Information",
                 Area = area,
+                Controller = controller,
                 Action = action,
                 Message = message,
-                EntityId = entityId,
                 EntityName = entityName,
-                AdditionalData = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
+                EntityId = entityId?.ToString(),
+                EventType = eventType,
+                AdditionalDataJson = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
             });
         }
 
-        public Task LogWarningAsync(string area, string action, string message, Guid? entityId = null, string? entityName = null, object? additionalData = null)
+        public async Task LogWarningAsync(string area, string action, string message, string? controller = null, string? entityName = null, object? entityId = null, string? eventType = null, object? additionalData = null)
         {
-            return LogAsync(new CreateApplicationLogRequest
+            await LogAsync(new CreateApplicationLogRequest
             {
                 Level = "Warning",
                 Area = area,
+                Controller = controller,
                 Action = action,
                 Message = message,
-                EntityId = entityId,
                 EntityName = entityName,
-                AdditionalData = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
+                EntityId = entityId?.ToString(),
+                EventType = eventType,
+                AdditionalDataJson = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
             });
         }
 
-        public Task LogErrorAsync(string area, string action, string message, Exception? exception = null, int? statusCode = null, Guid? entityId = null, string? entityName = null, object? additionalData = null)
+        public async Task LogErrorAsync(string area, string action, string message, Exception? exception = null, int? statusCode = null, string? controller = null, string? entityName = null, object? entityId = null, string? eventType = "Exception", object? additionalData = null)
         {
-            return LogAsync(new CreateApplicationLogRequest
+            await LogAsync(new CreateApplicationLogRequest
             {
                 Level = "Error",
                 Area = area,
+                Controller = controller,
                 Action = action,
                 Message = message,
-                ExceptionMessage = exception?.Message,
+                Exception = exception?.Message,
                 StackTrace = exception?.StackTrace,
-                InnerException = exception?.InnerException?.Message,
                 StatusCode = statusCode,
-                EntityId = entityId,
                 EntityName = entityName,
-                AdditionalData = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
+                EntityId = entityId?.ToString(),
+                EventType = eventType,
+                AdditionalDataJson = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
             });
+        }
+
+        // Backward compatibility
+        public Task LogInfoAsync(string area, string action, string message, Guid? entityId = null, string? entityName = null, object? additionalData = null)
+        {
+            return LogInformationAsync(area, action, message, null, entityName, entityId, null, additionalData);
         }
     }
 
-    public class LogsApiClient : BaseApiClient<ApplicationLog, Guid>, ILogsApiClient
+    public class LogsApiClient : BaseApiClient<ApplicationLog, long>, ILogsApiClient
     {
         public LogsApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
             : base(httpClient, httpContextAccessor, "logs") { }
 
-        public async Task<PagedResult<ApplicationLog>> GetLogsAsync(ApplicationLogFilterRequest filter)
+        public async Task<PaginatedLogsResponse> GetLogsAsync(ApplicationLogFilterRequest filter)
         {
             SetBearerToken();
             var queryParams = new List<string>
             {
-                $"source={Uri.EscapeDataString(filter.Source ?? "")}",
+                $"projectName={Uri.EscapeDataString(filter.ProjectName ?? "")}",
                 $"area={Uri.EscapeDataString(filter.Area ?? "")}",
                 $"level={Uri.EscapeDataString(filter.Level ?? "")}",
+                $"controller={Uri.EscapeDataString(filter.Controller ?? "")}",
                 $"action={Uri.EscapeDataString(filter.Action ?? "")}",
+                $"eventType={Uri.EscapeDataString(filter.EventType ?? "")}",
                 $"entityName={Uri.EscapeDataString(filter.EntityName ?? "")}",
+                $"entityId={Uri.EscapeDataString(filter.EntityId ?? "")}",
                 $"correlationId={Uri.EscapeDataString(filter.CorrelationId ?? "")}",
-                $"search={Uri.EscapeDataString(filter.Search ?? "")}",
+                $"userId={Uri.EscapeDataString(filter.UserId ?? "")}",
+                $"searchTerm={Uri.EscapeDataString(filter.SearchTerm ?? "")}",
                 $"page={filter.Page}",
                 $"pageSize={filter.PageSize}"
             };
 
-            if (filter.EntityId.HasValue) queryParams.Add($"entityId={filter.EntityId}");
+            if (filter.TenantId.HasValue) queryParams.Add($"tenantId={filter.TenantId}");
             if (filter.FromDate.HasValue) queryParams.Add($"fromDate={filter.FromDate.Value:yyyy-MM-dd}");
             if (filter.ToDate.HasValue) queryParams.Add($"toDate={filter.ToDate.Value:yyyy-MM-dd}");
 
             var query = "?" + string.Join("&", queryParams);
             var response = await _httpClient.GetAsync($"{_endpointUrl}{query}");
             EnsureValidResponse(response);
-            return await response.Content.ReadFromJsonAsync<PagedResult<ApplicationLog>>(_jsonSerializerOptions) ?? new PagedResult<ApplicationLog>();
+            return await response.Content.ReadFromJsonAsync<PaginatedLogsResponse>(_jsonSerializerOptions) ?? new PaginatedLogsResponse();
         }
 
-        public async Task<ApplicationLog?> GetLogByIdAsync(Guid id)
+        public async Task<ApplicationLogDto?> GetLogByIdAsync(long id)
         {
-            return await GetByIdAsync(id);
+            SetBearerToken();
+            var response = await _httpClient.GetAsync($"{_endpointUrl}/{id}");
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
+            EnsureValidResponse(response);
+            return await response.Content.ReadFromJsonAsync<ApplicationLogDto>(_jsonSerializerOptions);
         }
 
         public async Task CreateLogAsync(CreateApplicationLogRequest request)
         {
             SetBearerToken();
-            var response = await _httpClient.PostAsJsonAsync(_endpointUrl, request, _jsonSerializerOptions);
-            // Don't use EnsureValidResponse here to avoid infinite loops or crashes during logging
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync(_endpointUrl, request, _jsonSerializerOptions);
+                // Don't throw for logging failures to avoid app crash
+            }
+            catch
+            {
+                // Silently ignore
+            }
         }
 
         public async Task CleanupAsync(int olderThanDays)
@@ -165,12 +194,12 @@ namespace LiaNcc.BO.Services.Implementations
             EnsureValidResponse(response);
         }
 
-        public async Task<object> GetStatsAsync()
+        public async Task<object?> GetStatsAsync()
         {
             SetBearerToken();
             var response = await _httpClient.GetAsync($"{_endpointUrl}/stats");
             EnsureValidResponse(response);
-            return (await response.Content.ReadFromJsonAsync<object>(_jsonSerializerOptions))!;
+            return await response.Content.ReadFromJsonAsync<object>(_jsonSerializerOptions);
         }
     }
 }

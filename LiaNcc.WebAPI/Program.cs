@@ -135,6 +135,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<LiaNcc.WebAPI.Middleware.CorrelationIdMiddleware>();
 app.UseMiddleware<LiaNcc.WebAPI.Middleware.ExceptionLoggingMiddleware>();
 app.UseStaticFiles();
 

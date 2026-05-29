@@ -113,7 +113,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<Service>> CreateService(Service service)
         {
             await _serviceRepository.CreateAsync(service);
-            await _logger.LogInfoAsync("Services", "CreateService", $"Service {service.Name} created", service.Id, "Service");
+            await _logger.LogInformationAsync("Services", "CreateService", $"Service {service.Name} created", "Services", "Service", service.Id);
             return Ok(service);
         }
 
@@ -122,7 +122,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != service.Id) return BadRequest();
             await _serviceRepository.UpdateAsync(service);
-            await _logger.LogInfoAsync("Services", "UpdateService", $"Service {service.Name} updated", service.Id, "Service");
+            await _logger.LogInformationAsync("Services", "UpdateService", $"Service {service.Name} updated", "Services", "Service", service.Id);
             return NoContent();
         }
 
@@ -130,7 +130,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteService(Guid id)
         {
             await _serviceRepository.DeleteAsync(id);
-            await _logger.LogInfoAsync("Services", "DeleteService", $"Service {id} deleted", id, "Service");
+            await _logger.LogInformationAsync("Services", "DeleteService", $"Service {id} deleted", "Services", "Service", id);
             return NoContent();
         }
     }
