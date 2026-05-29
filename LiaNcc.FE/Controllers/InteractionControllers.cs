@@ -17,14 +17,14 @@ namespace LiaNcc.FE.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendMessage(ContactMessage message)
+        public async Task<IActionResult> SendMessage(LiaNcc.Models.DTOs.Requests.ContactMessageCreateRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                await _contactApi.CreateAsync(message);
-                await _logger.LogInformationAsync("Contact", "SendMessage", $"Message from {message.FullName} sent", "Contact", "ContactMessage", message.Id);
+                await _contactApi.CreateAsync(request);
+                await _logger.LogInformationAsync("Contact", "SendMessage", $"Message from {request.FullName} sent", "Contact", "ContactMessage");
                 return Ok(new { success = true, message = "Messaggio inviato con successo." });
             }
             catch (Exception ex)
@@ -48,14 +48,14 @@ namespace LiaNcc.FE.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Booking booking)
+        public async Task<IActionResult> Create(LiaNcc.Models.DTOs.Requests.BookingCreateRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                await _bookingsApi.CreateAsync(booking);
-                await _logger.LogInformationAsync("Bookings", "CreateBooking", $"Booking from {booking.FullName} sent", "Bookings", "Booking", booking.Id);
+                await _bookingsApi.CreateAsync(request);
+                await _logger.LogInformationAsync("Bookings", "CreateBooking", $"Booking from {request.FullName} sent", "Bookings", "Booking");
                 return Ok(new { success = true, message = "Prenotazione inviata con successo." });
             }
             catch (Exception ex)

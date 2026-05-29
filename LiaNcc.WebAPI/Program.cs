@@ -74,10 +74,12 @@ builder.Services.AddLiaNccRepository(builder.Configuration);
 
 // Configure Application Services
 builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection("FileStorage"));
+builder.Services.Configure<LiaNcc.Models.Entities.MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IApplicationLoggerService, ApplicationLoggerService>();
+builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<LiaNcc.WebAPI.Helpers.ILocalizationResolver, LiaNcc.WebAPI.Helpers.LocalizationResolver>();
 
 // Configure CORS

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LiaNcc.Models.DTOs.Requests;
 using LiaNcc.Models.Entities;
+using LiaNcc.Models.Enums;
 using LiaNcc.Repository.Interfaces;
 using LiaNcc.WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -18,17 +19,20 @@ namespace LiaNcc.WebAPI.Controllers
         private readonly IBookingRepository _bookingRepository;
         private readonly ILocalizedContentRepository _localizationRepository;
         private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
+        private readonly IMailService _mailService;
         private readonly IApplicationLoggerService _logger;
 
         public BookingsController(
             IBookingRepository bookingRepository,
             ILocalizedContentRepository localizationRepository,
             LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver,
+            IMailService mailService,
             IApplicationLoggerService logger)
         {
             _bookingRepository = bookingRepository;
             _localizationRepository = localizationRepository;
             _resolver = resolver;
+            _mailService = mailService;
             _logger = logger;
         }
 
@@ -54,20 +58,41 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<Booking>> CreateBooking(CreateBookingRequest request)
+        public async Task<ActionResult<Booking>> CreateBooking(BookingCreateRequest request)
         {
             var booking = new Booking
             {
                 FullName = request.FullName,
                 Email = request.Email,
+                Phone = request.Phone,
                 ServiceDate = request.ServiceDate,
-                ServiceType = null, // Will depend on ServiceTypeId in a complete DTO mapping
+                ServiceTypeId = request.ServiceTypeId,
+                PassengerOptionId = request.PassengerOptionId,
+                TourId = request.TourId,
+                VehicleId = request.VehicleId,
                 Message = request.Message,
-                Status = "Pending"
+                MaxSeats = request.MaxSeats,
+                Status = "Pending",
+                CreatedAt = DateTime.UtcNow
             };
 
             await _bookingRepository.CreateAsync(booking);
-            await _logger.LogInformationAsync("Bookings", "CreateBooking", $"Booking created for {booking.FullName}", "Bookings", "Booking", booking.Id);
+            await _logger.LogInformationAsync("Bookings", "CreateBooking", $"Booking created for {booking.FullName}", "Bookings", "Booking", booking.Id, ApplicationEventType.Booking);
+
+            // Invia email asincronamente
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await _mailService.SendBookingNotificationAsync(booking);
+                    await _mailService.SendBookingCustomerConfirmationAsync(booking);
+                }
+                catch (Exception ex)
+                {
+                    await _logger.LogErrorAsync("Bookings", "EmailNotificationError", $"Errore invio email per prenotazione {booking.Id}", ex, null, "Bookings", "Booking", booking.Id);
+                }
+            });
+
             return Ok(booking);
         }
 

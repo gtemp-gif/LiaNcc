@@ -18,6 +18,7 @@
                         <th>Data Servizio</th>
                         <th>Stato</th>
                         <th>Data Richiesta</th>
+                        <th style="width: 150px;">Azioni</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,6 +44,28 @@
                                     }
                                 </td>
                                 <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        @if (item.Status == "Pending")
+                                        {
+                                            <form asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Confirmed" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-success" title="Conferma">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Cancelled" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-danger" title="Annulla">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Eliminare questa prenotazione?')">
+                                            <button type="submit" class="btn btn-outline-dark" title="Elimina">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     } else {

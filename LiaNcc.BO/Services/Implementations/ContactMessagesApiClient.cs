@@ -10,5 +10,12 @@ namespace LiaNcc.BO.Services.Implementations
     {
         public ContactMessagesApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
             : base(httpClient, httpContextAccessor, "contact-messages") { }
+
+        public async Task MarkAsReadAsync(Guid id)
+        {
+            SetBearerToken();
+            var response = await _httpClient.PatchAsync($"{_endpointUrl}/{id}/read", null);
+            EnsureValidResponse(response);
+        }
     }
 }
