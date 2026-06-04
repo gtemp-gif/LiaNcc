@@ -128,6 +128,27 @@
                     <input asp-for="IsActive" class="form-check-input" />
                     <label asp-for="IsActive" class="form-check-label">Attivo</label>
                 </div>
+                <div class="col-md-3 mb-3 pt-4 form-check ms-3">
+                    <input asp-for="IsBookable" class="form-check-input" />
+                    <label asp-for="IsBookable" class="form-check-label">Prenotabile</label>
+                </div>
+            </div>
+
+            <hr />
+            <h4>Galleria Immagini</h4>
+            <div class="row mb-3">
+                @foreach (var img in Model.ExistingGalleryImages)
+                {
+                    <div class="col-md-2 mb-3 position-relative gallery-item" data-id="@img.Id">
+                        <img src="@MediaUrlHelper.GetAbsoluteUrl(img.ImageUrl)" class="img-thumbnail" />
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-image"><i class="bi bi-x"></i></button>
+                    </div>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Aggiungi Nuove Immagini</label>
+                <input type="file" name="NewGalleryImages" class="form-control" multiple accept="image/*" />
             </div>
 
             <partial name="_LocalizationFields" model="Model.Translations" />
@@ -139,3 +160,30 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.delete-image').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                if (confirm('Sei sicuro di voler eliminare questa immagine dalla galleria?')) {
+                    var item = btn.closest('.gallery-item');
+                    var id = item.getAttribute('data-id');
+
+                    fetch('@Url.Action("DeleteGalleryImage", "Tours")?imageId=' + id, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            item.remove();
+                        } else {
+                            alert('Errore durante l\'eliminazione dell\'immagine.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

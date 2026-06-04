@@ -15,12 +15,16 @@ namespace LiaNcc.BO.Controllers
 
         private readonly List<string> _translatableKeys = new List<string> { "Name", "MetaTitle", "MetaDescription" };
 
+        private readonly IApplicationLoggerService _logger;
+
         public CMSController(
             ISitePagesApiClient sitePagesApiClient,
+            IApplicationLoggerService applicationLogger,
             ILanguagesApiClient languagesApiClient,
             ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _sitePagesApiClient = sitePagesApiClient;
+            _logger = applicationLogger;
             _languagesApiClient = languagesApiClient;
             _localizedContentsApiClient = localizedContentsApiClient;
         }
@@ -54,6 +58,7 @@ namespace LiaNcc.BO.Controllers
                 };
                 var createdPage = await _sitePagesApiClient.CreateAsync(sitePage);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "SitePage", createdPage.Id);
+                await _logger.LogInfoAsync("CMS", "CreatePage", $"Page {createdPage.Name} created via BO", createdPage.Id, "SitePage");
                 TempData["SuccessMessage"] = "Pagina creata con successo.";
                 return RedirectToAction(nameof(Index));
             }
@@ -98,6 +103,7 @@ namespace LiaNcc.BO.Controllers
 
                 await _sitePagesApiClient.UpdateAsync(id, page);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "SitePage", id);
+                await _logger.LogInfoAsync("CMS", "UpdatePage", $"Page {page.Name} updated via BO", id, "SitePage");
                 TempData["SuccessMessage"] = "Pagina aggiornata con successo.";
                 return RedirectToAction(nameof(Index));
             }

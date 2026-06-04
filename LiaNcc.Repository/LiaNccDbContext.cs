@@ -35,6 +35,7 @@ namespace LiaNcc.Repository
         public DbSet<CompanyProfile> CompanyProfiles { get; set; } = null!;
         public DbSet<CompanyContact> CompanyContacts { get; set; } = null!;
         public DbSet<Partner> Partners { get; set; } = null!;
+        public DbSet<ApplicationLog> ApplicationLogs { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -109,6 +110,7 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Title).HasMaxLength(200);
+                entity.Property(e => e.ImageUrl).HasMaxLength(1000);
                 entity.HasOne(e => e.SitePage).WithMany(p => p.PageSections).HasForeignKey(e => e.PageId).OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -118,6 +120,7 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Label).HasMaxLength(100);
                 entity.Property(e => e.Title).HasMaxLength(200);
                 entity.Property(e => e.Url).HasMaxLength(500);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.HasOne(e => e.SitePage).WithMany(p => p.CallToActions).HasForeignKey(e => e.PageId).OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(e => e.PageSection).WithMany(s => s.CallToActions).HasForeignKey(e => e.SectionId).OnDelete(DeleteBehavior.ClientSetNull);
             });
@@ -144,6 +147,8 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
                 entity.Property(e => e.CoverImageUrl).HasMaxLength(1000);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsBookable).HasDefaultValue(true);
             });
 
             // Vehicles
@@ -157,6 +162,8 @@ namespace LiaNcc.Repository
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsBookable).HasDefaultValue(true);
                 entity.HasOne(e => e.VehicleCategory).WithMany(c => c.Vehicles).HasForeignKey(e => e.CategoryId).OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -180,6 +187,8 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
                 entity.Property(e => e.Slug).IsRequired().HasMaxLength(150);
                 entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsBookable).HasDefaultValue(true);
                 entity.HasOne(e => e.TourCategory).WithMany(c => c.Tours).HasForeignKey(e => e.CategoryId).OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasIndex(e => e.Slug).IsUnique();
             });
@@ -235,6 +244,12 @@ namespace LiaNcc.Repository
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Latitude).HasPrecision(10, 7);
+                entity.Property(e => e.Longitude).HasPrecision(10, 7);
+                entity.Property(e => e.GoogleMapsUrl).HasMaxLength(1000);
+                entity.Property(e => e.AboutTitle).HasMaxLength(200);
+                entity.Property(e => e.AboutDescription).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.AboutImageUrl).HasMaxLength(1000);
             });
             modelBuilder.Entity<CompanyContact>(entity => {
                 entity.HasKey(e => e.Id);
@@ -247,6 +262,21 @@ namespace LiaNcc.Repository
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
+            });
+
+            // ApplicationLogs
+            modelBuilder.Entity<ApplicationLog>(entity => {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
+                entity.Property(e => e.Source).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Level).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+
+                entity.HasIndex(e => e.CreatedAt);
+                entity.HasIndex(e => e.Level);
+                entity.HasIndex(e => e.Source);
+                entity.HasIndex(e => e.Area);
+                entity.HasIndex(e => e.CorrelationId);
             });
         }
     }

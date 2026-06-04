@@ -1,105 +1,38 @@
-@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+@model ToursViewModel
 @{
-    ViewData["Title"] = "Tutti i Tour d'Autore";
+    ViewData["Title"] = "I Nostri Tour";
+    Layout = "_Layout";
 }
 
-<main class="pt-48 pb-32">
-<section class="max-w-7xl mx-auto px-8">
-<!-- Section Header -->
-<div class="mb-24 flex flex-col items-center text-center">
-<span class="font-bold text-primary tracking-[0.4em] uppercase text-xs mb-4 block">Esperienza Chauffeur Premium</span>
-<h1 class="text-4xl md:text-5xl font-medium text-white mb-6 tracking-tight uppercase" style="letter-spacing: 3px;">Tutti i Tour d'Autore</h1>
-<div class="w-24 h-px bg-[#D4AF37]"></div>
-</div>
-<!-- Bento / Poster Grid -->
-<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-<!-- Main Featured Poster: Matera -->
-<div class="md:col-span-8 group relative aspect-[16/10] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
-<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
-<img alt="Matera" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_26FKFmffDMRQjZlBs2q7aOfiViMvBFXUH_caO-scku4mrbyHlmW_CLlTvmvYylgeoQI3ocah3I_3EvDK5YPANBs_ZQ_WkEUGXregJhxY9GMegst8K0RyWIpOiFdDeNWMzMAGigJE5siXmq6ANAlgo6whHBCSIWOrVxXBuZ08443Koo757QfRYhM73UtaLCygsN8jSNFwpuc5k-EJgB4oGsgIXBdkhjHnfcchWho1WDrhEFERdUEo-ZV1EtFwVM47BfvhfzWKgn5j"/>
-<div class="absolute inset-0 noir-gradient z-10"></div>
-<div class="absolute bottom-0 left-0 p-10 z-30">
-<h2 class="text-3xl md:text-4xl font-semibold text-white mb-2 uppercase tracking-widest">Matera</h2>
-<p class="text-sm text-on-surface-variant mb-6 max-w-md font-light">L'eternità scolpita nella pietra. Un viaggio silenzioso attraverso i Sassi, dove il tempo si è fermato.</p>
-<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em] hover:translate-x-2 transition-transform duration-300" asp-action="TourDetail" asp-controller="Home">
-<span>Scopri di più</span>
-<span class="material-symbols-outlined text-sm">arrow_forward</span>
-</a>
-</div>
-</div>
-<!-- Secondary Poster: Valle d'Itria -->
-<div class="md:col-span-4 group relative aspect-[3/4] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
-<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
-<img alt="Valle d'Itria" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtShf6qOrX_gwJmojpPrAkKucl4CiG2uuAx-nsaZx8MvipdnZGcubfe_rYH2N5QkKxYsUhXnPOEdmJYv-mraQ2oC3ssSVSeqYJYuay4TFmfbn68B92A2VClChKatdB_lcSNU29-uwgxXJkO02H7qcyroDRsaNyl8ueMia2nkvijmLEuX2XT_Pe5M883pZL7u7YkyEEhcwv5hBEJxz1NY3dkke8ljRVJtlXUnaAXrdVjRBAx_pNf1_-ZsMY3iL9lacaqjjR2aIaapXM"/>
-<div class="absolute inset-0 noir-gradient z-10"></div>
-<div class="absolute bottom-0 left-0 p-8 z-30">
-<h2 class="text-2xl font-semibold text-white mb-4 uppercase tracking-widest">Valle d'Itria</h2>
-<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em]" asp-action="TourDetail" asp-controller="Home">
-<span>Scopri di più</span>
-</a>
-</div>
-</div>
-<!-- Card 3: Costiera Amalfitana -->
-<div class="md:col-span-4 group relative aspect-[3/4] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
-<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
-<img alt="Costiera Amalfitana" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk3sSERBsPJTlbahW5ygl7_87dc-SdRDE-yqn0Bd7KDW3dmGVerBTenWJpfMvJN0suCLPXGfyLptQuEi5gIAYNMmTyBuZxNojKvugZDzigPnYqh5pzBF0xj6IbWZhBlqbxQ1filaKNjhWEh0nqut9nY5-8efM3DbCpPI0WvX9w8WCnvOk2dqOYMMTN1RohBtWJAXTjeA1FHbs9AISOeYCCa3gf5gbqyA3Yv6eI0ThNDV5ImXBLoeFApvFE05ANwq7qwExMxusG5qa-"/>
-<div class="absolute inset-0 noir-gradient z-10"></div>
-<div class="absolute bottom-0 left-0 p-8 z-30">
-<h2 class="text-2xl font-semibold text-white mb-4 uppercase tracking-widest">Costiera Amalfitana</h2>
-<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em]" asp-action="TourDetail" asp-controller="Home">
-<span>Scopri di più</span>
-</a>
-</div>
-</div>
-<!-- Card 4: Salento -->
-<div class="md:col-span-4 group relative aspect-[3/4] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
-<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
-<img alt="Salento" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNlwrn6Y9joXvqVdgdV5Obx5o7hBiNqGyQwnj0tPM9qH0YgwlmiK9LmEie65sc2VfCjtVhHx_0fApJd0-OCDCbRgGMRh-pZirUGoYnPycSzNTlvbW_fvbKbvWjhN3jP5P8MyoS1ug4odB-R2CaWB7oBAADwrbeuI4EpiQg6MRoM0fp803f3kVnifGpwqcFdffBpr7_CNuZOcj0cJ39A6Oo0nDdQeGlU6lJNI2A_4IdriwPHzxTEUcyboOA0jWzvjeZyPl_8a_Jy-On"/>
-<div class="absolute inset-0 noir-gradient z-10"></div>
-<div class="absolute bottom-0 left-0 p-8 z-30">
-<h2 class="text-2xl font-semibold text-white mb-4 uppercase tracking-widest">Salento</h2>
-<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em]" asp-action="TourDetail" asp-controller="Home">
-<span>Scopri di più</span>
-</a>
-</div>
-</div>
-<!-- Card 5: Castel del Monte -->
-<div class="md:col-span-4 group relative aspect-[3/4] overflow-hidden cinematic-card cursor-pointer charcoal-border" onclick="window.location.href='@Url.Action("TourDetail", "Home")'">
-<div class="card-border absolute inset-0 border border-zinc-900 z-20 transition-colors duration-500 pointer-events-none"></div>
-<img alt="Castel del Monte" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCa_SN6T0CuHzb78wWbvgKr5ggpyda6saM-XxSTdnw3d7rrcbRzh0ZylUBf037Uh6bajNjVv_5mn8TnLDhjUubEP8ALe9xVEUZvYDXzkA33a0p6OsSeuecKa1f3_e49AWN1jjPqnxaanhezuyojLJbv4E_-3fhzrfJp_cLttUhtBVxZB8WNDF6fjoYNKVUKwI9vN-ND9Dzb6itTv7-1tIs0h7O-7t8e7_-u2-htFMM2ueasq7Tjs1yNPChKB2is3c96OPxnLnHi3hwi"/>
-<div class="absolute inset-0 noir-gradient z-10"></div>
-<div class="absolute bottom-0 left-0 p-8 z-30">
-<h2 class="text-2xl font-semibold text-white mb-4 uppercase tracking-widest">Castel del Monte</h2>
-<a class="inline-flex items-center space-x-3 text-[#D4AF37] font-bold text-[10px] uppercase tracking-[0.2em]" asp-action="TourDetail" asp-controller="Home">
-<span>Scopri di più</span>
-</a>
-</div>
-</div>
-</div>
-<!-- Call to Action -->
-<div class="mt-section-gap border border-[#1A1A1A] p-16 bg-black">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full max-w-7xl mx-auto">
-<div class="max-w-xl text-left">
-<h3 class="text-3xl font-semibold text-white mb-6 uppercase tracking-widest leading-tight">Un itinerario su misura per le vostre esigenze.</h3>
-<p class="text-lg text-on-surface-variant font-light">Collaboriamo con voi per creare esperienze di viaggio esclusive, garantendo la massima discrezione e precisione in ogni dettaglio.</p>
-</div>
-<div class="w-full">
-<form action="javascript:void(0);" class="flex flex-col gap-4 font-body" id="tour-contact" onsubmit="alert('Grazie per la tua richiesta. Ti ricontatteremo al più presto.')">
-<div class="relative">
-<input class="w-full bg-black border border-[#D4AF37] px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#D4AF37] placeholder-gray-500 uppercase tracking-widest font-medium transition-all" placeholder="Nome" required="" type="text"/>
-</div>
-<div class="relative">
-<input class="w-full bg-black border border-[#D4AF37] px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#D4AF37] placeholder-gray-500 uppercase tracking-widest font-medium transition-all" placeholder="Email" required="" type="email"/>
-</div>
-<div class="relative">
-<textarea class="w-full bg-black border border-[#D4AF37] px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#D4AF37] placeholder-gray-500 uppercase tracking-widest font-medium transition-all resize-none" placeholder="Messaggio" required="" rows="4"></textarea>
-</div>
-<button class="bg-[#D4AF37] text-black font-bold text-[10px] uppercase tracking-[0.2em] py-4 px-12 hover:bg-white hover:text-black transition-all duration-300 self-start" type="submit">
-                            Invia Richiesta
-                        </button>
-</form>
-</div>
-</div>
-</div>
+<section class="pt-40 pb-20 px-6 md:px-16 bg-black">
+    <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-semibold text-white mb-8 section-title">Tour Esclusivi</h1>
+        <p class="text-xl text-gray-400 max-w-3xl mx-auto font-light">Scoprite le bellezze dell'Italia con i nostri tour personalizzati, tra cultura, storia ed enogastronomia.</p>
+    </div>
 </section>
-</main>
+
+<section class="py-20 px-6 md:px-16 bg-[#050505]">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            @foreach (var tour in Model.Tours)
+            {
+                <a asp-action="TourDetail" asp-controller="Home" asp-route-slug="@tour.Slug" class="relative h-[600px] group overflow-hidden block charcoal-border">
+                    <img alt="@tour.Name" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src="@MediaUrlBuilder.Build(tour.CoverImageUrl)" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-16 left-12 right-12">
+                        <span class="text-[#D4AF37] font-bold text-[12px] tracking-[0.4em] uppercase mb-4 block">@tour.CategoryName</span>
+                        <h3 class="text-4xl md:text-5xl font-semibold text-white mb-6 leading-tight">@tour.Name</h3>
+                        <p class="text-gray-300 font-light text-lg mb-8 line-clamp-2 max-w-xl">@tour.Description</p>
+                        <div class="flex items-center gap-6">
+                            <span class="text-white font-bold text-2xl">da @(tour.Price?.ToString("C") ?? "N/D")</span>
+                            <div class="flex items-center gap-2 text-[#D4AF37]">
+                                <span class="text-xs uppercase tracking-[0.2em] font-bold">Scopri di più</span>
+                                <span class="material-symbols-outlined">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>

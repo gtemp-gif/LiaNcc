@@ -1,0 +1,68 @@
+using LiaNcc.FE.Services.Interfaces;
+using LiaNcc.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LiaNcc.FE.Controllers
+{
+    public class ContactController : BaseController
+    {
+        private readonly IContactMessagesApiClient _contactApi;
+        private readonly IApplicationLoggerService _logger;
+
+        public ContactController(IContactMessagesApiClient contactApi, IApplicationLoggerService applicationLogger)
+        {
+            _contactApi = contactApi;
+            _logger = applicationLogger;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendMessage(ContactMessage message)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                await _contactApi.CreateAsync(message);
+                await _logger.LogInfoAsync("Contact", "SendMessage", $"Message from {message.FullName} sent");
+                return Ok(new { success = true, message = "Messaggio inviato con successo." });
+            }
+            catch (Exception ex)
+            {
+                await _logger.LogErrorAsync("Contact", "SendMessageError", "Error sending contact message", ex);
+                return StatusCode(500, new { success = false, message = "Errore durante l'invio del messaggio." });
+            }
+        }
+    }
+
+    public class BookingsController : BaseController
+    {
+        private readonly IBookingsApiClient _bookingsApi;
+        private readonly IApplicationLoggerService _logger;
+
+        public BookingsController(IBookingsApiClient bookingsApi, IApplicationLoggerService applicationLogger)
+        {
+            _bookingsApi = bookingsApi;
+            _logger = applicationLogger;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Booking booking)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                await _bookingsApi.CreateAsync(booking);
+                await _logger.LogInfoAsync("Bookings", "CreateBooking", $"Booking from {booking.FullName} sent");
+                return Ok(new { success = true, message = "Prenotazione inviata con successo." });
+            }
+            catch (Exception ex)
+            {
+                await _logger.LogErrorAsync("Bookings", "CreateBookingError", "Error sending booking request", ex);
+                return StatusCode(500, new { success = false, message = "Errore durante l'invio della prenotazione." });
+            }
+        }
+    }
+}

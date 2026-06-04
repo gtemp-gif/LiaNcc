@@ -65,5 +65,19 @@ namespace LiaNcc.BO.Services.Implementations
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<TourCategory>>($"{_endpointUrl}/categories", _jsonSerializerOptions);
             return response ?? new List<TourCategory>();
         }
+
+        public async Task<IEnumerable<TourGalleryImageDto>> GetTourGalleryAsync(Guid tourId)
+        {
+            SetBearerToken();
+            var response = await _httpClient.GetFromJsonAsync<IEnumerable<TourGalleryImageDto>>($"{_endpointUrl}/{tourId}/gallery", _jsonSerializerOptions);
+            return response ?? new List<TourGalleryImageDto>();
+        }
+
+        public async Task DeleteGalleryImageAsync(Guid imageId)
+        {
+            SetBearerToken();
+            var response = await _httpClient.DeleteAsync($"{_endpointUrl}/gallery/{imageId}");
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

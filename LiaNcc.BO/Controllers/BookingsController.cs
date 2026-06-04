@@ -9,10 +9,12 @@ namespace LiaNcc.BO.Controllers
     public class BookingsController : BaseController
     {
         private readonly IBookingsApiClient _bookingsApiClient;
+        private readonly LiaNcc.BO.Services.Interfaces.IApplicationLoggerService _logger;
 
-        public BookingsController(IBookingsApiClient bookingsApiClient)
+        public BookingsController(IBookingsApiClient bookingsApiClient, LiaNcc.BO.Services.Interfaces.IApplicationLoggerService logger)
         {
             _bookingsApiClient = bookingsApiClient;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()

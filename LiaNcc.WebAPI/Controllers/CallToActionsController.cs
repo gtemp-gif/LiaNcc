@@ -14,10 +14,12 @@ namespace LiaNcc.WebAPI.Controllers
     public class CallToActionsController : ControllerBase
     {
         private readonly ICallToActionRepository _callToActionRepository;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
-        public CallToActionsController(ICallToActionRepository callToActionRepository)
+        public CallToActionsController(ICallToActionRepository callToActionRepository, LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _callToActionRepository = callToActionRepository;
+            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -62,6 +64,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != cta.Id) return BadRequest();
             await _callToActionRepository.UpdateAsync(cta);
+            await _logger.LogInfoAsync("CMS", "UpdateCTA", $"CTA {cta.Label} updated", id, "CallToAction");
             return NoContent();
         }
 

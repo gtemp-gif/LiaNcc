@@ -14,10 +14,12 @@ namespace LiaNcc.WebAPI.Controllers
     public class LocalizedContentsController : ControllerBase
     {
         private readonly ILocalizedContentRepository _localizedContentRepository;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
-        public LocalizedContentsController(ILocalizedContentRepository localizedContentRepository)
+        public LocalizedContentsController(ILocalizedContentRepository localizedContentRepository, LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _localizedContentRepository = localizedContentRepository;
+            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -58,6 +60,11 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> UpsertBatch(IEnumerable<LocalizedContent> items)
         {
             await _localizedContentRepository.UpsertBatchAsync(items);
+            var firstItem = items.FirstOrDefault();
+            if (firstItem != null)
+            {
+                await _logger.LogInfoAsync("Localization", "UpsertBatch", $"Localization updated for {firstItem.EntityName} {firstItem.EntityId}", firstItem.EntityId, firstItem.EntityName);
+            }
             return Ok();
         }
 

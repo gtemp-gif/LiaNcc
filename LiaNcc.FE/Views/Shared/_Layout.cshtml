@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LIA NCC</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -203,6 +204,18 @@
 </head>
 <body class="font-body overflow-x-hidden selection:bg-primary/30 selection:text-on-primary-container">
     <!-- TopNavBar -->
+    @{
+        CompanyProfile? company = null;
+        IEnumerable<CompanyContact> contacts = new List<CompanyContact>();
+        try {
+            company = await CompanyApi.GetCompanyProfileAsync();
+            contacts = await CompanyApi.GetContactsAsync();
+        } catch {}
+
+        var phone = contacts.FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 333 715 9308";
+        var phone2 = contacts.Skip(1).FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 350 576 3433";
+        var email = contacts.FirstOrDefault(c => c.Type == "Email")?.Value ?? "liamoto@alice.it";
+    }
     <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 py-6 bg-black/90 backdrop-blur-xl border-b border-[#1A1A1A]">
         <a asp-action="Index" asp-controller="Home" class="text-2xl font-bold text-[#D4AF37] tracking-tighter">
             <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="~/img/LiaNcc_logo.jpeg" />
@@ -212,7 +225,7 @@
             <a asp-action="Fleet" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Fleet" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Flotta</a>
             <a href="/Home/Index#servizi" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Servizi</a>
             <a asp-action="Tours" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Tours" || ViewContext.RouteData.Values["Action"]?.ToString() == "TourDetail" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Tour</a>
-            <a href="#contatti" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Contatti</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="contatti" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Contatti</a>
 
             @{
                 var isItalian = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "it";
@@ -237,7 +250,7 @@
                         <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="~/img/LiaNcc_logo.jpeg" />
                     </a>
                 </div>
-                <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-8 text-[15px]">© @DateTime.Now.Year LIA NCC. L'ECCELLENZA IN MOVIMENTO.</p>
+                <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 mb-8 text-[15px]">© @DateTime.Now.Year @(company?.Name ?? "LIA NCC"). L'ECCELLENZA IN MOVIMENTO.</p>
             </div>
             <div class="grid grid-cols-2 gap-8">
                 <div class="flex flex-col gap-4">
@@ -245,9 +258,14 @@
                     <a href="#" class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all">Termini e Condizioni</a>
                 </div>
                 <div class="flex flex-col gap-4 text-right">
-                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 333 715 9308</p>
-                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">+39 350 576 3433</p>
-                    <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 text-[15px]">liamoto@alice.it</p>
+                    @foreach(var contact in contacts.Where(c => c.Type == "Phone" || c.Type == "WhatsApp"))
+                    {
+                        <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-[#D4AF37] text-[15px]">@contact.Value</p>
+                    }
+                    @foreach(var contact in contacts.Where(c => c.Type == "Email"))
+                    {
+                        <p class="font-bold text-[10px] tracking-[0.2em] uppercase text-gray-600 text-[15px]">@contact.Value</p>
+                    }
                 </div>
             </div>
         </div>

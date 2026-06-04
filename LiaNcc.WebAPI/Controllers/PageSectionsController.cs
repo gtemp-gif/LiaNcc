@@ -14,10 +14,12 @@ namespace LiaNcc.WebAPI.Controllers
     public class PageSectionsController : ControllerBase
     {
         private readonly IPageSectionRepository _pageSectionRepository;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
-        public PageSectionsController(IPageSectionRepository pageSectionRepository)
+        public PageSectionsController(IPageSectionRepository pageSectionRepository, LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _pageSectionRepository = pageSectionRepository;
+            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -55,6 +57,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != pageSection.Id) return BadRequest();
             await _pageSectionRepository.UpdateAsync(pageSection);
+            await _logger.LogInfoAsync("CMS", "UpdateSection", $"Section {pageSection.Name} updated", id, "PageSection");
             return NoContent();
         }
 

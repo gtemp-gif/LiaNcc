@@ -12,8 +12,19 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IO;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/lia-webapi-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 30)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
@@ -25,6 +36,7 @@ builder.Services.AddControllers()
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -65,6 +77,7 @@ builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection(
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IApplicationLoggerService, ApplicationLoggerService>();
 builder.Services.AddScoped<LiaNcc.WebAPI.Helpers.ILocalizationResolver, LiaNcc.WebAPI.Helpers.LocalizationResolver>();
 
 // Configure CORS
@@ -105,14 +118,24 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+var pathBase = builder.Configuration["AppSettings:PathBase"];
+if (!string.IsNullOrWhiteSpace(pathBase))
+{
+    app.UsePathBase(pathBase);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint($"{(string.IsNullOrEmpty(pathBase) ? "" : pathBase)}/swagger/v1/swagger.json", "LiaNcc.WebAPI v1");
+    });
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<LiaNcc.WebAPI.Middleware.ExceptionLoggingMiddleware>();
 app.UseStaticFiles();
 
 var fileStoragePath = Path.Combine(builder.Environment.ContentRootPath, "LiaNccFiles");

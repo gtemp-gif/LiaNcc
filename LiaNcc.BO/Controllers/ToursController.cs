@@ -25,14 +25,18 @@ namespace LiaNcc.BO.Controllers
             "ExperienceDescription", "MeetingPoint"
         };
 
+        private readonly IApplicationLoggerService _logger;
+
         public ToursController(
             IToursApiClient toursApiClient,
+            IApplicationLoggerService applicationLogger,
             IVehiclesApiClient vehiclesApiClient,
             IFilesApiClient filesApiClient,
             ILanguagesApiClient languagesApiClient,
             ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _toursApiClient = toursApiClient;
+            _logger = applicationLogger;
             _vehiclesApiClient = vehiclesApiClient;
             _filesApiClient = filesApiClient;
             _languagesApiClient = languagesApiClient;
@@ -92,12 +96,25 @@ namespace LiaNcc.BO.Controllers
                     MeetingPoint = model.MeetingPoint,
                     VehicleId = model.VehicleId,
                     IsFeatured = model.IsFeatured,
+                    IsBookable = model.IsBookable,
                     IsActive = model.IsActive,
                     SortOrder = model.SortOrder
                 };
 
                 var createdTour = await _toursApiClient.CreateTourAsync(tour);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Tour", createdTour.Id);
+                await _logger.LogInfoAsync("Tours", "CreateTour", $"Tour {createdTour.Name} created via BO", createdTour.Id, "Tour");
+
+                // Gallery upload
+                if (model.NewGalleryImages != null && model.NewGalleryImages.Any())
+                {
+                    var galleryUpload = await _filesApiClient.UploadFilesAsync(model.NewGalleryImages, "tours", "Tours", createdTour.Id, "Gallery");
+                    if (galleryUpload == null || galleryUpload.UploadedFiles.Count == 0)
+                    {
+                        TempData["WarningMessage"] = "Tour creato, ma si è verificato un errore durante il caricamento della galleria.";
+                    }
+                }
+
                 TempData["SuccessMessage"] = "Tour creato con successo.";
                 return RedirectToAction(nameof(Index));
             }
@@ -130,8 +147,10 @@ namespace LiaNcc.BO.Controllers
                 MeetingPoint = tour.MeetingPoint,
                 VehicleId = tour.VehicleId,
                 IsFeatured = tour.IsFeatured,
+                IsBookable = tour.IsBookable,
                 IsActive = tour.IsActive,
                 SortOrder = tour.SortOrder,
+                ExistingGalleryImages = tour.GalleryImages,
                 AvailableCategories = await GetCategoriesSelectList(),
                 AvailableVehicles = await GetVehiclesSelectList()
             };
@@ -149,16 +168,25 @@ namespace LiaNcc.BO.Controllers
 
             if (ModelState.IsValid)
             {
-                if (model.CoverImageFile != null)
+                bool uploadError = false;
+                try
                 {
-                    var upload = await _filesApiClient.UploadFilesAsync(new List<Microsoft.AspNetCore.Http.IFormFile> { model.CoverImageFile }, "tours", "Tours", id, "Cover");
-                    if (upload?.UploadedFiles.Count > 0) model.CoverImageUrl = upload.UploadedFiles[0].Url;
-                }
+                    if (model.CoverImageFile != null)
+                    {
+                        var upload = await _filesApiClient.UploadFilesAsync(new List<Microsoft.AspNetCore.Http.IFormFile> { model.CoverImageFile }, "tours", "Tours", id, "Cover");
+                        if (upload?.UploadedFiles.Count > 0) model.CoverImageUrl = upload.UploadedFiles[0].Url;
+                    }
 
-                if (model.ExperienceImageFile != null)
+                    if (model.ExperienceImageFile != null)
+                    {
+                        var upload = await _filesApiClient.UploadFilesAsync(new List<Microsoft.AspNetCore.Http.IFormFile> { model.ExperienceImageFile }, "tours", "Tours", id, "Experience");
+                        if (upload?.UploadedFiles.Count > 0) model.ExperienceImageUrl = upload.UploadedFiles[0].Url;
+                    }
+                }
+                catch (Exception ex)
                 {
-                    var upload = await _filesApiClient.UploadFilesAsync(new List<Microsoft.AspNetCore.Http.IFormFile> { model.ExperienceImageFile }, "tours", "Tours", id, "Experience");
-                    if (upload?.UploadedFiles.Count > 0) model.ExperienceImageUrl = upload.UploadedFiles[0].Url;
+                    await _logger.LogErrorAsync("Tours", "EditUpload", "Error uploading main images during tour edit", ex, id, "Tour");
+                    uploadError = true;
                 }
 
                 var tour = new Tour
@@ -179,13 +207,41 @@ namespace LiaNcc.BO.Controllers
                     MeetingPoint = model.MeetingPoint,
                     VehicleId = model.VehicleId,
                     IsFeatured = model.IsFeatured,
+                    IsBookable = model.IsBookable,
                     IsActive = model.IsActive,
                     SortOrder = model.SortOrder
                 };
 
                 await _toursApiClient.UpdateTourAsync(id, tour);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Tour", id);
-                TempData["SuccessMessage"] = "Tour aggiornato con successo.";
+                await _logger.LogInfoAsync("Tours", "UpdateTour", $"Tour {tour.Name} updated via BO", id, "Tour");
+
+                // Gallery upload
+                if (model.NewGalleryImages != null && model.NewGalleryImages.Any())
+                {
+                    try
+                    {
+                        var galleryUpload = await _filesApiClient.UploadFilesAsync(model.NewGalleryImages, "tours", "Tours", id, "Gallery");
+                        if (galleryUpload == null || galleryUpload.UploadedFiles.Count == 0)
+                        {
+                            uploadError = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await _logger.LogErrorAsync("Tours", "EditGalleryUpload", "Error uploading gallery images during tour edit", ex, id, "Tour");
+                        uploadError = true;
+                    }
+                }
+
+                if (uploadError)
+                {
+                    TempData["WarningMessage"] = "Tour salvato, ma si è verificato un errore durante il caricamento di alcune immagini.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "Tour aggiornato con successo.";
+                }
                 return RedirectToAction(nameof(Index));
             }
 
@@ -201,6 +257,21 @@ namespace LiaNcc.BO.Controllers
             await _toursApiClient.DeleteTourAsync(id);
             TempData["SuccessMessage"] = "Tour eliminato con successo.";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteGalleryImage(Guid imageId)
+        {
+            try
+            {
+                await _toursApiClient.DeleteGalleryImageAsync(imageId);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         private async Task<IEnumerable<SelectListItem>> GetCategoriesSelectList()

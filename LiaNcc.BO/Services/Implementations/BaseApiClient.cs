@@ -48,10 +48,20 @@ namespace LiaNcc.BO.Services.Implementations
                 var httpContext = _httpContextAccessor.HttpContext;
                 if (httpContext != null)
                 {
-                    httpContext.Response.Redirect("/Auth/Login");
-                    // Terminate the execution of the request to allow the redirect to complete cleanly
-                    httpContext.Response.CompleteAsync().GetAwaiter().GetResult();
-                    return;
+                    // For AJAX/fetch requests, we shouldn't redirect but return 401
+                    var isAjax = httpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+                    if (!isAjax)
+                    {
+                        var loginPath = "/Auth/Login";
+                        // If we are under a virtual application, we need to consider it
+                        if (httpContext.Request.PathBase.HasValue)
+                        {
+                            loginPath = httpContext.Request.PathBase.Value + loginPath;
+                        }
+                        httpContext.Response.Redirect(loginPath);
+                        httpContext.Response.CompleteAsync().GetAwaiter().GetResult();
+                        return;
+                    }
                 }
             }
             response.EnsureSuccessStatusCode();

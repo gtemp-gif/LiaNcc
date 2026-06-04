@@ -18,11 +18,13 @@ namespace LiaNcc.WebAPI.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
-        public UsersController(IUserRepository userRepository, IRoleRepository roleRepository)
+        public UsersController(IUserRepository userRepository, IRoleRepository roleRepository, LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -75,6 +77,7 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _userRepository.CreateAsync(user);
+            await _logger.LogInfoAsync("Users", "CreateUser", $"User {user.Email} created", user.Id, "User");
 
             foreach (var roleId in request.RoleIds)
             {
@@ -136,6 +139,7 @@ namespace LiaNcc.WebAPI.Controllers
             if (user == null) return NotFound();
 
             await _userRepository.DeleteAsync(id);
+            await _logger.LogInfoAsync("Users", "DeleteUser", $"User {id} deleted", id, "User");
             return NoContent();
         }
 

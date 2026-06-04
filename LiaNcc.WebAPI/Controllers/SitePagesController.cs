@@ -17,15 +17,18 @@ namespace LiaNcc.WebAPI.Controllers
         private readonly ISitePageRepository _sitePageRepository;
         private readonly ILocalizedContentRepository _localizationRepository;
         private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
         public SitePagesController(
             ISitePageRepository sitePageRepository,
             ILocalizedContentRepository localizationRepository,
-            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver,
+            LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _sitePageRepository = sitePageRepository;
             _localizationRepository = localizationRepository;
             _resolver = resolver;
+            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -123,6 +126,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != sitePage.Id) return BadRequest();
             await _sitePageRepository.UpdateAsync(sitePage);
+            await _logger.LogInfoAsync("CMS", "UpdatePage", $"Page {sitePage.Name} updated", id, "SitePage");
             return NoContent();
         }
 

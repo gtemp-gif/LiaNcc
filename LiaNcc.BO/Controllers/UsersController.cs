@@ -11,9 +11,12 @@ namespace LiaNcc.BO.Controllers
     {
         private readonly IUsersApiClient _usersApiClient;
 
-        public UsersController(IUsersApiClient usersApiClient)
+        private readonly IApplicationLoggerService _logger;
+
+        public UsersController(IUsersApiClient usersApiClient, IApplicationLoggerService applicationLogger)
         {
             _usersApiClient = usersApiClient;
+            _logger = applicationLogger;
         }
 
         public async Task<IActionResult> Index()

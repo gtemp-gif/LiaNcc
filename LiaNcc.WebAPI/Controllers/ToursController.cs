@@ -16,28 +16,36 @@ namespace LiaNcc.WebAPI.Controllers
     public class ToursController : ControllerBase
     {
         private readonly ITourRepository _tourRepository;
+        private readonly IMediaRepository _mediaRepository;
         private readonly ILocalizedContentRepository _localizationRepository;
         private readonly LiaNcc.WebAPI.Helpers.ILocalizationResolver _resolver;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
         public ToursController(
             ITourRepository tourRepository,
+            IMediaRepository mediaRepository,
             ILocalizedContentRepository localizationRepository,
-            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver)
+            LiaNcc.WebAPI.Helpers.ILocalizationResolver resolver,
+            LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _tourRepository = tourRepository;
+            _mediaRepository = mediaRepository;
             _localizationRepository = localizationRepository;
             _resolver = resolver;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TourDto>>> GetTours([FromQuery] string? culture)
         {
             var tours = await _tourRepository.GetAllAsync();
-            if (!string.IsNullOrEmpty(culture))
+            var dtos = new List<TourDto>();
+            foreach (var t in tours)
             {
-                foreach (var tour in tours) await LocalizeTour(tour, culture);
+                if (!string.IsNullOrEmpty(culture)) await LocalizeTour(t, culture);
+                dtos.Add(await MapToDto(t));
             }
-            return Ok(tours.Select(MapToDto));
+            return Ok(dtos);
         }
 
         [AllowAnonymous]
@@ -45,11 +53,13 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<TourDto>>> GetActiveTours([FromQuery] string? culture)
         {
             var tours = await _tourRepository.GetActiveToursAsync();
-            if (!string.IsNullOrEmpty(culture))
+            var dtos = new List<TourDto>();
+            foreach (var t in tours)
             {
-                foreach (var tour in tours) await LocalizeTour(tour, culture);
+                if (!string.IsNullOrEmpty(culture)) await LocalizeTour(t, culture);
+                dtos.Add(await MapToDto(t));
             }
-            return Ok(tours.Select(MapToDto));
+            return Ok(dtos);
         }
 
         [AllowAnonymous]
@@ -57,11 +67,13 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<TourDto>>> GetFeaturedTours([FromQuery] string? culture)
         {
             var tours = await _tourRepository.GetFeaturedToursAsync();
-            if (!string.IsNullOrEmpty(culture))
+            var dtos = new List<TourDto>();
+            foreach (var t in tours)
             {
-                foreach (var tour in tours) await LocalizeTour(tour, culture);
+                if (!string.IsNullOrEmpty(culture)) await LocalizeTour(t, culture);
+                dtos.Add(await MapToDto(t));
             }
-            return Ok(tours.Select(MapToDto));
+            return Ok(dtos);
         }
 
         [AllowAnonymous]
@@ -71,7 +83,7 @@ namespace LiaNcc.WebAPI.Controllers
             var tour = await _tourRepository.GetByIdAsync(id);
             if (tour == null) return NotFound();
             if (!string.IsNullOrEmpty(culture)) await LocalizeTour(tour, culture);
-            return Ok(MapToDto(tour));
+            return Ok(await MapToDto(tour));
         }
 
         [AllowAnonymous]
@@ -131,6 +143,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<Tour>> CreateTour(Tour tour)
         {
             await _tourRepository.CreateAsync(tour);
+            await _logger.LogInfoAsync("Tours", "CreateTour", $"Tour {tour.Name} created", tour.Id, "Tour");
             return Ok(tour);
         }
 
@@ -139,18 +152,45 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != tour.Id) return BadRequest();
             await _tourRepository.UpdateAsync(tour);
+            await _logger.LogInfoAsync("Tours", "UpdateTour", $"Tour {tour.Name} updated", tour.Id, "Tour");
             return NoContent();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/gallery")]
+        public async Task<ActionResult<IEnumerable<TourGalleryImageDto>>> GetTourGallery(Guid id)
+        {
+            var media = await _mediaRepository.GetMediaForEntityAsync("Tours", id);
+            var gallery = media.Where(m => m.MediaType == "Gallery")
+                .Select(m => new TourGalleryImageDto
+                {
+                    Id = m.Id,
+                    ImageUrl = m.MediaAsset.FileUrl,
+                    SortOrder = m.SortOrder
+                }).OrderBy(m => m.SortOrder);
+            return Ok(gallery);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTour(Guid id)
         {
             await _tourRepository.DeleteAsync(id);
+            await _logger.LogInfoAsync("Tours", "DeleteTour", $"Tour {id} deleted", id, "Tour");
             return NoContent();
         }
 
-        private static TourDto MapToDto(Tour t)
+        [HttpDelete("gallery/{imageId}")]
+        public async Task<IActionResult> DeleteGalleryImage(Guid imageId)
         {
+            await _mediaRepository.RemoveMediaFromEntityAsync(imageId);
+            await _logger.LogInfoAsync("Tours", "DeleteGalleryImage", $"Gallery image {imageId} removed", imageId, "TourGalleryImage");
+            return NoContent();
+        }
+
+        private async Task<TourDto> MapToDto(Tour t)
+        {
+            var media = await _mediaRepository.GetMediaForEntityAsync("Tours", t.Id);
+
             return new TourDto
             {
                 Id = t.Id,
@@ -171,10 +211,17 @@ namespace LiaNcc.WebAPI.Controllers
                 VehicleId = t.VehicleId,
                 VehicleName = t.Vehicle != null ? $"{t.Vehicle.Name} ({t.Vehicle.Title})" : null,
                 IsFeatured = t.IsFeatured,
+                IsBookable = t.IsBookable,
                 IsActive = t.IsActive,
                 SortOrder = t.SortOrder,
                 CreatedAt = t.CreatedAt,
-                UpdatedAt = t.UpdatedAt
+                UpdatedAt = t.UpdatedAt,
+                GalleryImages = media.Where(m => m.MediaType == "Gallery").Select(m => new TourGalleryImageDto
+                {
+                    Id = m.Id,
+                    ImageUrl = m.MediaAsset.FileUrl,
+                    SortOrder = m.SortOrder
+                }).OrderBy(m => m.SortOrder).ToList()
             };
         }
     }

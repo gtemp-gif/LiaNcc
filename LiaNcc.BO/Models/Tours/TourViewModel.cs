@@ -33,8 +33,12 @@ namespace LiaNcc.BO.Models.Tours
         public Guid? VehicleId { get; set; }
 
         public bool IsFeatured { get; set; }
+        public bool IsBookable { get; set; }
         public bool IsActive { get; set; }
         public int SortOrder { get; set; }
+
+        public List<IFormFile> NewGalleryImages { get; set; } = new();
+        public List<LiaNcc.Models.DTOs.Tours.TourGalleryImageDto> ExistingGalleryImages { get; set; } = new();
 
         public IEnumerable<SelectListItem> AvailableCategories { get; set; } = new List<SelectListItem>();
         public IEnumerable<SelectListItem> AvailableVehicles { get; set; } = new List<SelectListItem>();

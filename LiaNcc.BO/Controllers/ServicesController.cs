@@ -19,13 +19,17 @@ namespace LiaNcc.BO.Controllers
 
         private readonly List<string> _translatableKeys = new List<string> { "Name", "Description" };
 
+        private readonly IApplicationLoggerService _logger;
+
         public ServicesController(
             IServicesApiClient servicesApiClient,
+            IApplicationLoggerService applicationLogger,
             IFilesApiClient filesApiClient,
             ILanguagesApiClient languagesApiClient,
             ILocalizedContentsApiClient localizedContentsApiClient)
         {
             _servicesApiClient = servicesApiClient;
+            _logger = applicationLogger;
             _filesApiClient = filesApiClient;
             _languagesApiClient = languagesApiClient;
             _localizedContentsApiClient = localizedContentsApiClient;
@@ -146,6 +150,7 @@ namespace LiaNcc.BO.Controllers
 
                 await _servicesApiClient.UpdateAsync(id, service);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "Service", id);
+                await _logger.LogInfoAsync("Services", "UpdateService", $"Service {service.Name} updated via BO", id, "Service");
 
                 TempData["SuccessMessage"] = "Servizio aggiornato con successo.";
                 return RedirectToAction(nameof(Index));

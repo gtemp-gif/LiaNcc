@@ -160,6 +160,7 @@
             <li class="nav-item"><a class="nav-link" asp-controller="Company" asp-action="Index"><i class="bi bi-building me-2"></i> Azienda</a></li>
             <li class="nav-item"><a class="nav-link" asp-controller="Partners" asp-action="Index"><i class="bi bi-people me-2"></i> Partner</a></li>
             <li class="nav-item"><a class="nav-link" asp-controller="Users" asp-action="Index"><i class="bi bi-person-badge me-2"></i> Utenti</a></li>
+            <li class="nav-item"><a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Log" ? "active" : "")" asp-controller="Log" asp-action="Index"><i class="bi bi-list-columns-reverse me-2"></i> Log</a></li>
         </ul>
     </nav>
 

@@ -29,6 +29,7 @@ namespace LiaNcc.Repository.Extensions
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IPartnerRepository, PartnerRepository>();
             services.AddScoped<IDashboardRepository, DashboardRepository>();
+            services.AddScoped<IApplicationLogRepository, ApplicationLogRepository>();
 
             return services;
         }

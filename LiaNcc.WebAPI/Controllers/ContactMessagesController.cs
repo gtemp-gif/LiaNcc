@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LiaNcc.Models.DTOs.Requests;
 using LiaNcc.Models.Entities;
 using LiaNcc.Repository.Interfaces;
+using LiaNcc.WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,10 +16,12 @@ namespace LiaNcc.WebAPI.Controllers
     public class ContactMessagesController : ControllerBase
     {
         private readonly IContactMessageRepository _contactMessageRepository;
+        private readonly IApplicationLoggerService _logger;
 
-        public ContactMessagesController(IContactMessageRepository contactMessageRepository)
+        public ContactMessagesController(IContactMessageRepository contactMessageRepository, IApplicationLoggerService logger)
         {
             _contactMessageRepository = contactMessageRepository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -54,6 +57,7 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _contactMessageRepository.CreateAsync(message);
+            await _logger.LogInfoAsync("Contact", "CreateMessage", $"Contact message from {message.FullName}", message.Id, "ContactMessage");
             return Ok(message);
         }
 
