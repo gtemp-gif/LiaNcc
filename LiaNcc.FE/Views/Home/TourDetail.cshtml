@@ -7,6 +7,7 @@
 
 @if (tour != null)
 {
+    <!-- Hero Detail -->
     <section class="relative h-[70vh] flex items-center justify-center text-center px-6 overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img alt="@tour.Name" class="w-full h-full object-cover cinematic-img" src="@MediaUrlBuilder.Build(tour.CoverImageUrl)" />
@@ -19,12 +20,33 @@
         </div>
     </section>
 
+    <!-- Experience Section -->
     <section class="py-32 px-6 md:px-16 bg-black">
         <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
                 <h2 class="text-4xl md:text-5xl font-semibold text-white mb-12 section-title">L'Esperienza</h2>
                 <div class="prose prose-invert prose-lg max-w-none text-gray-400 font-light leading-loose">
                     @tour.ExperienceDescription
+                </div>
+
+                <div class="mt-16 grid grid-cols-2 gap-8 border-t border-[#1A1A1A] pt-12">
+                    <div>
+                        <span class="text-[#D4AF37] font-bold text-[10px] uppercase tracking-widest block mb-4">Durata</span>
+                        <div class="flex items-center gap-3 text-white">
+                            <span class="material-symbols-outlined text-primary">schedule</span>
+                            <span class="text-xl">
+                                @if(tour.DurationDays > 0) { <span>@tour.DurationDays Giorni</span> }
+                                @if(tour.DurationHours > 0) { <span>@tour.DurationHours Ore</span> }
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-[#D4AF37] font-bold text-[10px] uppercase tracking-widest block mb-4">Punto di Incontro</span>
+                        <div class="flex items-center gap-3 text-white">
+                            <span class="material-symbols-outlined text-primary">location_on</span>
+                            <span class="text-xl">@tour.MeetingPoint</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="relative">
@@ -39,44 +61,8 @@
         </div>
     </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="border border-[#1A1A1A] p-10 flex flex-col items-center text-center">
-                    <span class="material-symbols-outlined text-[#D4AF37] text-4xl mb-6">schedule</span>
-                    <span class="text-[#D4AF37] font-bold text-[10px] uppercase tracking-widest block mb-4">Durata</span>
-                    <span class="text-white text-sm">
-                        @if (tour.DurationDays > 0)
-                        {
-                            <span>@tour.DurationDays Giorni</span>
-                        }
-                        @if (tour.DurationHours > 0)
-                        {
-                            <span>@tour.DurationHours Ore</span>
-                        }
-                        @if (tour.DurationDays == 0 && tour.DurationHours == 0)
-                        {
-                            <span>Intera Giornata</span>
-                        }
-                    </span>
-                </div>
-
-                <div class="border border-[#1A1A1A] p-10 flex flex-col items-center text-center">
-                    <span class="material-symbols-outlined text-[#D4AF37] text-4xl mb-6">location_on</span>
-                    <span class="text-[#D4AF37] font-bold text-[10px] uppercase tracking-widest block mb-4">Meeting Point</span>
-                    <span class="text-white text-sm">@(tour.MeetingPoint ?? "Pick-up presso Hotel o Residenza Privata")</span>
-                </div>
-
-                <div class="border border-[#1A1A1A] p-10 flex flex-col items-center text-center">
-                    <span class="material-symbols-outlined text-[#D4AF37] text-4xl mb-6">directions_car</span>
-                    <span class="text-[#D4AF37] font-bold text-[10px] uppercase tracking-widest block mb-4">Veicoli</span>
-                    <span class="text-white text-sm">
-                        @(tour.Vehicle?.Title ?? "Mercedes-Benz Classe S o V-Class Luxury")
-                    </span>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    @if (tour.TourGalleryImages != null && tour.TourGalleryImages.Any())
+    <!-- Gallery -->
+    @if (tour.TourGalleryImages.Any())
     {
         <section class="py-32 bg-[#050505]">
             <div class="px-6 md:px-16 max-w-7xl mx-auto">
@@ -93,75 +79,14 @@
         </section>
     }
 
-    <section id="reservations" class="py-32">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-left mb-12">
-                <h2 class="text-4xl font-semibold text-white mb-4 section-title text-[24px]">Richiesta Prenotazione VIP</h2>
-                <p class="text-gray-400 font-light text-[15px]">Compila il modulo per ricevere un preventivo personalizzato immediato.</p>
-            </div>
-
-            <div class="bg-black p-8 md:p-20 relative charcoal-border mt-16">
-
-                <form action="/tour/book" method="POST" class="space-y-12">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <div class="space-y-2 flex flex-col">
-                            <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Nome Completo</label>
-                            <input type="text" placeholder="Mario Rossi" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors" required />
-                        </div>
-
-                        <div class="space-y-2 flex flex-col">
-                            <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Email</label>
-                            <input type="email" placeholder="mario@esempio.it" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors" required />
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <div class="space-y-2 flex flex-col relative">
-                            <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data Desiderata</label>
-                            <input type="text" id="custom-date-picker" placeholder="gg/mm/aaaa" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors cursor-pointer" required />
-                            <span class="material-symbols-outlined absolute right-0 bottom-4 text-gray-500 pointer-events-none">calendar_today</span>
-                        </div>
-
-                        <div class="space-y-2 flex flex-col relative">
-                            <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Numero Ospiti</label>
-                            <select style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white py-4 pr-10 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors cursor-pointer outline-none" required>
-                                <option class="bg-black text-gray-500" value="" disabled selected>Seleziona numero ospiti</option>
-                                <option class="bg-black text-[#D4AF37]" value="1">1 Persona</option>
-                                <option class="bg-black text-[#D4AF37]" value="2">2 Persone</option>
-                                <option class="bg-black text-[#D4AF37]" value="3">3 - 5 Persone</option>
-                                <option class="bg-black text-[#D4AF37]" value="4">Privato Exclusive</option>
-                            </select>
-                            <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2 flex flex-col">
-                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Note Aggiuntive (Discrezione Garantita)</label>
-                        <textarea placeholder="Indica eventuali richieste particolari..." rows="3" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors resize-none"></textarea>
-                    </div>
-
-                    <button type="submit" class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.3em] hover:bg-[#E5C158] transition-all">
-                        Invia Richiesta di Prenotazione
-                    </button>
-                </form>
-            </div>
+    <!-- Booking CTA -->
+    <section class="py-32 bg-black border-t border-[#1A1A1A]">
+        <div class="max-w-4xl mx-auto text-center px-6">
+            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-8 section-title">Pronto per l'avventura?</h2>
+            <p class="text-xl text-gray-400 mb-12 font-light">Prenota ora il tuo tour personalizzato e vivi un'esperienza indimenticabile.</p>
+            <a href="/#booking-form" class="bg-[#D4AF37] text-black px-16 py-6 font-bold uppercase text-sm tracking-[0.3em] hover:scale-105 transition-transform inline-block">Richiedi Informazioni</a>
         </div>
     </section>
-    
-
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/it.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        flatpickr("#custom-date-picker", {
-        locale: "it",
-        dateFormat: "d/m/Y",
-        minDate: "today",
-        disableMobile: "true"
-        });
-        });
-    </script>
 }
 else
 {

@@ -56,26 +56,7 @@ namespace LiaNcc.FE.Controllers
         {
             var culture = CurrentCulture;
             var model = new FleetViewModel();
-
-            try
-            {
-                model.Vehicles = await _vehiclesApi.GetActiveAsync(culture);
-            }
-            catch (Exception ex)
-            {
-                await _appLogger.LogErrorAsync("Vehicles", "LoadFleet", "Error loading vehicles", ex);
-            }
-
-            // Recupera i servizi attivi da usare nella modale di prenotazione
-            try
-            {
-                model.Services = await _servicesApi.GetActiveAsync(culture);
-            }
-            catch (Exception ex)
-            {
-                await _appLogger.LogErrorAsync("Services", "LoadServicesForFleet", "Error loading services", ex);
-            }
-
+            try { model.Vehicles = await _vehiclesApi.GetActiveAsync(culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Vehicles", "LoadFleet", "Error loading vehicles", ex); }
             return View(model);
         }
 

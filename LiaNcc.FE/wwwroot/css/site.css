@@ -1,175 +1,31 @@
 html {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 @media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
+  html {
+    font-size: 16px;
+  }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-    position: relative;
-    min-height: 100%;
+  position: relative;
+  min-height: 100%;
 }
 
 body {
-    margin-bottom: 60px;
+  margin-bottom: 60px;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-    color: var(--bs-secondary-color);
-    text-align: end;
+  color: var(--bs-secondary-color);
+  text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-    text-align: start;
-}
-
-/* ==========================================================================
-   FLATPICKR E SELECT CUSTOM (TEMA LUSSO)
-   ========================================================================== */
-select:invalid {
-    color: #6B7280 !important;
-}
-
-select option {
-    color: #D4AF37 !important;
-}
-
-/* 1. Stile comune per le tendine (Freccia dorata per form e calendario) */
-select.flatpickr-monthDropdown-months,
-#bookingModal select,
-#reservations select {
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%23D4AF37" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') !important;
-    background-repeat: no-repeat !important;
-    background-position: right 0px center !important;
-    background-size: 16px !important;
-    padding-right: 20px !important;
-    background-color: transparent !important;
-    cursor: pointer !important;
-    color-scheme: dark !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* 2. FIX: Rimuovi il bordo e formatta le lettere SOLO nel Calendario! */
-select.flatpickr-monthDropdown-months {
-    border: none !important;
-    height: auto !important;
-    line-height: normal !important;
-    padding-bottom: 8px !important;
-    vertical-align: middle !important;
-    overflow: visible !important;
-}
-
-    select.flatpickr-monthDropdown-months:focus,
-    #bookingModal select:focus,
-    #reservations select:focus {
-        outline: none !important;
-        box-shadow: none !important;
-    }
-
-/* ==========================================================================
-   STILE BASE CALENDARIO
-   ========================================================================== */
-body .flatpickr-calendar {
-    background: #050505 !important;
-    border: 1px solid #1A1A1A !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.9) !important;
-    font-family: 'Montserrat', sans-serif !important;
-}
-
-body .flatpickr-current-month {
-    height: 45px !important;
-}
-
-    body .flatpickr-months .flatpickr-month,
-    body .flatpickr-current-month .flatpickr-monthDropdown-months {
-        color: #D4AF37 !important;
-        fill: #D4AF37 !important;
-    }
-
-        body .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
-            background-color: #1A1A1A !important;
-            color: #D4AF37 !important;
-        }
-
-body .flatpickr-months .flatpickr-prev-month,
-body .flatpickr-months .flatpickr-next-month {
-    fill: #D4AF37 !important;
-}
-
-    body .flatpickr-months .flatpickr-prev-month:hover svg,
-    body .flatpickr-months .flatpickr-next-month:hover svg {
-        fill: #E5C158 !important;
-    }
-
-body .flatpickr-current-month .numInputWrapper {
-    margin-left: 1rem !important;
-}
-
-    body .flatpickr-current-month .numInputWrapper .arrowUp,
-    body .flatpickr-current-month .numInputWrapper .arrowDown {
-        display: none !important;
-    }
-
-body span.flatpickr-weekday {
-    color: #D4AF37 !important;
-    font-weight: bold !important;
-    background: transparent !important;
-}
-
-body .flatpickr-day {
-    color: #e2e2e2 !important;
-}
-
-    body .flatpickr-day:hover,
-    body .flatpickr-day:focus {
-        background: #1A1A1A !important;
-        border-color: #D4AF37 !important;
-        outline: none !important;
-    }
-
-    body .flatpickr-day.selected,
-    body .flatpickr-day.startRange,
-    body .flatpickr-day.endRange,
-    body .flatpickr-day.selected:focus,
-    body .flatpickr-day.selected:hover {
-        background: #D4AF37 !important;
-        border-color: #D4AF37 !important;
-        color: #000000 !important;
-        font-weight: bold !important;
-    }
-
-    body .flatpickr-day.today {
-        border-color: #D4AF37 !important;
-    }
-
-    body .flatpickr-day.flatpickr-disabled,
-    body .flatpickr-day.flatpickr-disabled:hover {
-        color: #3f3f46 !important;
-        background: transparent !important;
-        border-color: transparent !important;
-        cursor: not-allowed !important;
-    }
-
-/* ==========================================================================
-   IL TOCCO FINALE: NERO ASSOLUTO SU INTESTAZIONE (SENZA TOCCARE I FORM)
-   ========================================================================== */
-body .flatpickr-calendar .flatpickr-months,
-body .flatpickr-calendar.dark .flatpickr-months,
-body .flatpickr-calendar .flatpickr-month,
-body .flatpickr-calendar.dark .flatpickr-month,
-body .flatpickr-calendar .flatpickr-current-month,
-body .flatpickr-calendar.dark .flatpickr-current-month {
-    background: #050505 !important;
-    background-color: #050505 !important;
+  text-align: start;
 }
