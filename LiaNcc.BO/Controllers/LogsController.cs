@@ -21,7 +21,7 @@ namespace LiaNcc.BO.Controllers
         {
             if (filter.Page <= 0) filter.Page = 1;
             if (filter.PageSize <= 0) filter.PageSize = 50;
-
+            
             var result = await _logsApiClient.GetLogsAsync(filter);
             ViewBag.Filter = filter;
             return View(result);
@@ -37,9 +37,34 @@ namespace LiaNcc.BO.Controllers
         [HttpPost]
         public async Task<IActionResult> CleanupLogs(int olderThanDays = 30)
         {
-            await _logsApiClient.CleanupAsync(olderThanDays);
-            TempData["SuccessMessage"] = "Log ripuliti correttamente.";
-            return RedirectToAction(nameof(Index));
+            if (olderThanDays <= 0)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Il numero di giorni non è valido."
+                });
+            }
+
+            try
+            {
+                await _logsApiClient.CleanupAsync(olderThanDays);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Log ripuliti correttamente."
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Errore durante la pulizia dei log.",
+                    exception = ex.Message
+                });
+            }
         }
     }
 }

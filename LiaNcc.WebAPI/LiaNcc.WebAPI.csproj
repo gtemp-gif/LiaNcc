@@ -21,4 +21,10 @@
     <ProjectReference Include="..\LiaNcc.Repository\LiaNcc.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MailHelper">
+      <HintPath>..\..\..\..\013 - Utilities\Jules\Mail-tool\bin\Release\MailHelper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -127,21 +127,51 @@ namespace LiaNcc.WebAPI.Services
                 var bodyBuilder = new BodyBuilder { HtmlBody = htmlBody };
                 message.Body = bodyBuilder.ToMessageBody();
 
-                using (var client = new SmtpClient())
+               var helper = new MailHelper.HelperMailKit(emailLog.FromEmail,_settings.FromEmailPwd,_settings.Host,_settings.Port,_settings.EnableSSL,_settings.SenderName);
+
+                try
                 {
-                    // For development/demo, we might want to bypass certificate validation
-                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-
-                    await client.ConnectAsync(_settings.Host, _settings.Port, _settings.EnableSSL ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
-
-                    if (!string.IsNullOrEmpty(_settings.FromEmailPwd))
-                    {
-                        await client.AuthenticateAsync(_settings.FromEmail, _settings.FromEmailPwd);
-                    }
-
-                    await client.SendAsync(message);
-                    await client.DisconnectAsync(true);
+                    _logger.LogInformation("connection to client SMTP");
+                    await helper.SendEmailHtmlAsync(toEmail,subject, emailLog.Body);
+                    _logger.LogInformation("Sent email to {ToEmail} with subject {Subject}", toEmail, subject);
                 }
+                catch (Exception ex)
+                {
+
+                    _logger.LogError(ex, "Error while sending email to {ToEmail}", toEmail);
+
+                    emailLog.Status = "Failed";
+                    emailLog.ErrorMessage = ex.Message;
+                    await _emailRepository.UpdateAsync(emailLog);
+
+                    await _appLogger.LogErrorAsync(
+                        "Mail",
+                        "SmtpConnectionSendFailed",
+                        $"Invio email a {toEmail} fallito: {ex.Message}",
+                        ex,
+                        null,
+                        "MailService",
+                        relatedEntityName,
+                        relatedEntityId,
+                        ApplicationEventType.Email,
+                        new { EmailId = emailLog.Id }
+                    );
+                }
+                //using (var client = new SmtpClient())
+                //{
+                //    // For development/demo, we might want to bypass certificate validation
+                //    //client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+                //    await client.ConnectAsync(_settings.Host, _settings.Port, _settings.EnableSSL ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
+
+                //    if (!string.IsNullOrEmpty(_settings.FromEmailPwd))
+                //    {
+                //        await client.AuthenticateAsync(_settings.FromEmail, _settings.FromEmailPwd);
+                //    }
+
+                //    await client.SendAsync(message);
+                //    await client.DisconnectAsync(true);
+                //}
 
                 emailLog.Status = "Sent";
                 emailLog.SentAt = DateTime.UtcNow;

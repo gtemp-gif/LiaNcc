@@ -49,7 +49,6 @@ namespace LiaNcc.WebAPI.Controllers
             if (msg == null) return NotFound();
             return Ok(msg);
         }
-
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<ContactMessage>> CreateContactMessage(ContactMessageCreateRequest request)
@@ -64,22 +63,38 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _contactMessageRepository.CreateAsync(message);
-            await _logger.LogInformationAsync("Contact", "CreateMessage", $"Contact message from {message.FullName} created", "Contact", "ContactMessage", message.Id, ApplicationEventType.Contact);
 
-            // Invia email asincronamente
-            _ = Task.Run(async () =>
+            await _logger.LogInformationAsync(
+                "Contact",
+                "CreateMessage",
+                $"Contact message from {message.FullName} created",
+                "Contact",
+                "ContactMessage",
+                message.Id,
+                ApplicationEventType.Contact
+            );
+
+            try
             {
-                try
-                {
-                    await _mailService.SendContactNotificationAsync(message);
-                    await _mailService.SendContactCustomerConfirmationAsync(message);
-                }
-                catch (Exception ex)
-                {
-                    // L'errore è già loggato dentro MailService, ma logghiamo anche qui per contesto
-                    await _logger.LogErrorAsync("Contact", "EmailNotificationError", $"Errore invio email per messaggio {message.Id}", ex, null, "Contact", "ContactMessage", message.Id);
-                }
-            });
+                await _mailService.SendContactNotificationAsync(message);
+                await _mailService.SendContactCustomerConfirmationAsync(message);
+            }
+            catch (Exception ex)
+            {
+                await _logger.LogErrorAsync(
+                    "Contact",
+                    "EmailNotificationError",
+                    $"Errore invio email per messaggio {message.Id}",
+                    ex,
+                    null,
+                    "Contact",
+                    "ContactMessage",
+                    message.Id
+                );
+
+                // Puoi decidere se restituire comunque OK oppure errore.
+                // Per ora consiglio OK, perché il messaggio è stato salvato.
+            }
 
             return Ok(message);
         }
