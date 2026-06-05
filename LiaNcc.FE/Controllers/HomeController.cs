@@ -17,6 +17,7 @@ namespace LiaNcc.FE.Controllers
         private readonly IToursApiClient _toursApi;
         private readonly IPartnersApiClient _partnersApi;
         private readonly ICompanyApiClient _companyApi;
+        private readonly IBookingsApiClient _bookingsApi;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -26,7 +27,8 @@ namespace LiaNcc.FE.Controllers
             IVehiclesApiClient vehiclesApi,
             IToursApiClient toursApi,
             IPartnersApiClient partnersApi,
-            ICompanyApiClient companyApi)
+            ICompanyApiClient companyApi,
+            IBookingsApiClient bookingsApi)
         {
             _logger = logger;
             _appLogger = applicationLogger;
@@ -36,6 +38,7 @@ namespace LiaNcc.FE.Controllers
             _toursApi = toursApi;
             _partnersApi = partnersApi;
             _companyApi = companyApi;
+            _bookingsApi = bookingsApi;
         }
 
         public async Task<IActionResult> Index()
@@ -167,6 +170,15 @@ namespace LiaNcc.FE.Controllers
 
                 Tour = tour
             };
+
+            try
+            {
+                ViewData["PassengerOptions"] = await _bookingsApi.GetPassengerOptionsAsync(culture);
+            }
+            catch (Exception ex)
+            {
+                await _appLogger.LogErrorAsync("Bookings", "LoadPassengerOptions", "Error loading passenger options", ex);
+            }
 
             return View(model);
 

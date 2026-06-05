@@ -5,6 +5,9 @@ using LiaNcc.Models.Enums;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using LiaNcc.Repository.Interfaces;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 
 namespace LiaNcc.WebAPI.Services
 {
@@ -116,24 +119,30 @@ namespace LiaNcc.WebAPI.Services
 
                 _logger.LogInformation("Attempting to send email to {ToEmail} with subject {Subject}", toEmail, subject);
 
-                // Here we would use the MailHelper.dll library
-                /*
-                var mailer = new MailHelper.HelperMailKit(
-                    _settings.FromEmail,
-                    _settings.FromEmailPwd,
-                    _settings.Host,
-                    _settings.Port,
-                    _settings.EnableSSL,
-                    _settings.SenderName
-                );
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress(_settings.SenderName ?? "Lia NCC", _settings.FromEmail));
+                message.To.Add(new MailboxAddress("", toEmail));
+                message.Subject = subject;
 
-                await mailer.SendEmailHtmlAsync(toEmail, subject, htmlBody);
-                */
+                var bodyBuilder = new BodyBuilder { HtmlBody = htmlBody };
+                message.Body = bodyBuilder.ToMessageBody();
 
-                // Since MailHelper is not present, we log the intention
-                _logger.LogWarning("MailHelper.dll not found. Email not actually sent. Content: {Subject} to {ToEmail}", subject, toEmail);
+                using (var client = new SmtpClient())
+                {
+                    // For development/demo, we might want to bypass certificate validation
+                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                // Simuliamo successo per ora
+                    await client.ConnectAsync(_settings.Host, _settings.Port, _settings.EnableSSL ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
+
+                    if (!string.IsNullOrEmpty(_settings.FromEmailPwd))
+                    {
+                        await client.AuthenticateAsync(_settings.FromEmail, _settings.FromEmailPwd);
+                    }
+
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+                }
+
                 emailLog.Status = "Sent";
                 emailLog.SentAt = DateTime.UtcNow;
                 await _emailRepository.UpdateAsync(emailLog);
@@ -141,7 +150,7 @@ namespace LiaNcc.WebAPI.Services
                 await _appLogger.LogInformationAsync(
                     "Mail",
                     "SmtpSendSuccess",
-                    $"Email inviata con successo a {toEmail} (SIMULATO)",
+                    $"Email inviata con successo a {toEmail}",
                     "MailService",
                     relatedEntityName,
                     relatedEntityId,
@@ -160,7 +169,7 @@ namespace LiaNcc.WebAPI.Services
                 await _appLogger.LogErrorAsync(
                     "Mail",
                     "SmtpSendFailed",
-                    $"Invio email a {toEmail} fallito",
+                    $"Invio email a {toEmail} fallito: {ex.Message}",
                     ex,
                     null,
                     "MailService",
