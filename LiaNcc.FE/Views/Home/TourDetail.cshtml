@@ -119,35 +119,46 @@
 
             <div class="bg-black p-8 md:p-20 relative charcoal-border mt-16">
 
-                <form action="/tour/book" method="POST" class="space-y-12">
+                <form id="tourBookingForm" class="space-y-12">
+                    <input type="hidden" name="TourId" value="@tour.Id" />
+                    @Html.AntiForgeryToken()
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div class="space-y-2 flex flex-col">
                             <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Nome Completo</label>
-                            <input type="text" placeholder="Mario Rossi" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors" required />
+                            <input name="FullName" type="text" placeholder="Mario Rossi" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors" required />
                         </div>
 
                         <div class="space-y-2 flex flex-col">
                             <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Email</label>
-                            <input type="email" placeholder="mario@esempio.it" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors" required />
+                            <input name="Email" type="email" placeholder="mario@esempio.it" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors" required />
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div class="space-y-2 flex flex-col relative">
                             <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data Desiderata</label>
-                            <input type="text" placeholder="gg/mm/aaaa" class="luxury-datepicker w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors cursor-pointer" required />
+                            <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="gg/mm/aaaa" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors cursor-pointer" required />
                             <span class="material-symbols-outlined absolute right-0 bottom-4 text-gray-500 pointer-events-none">calendar_today</span>
                         </div>
 
                         <div class="space-y-2 flex flex-col relative">
                             <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Numero Ospiti</label>
-                            <select style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white py-4 pr-10 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors cursor-pointer outline-none" required>
+                            <select name="PassengerOptionId" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white py-4 pr-10 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors cursor-pointer outline-none" required>
                                 <option class="bg-black text-gray-500" value="" disabled selected>Seleziona numero ospiti</option>
-                                <option class="bg-black text-[#D4AF37]" value="1">1 Persona</option>
-                                <option class="bg-black text-[#D4AF37]" value="2">2 Persone</option>
-                                <option class="bg-black text-[#D4AF37]" value="3">3 - 5 Persone</option>
-                                <option class="bg-black text-[#D4AF37]" value="4">Privato Exclusive</option>
+                                @if (ViewData["PassengerOptions"] is IEnumerable<LiaNcc.Models.Entities.BookingPassengerOption> passengerOptions)
+                                {
+                                    @foreach (var opt in passengerOptions)
+                                    {
+                                        <option class="bg-black text-[#D4AF37]" value="@opt.Id">@opt.Name</option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option class="bg-black text-[#D4AF37]" value="1">1 Persona</option>
+                                    <option class="bg-black text-[#D4AF37]" value="2">2 Persone</option>
+                                    <option class="bg-black text-[#D4AF37]" value="3">3 - 5 Persone</option>
+                                }
                             </select>
                             <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
                         </div>
@@ -155,7 +166,7 @@
 
                     <div class="space-y-2 flex flex-col">
                         <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Note Aggiuntive (Discrezione Garantita)</label>
-                        <textarea placeholder="Indica eventuali richieste particolari..." rows="3" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors resize-none"></textarea>
+                        <textarea name="Message" placeholder="Indica eventuali richieste particolari..." rows="3" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors resize-none"></textarea>
                     </div>
 
                     <button type="submit" class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.3em] hover:bg-[#E5C158] transition-all">
@@ -165,6 +176,160 @@
             </div>
         </div>
     </section>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+        /* 1. FIX SELECT MESI E PLACEHOLDER */
+        select:invalid {
+            color: #6B7280;
+        }
+
+        select option {
+            color: #D4AF37;
+        }
+
+        select.flatpickr-monthDropdown-months {
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            appearance: none !important;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23D4AF37" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') !important;
+            background-repeat: no-repeat !important;
+            background-position: right 0px center !important;
+            background-size: 16px !important;
+            padding-right: 20px !important;
+            outline: none !important;
+            box-shadow: none !important;
+            border: none !important;
+            background-color: transparent !important;
+            cursor: pointer !important;
+            color-scheme: dark !important;
+        }
+
+            select.flatpickr-monthDropdown-months:focus,
+            select.flatpickr-monthDropdown-months:active {
+                outline: none !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+        /* 2. STILE BASE CALENDARIO FLATPICKR LUSSO */
+        .flatpickr-calendar {
+            background: #050505 !important;
+            border: 1px solid #1A1A1A !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9) !important;
+            font-family: 'Montserrat', sans-serif !important;
+        }
+
+        .flatpickr-months .flatpickr-month,
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            color: #D4AF37 !important;
+            fill: #D4AF37 !important;
+        }
+
+            .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
+                background-color: #1A1A1A !important;
+                color: #D4AF37 !important;
+            }
+
+        .flatpickr-months .flatpickr-prev-month,
+        .flatpickr-months .flatpickr-next-month {
+            fill: #D4AF37 !important;
+        }
+
+            .flatpickr-months .flatpickr-prev-month:hover svg,
+            .flatpickr-months .flatpickr-next-month:hover svg {
+                fill: #E5C158 !important;
+            }
+
+        .flatpickr-current-month .numInputWrapper {
+            margin-left: 1rem !important;
+        }
+
+            .flatpickr-current-month .numInputWrapper .arrowUp,
+            .flatpickr-current-month .numInputWrapper .arrowDown {
+                display: none !important;
+            }
+
+        /* 3. GIORNI E SETTIMANE */
+        span.flatpickr-weekday {
+            color: #D4AF37 !important;
+            font-weight: bold !important;
+            background: transparent !important;
+        }
+
+        .flatpickr-day {
+            color: #e2e2e2 !important;
+        }
+
+            .flatpickr-day:hover, .flatpickr-day:focus {
+                background: #1A1A1A !important;
+                border-color: #D4AF37 !important;
+                outline: none !important;
+            }
+
+            .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+                background: #D4AF37 !important;
+                border-color: #D4AF37 !important;
+                color: #000000 !important;
+                font-weight: bold;
+            }
+
+            .flatpickr-day.today {
+                border-color: #D4AF37 !important;
+            }
+
+            /* 4. GIORNI DISABILITATI (Passati) */
+            .flatpickr-day.flatpickr-disabled,
+            .flatpickr-day.flatpickr-disabled:hover {
+                color: #3f3f46 !important; /* Grigio scuro spento */
+                background: transparent !important;
+                border-color: transparent !important;
+                cursor: not-allowed !important;
+            }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/it.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr("#custom-date-picker", {
+                locale: "it",
+                dateFormat: "d/m/Y",
+                minDate: "today",
+                disableMobile: "true"
+            });
+
+            const form = document.getElementById('tourBookingForm');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const formData = new FormData(form);
+
+                const dateStr = formData.get('ServiceDateStr');
+                if (dateStr) {
+                    const parts = dateStr.split('/');
+                    formData.append('ServiceDate', `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+                }
+
+                try {
+                    const response = await fetch('/Bookings/Create', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        alert(result.message);
+                        form.reset();
+                    } else {
+                        alert(result.message || "Si è verificato un errore.");
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert("Errore durante l'invio della prenotazione.");
+                }
+            });
+        });
+    </script>
 }
 else
 {

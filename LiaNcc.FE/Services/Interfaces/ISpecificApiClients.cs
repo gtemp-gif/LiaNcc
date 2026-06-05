@@ -48,11 +48,20 @@ namespace LiaNcc.FE.Services.Interfaces
 
     public interface IContactMessagesApiClient
     {
-        Task CreateAsync(ContactMessage message);
+        Task CreateAsync(LiaNcc.Models.DTOs.Requests.ContactMessageCreateRequest request);
+        Task<IEnumerable<ContactMessage>> GetAllAsync();
+        Task<ContactMessage?> GetByIdAsync(Guid id);
+        Task MarkAsReadAsync(Guid id);
+        Task DeleteAsync(Guid id);
     }
 
     public interface IBookingsApiClient
     {
-        Task CreateAsync(Booking booking);
+        Task CreateAsync(LiaNcc.Models.DTOs.Requests.BookingCreateRequest request);
+        Task<IEnumerable<Booking>> GetAllAsync();
+        Task<Booking?> GetByIdAsync(Guid id);
+        Task UpdateStatusAsync(Guid id, string status);
+        Task<IEnumerable<BookingServiceType>> GetServiceTypesAsync(string? culture = null);
+        Task<IEnumerable<BookingPassengerOption>> GetPassengerOptionsAsync(string? culture = null);
     }
 }

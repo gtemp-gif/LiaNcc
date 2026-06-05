@@ -54,7 +54,8 @@ namespace LiaNcc.BO.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _companyApiClient.CreateAsync(profile);
+                var result = await _companyApiClient.CreateAsync(profile);
+                await _logger.LogInformationAsync("Company", "CreateProfile", "Company profile created via BO", "Company", "CompanyProfile", profile.Id);
                 TempData["SuccessMessage"] = "Profilo aziendale salvato con successo.";
                 return RedirectToAction(nameof(Index));
             }
@@ -127,7 +128,7 @@ namespace LiaNcc.BO.Controllers
                 await _companyApiClient.UpdateAsync(id, profileUpdate);
                 await SaveLocalizationAsync(_localizedContentsApiClient, model.Translations, "CompanyProfile", id);
 
-                await _logger.LogInfoAsync("Company", "UpdateProfile", "Company profile updated via BO", id, "CompanyProfile");
+                await _logger.LogInformationAsync("Company", "UpdateProfile", "Company profile updated via BO", "Company", "CompanyProfile", id);
 
                 TempData["SuccessMessage"] = "Profilo aziendale aggiornato.";
                 return RedirectToAction(nameof(Index));
@@ -149,6 +150,7 @@ namespace LiaNcc.BO.Controllers
             };
 
             await _companyApiClient.CreateCompanyContactAsync(contact);
+            await _logger.LogInformationAsync("Company", "AddContact", $"Contact {type} added to company profile", "Company", "CompanyProfile", companyId);
             return RedirectToAction(nameof(Edit), new { id = companyId });
         }
 
@@ -157,6 +159,7 @@ namespace LiaNcc.BO.Controllers
         public async Task<IActionResult> DeleteContact(Guid id, Guid companyId)
         {
             await _companyApiClient.DeleteCompanyContactAsync(id);
+            await _logger.LogInformationAsync("Company", "DeleteContact", "Contact deleted from company profile", "Company", "CompanyProfile", companyId);
             return RedirectToAction(nameof(Edit), new { id = companyId });
         }
     }

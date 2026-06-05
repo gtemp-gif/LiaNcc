@@ -1,3 +1,5 @@
+@using System.Text.Json
+@using System.Text.Json.Serialization
 @model IEnumerable<LiaNcc.Models.Entities.Booking>
 @{
     ViewData["Title"] = "Gestione Prenotazioni";
@@ -7,17 +9,18 @@
     <h2>Gestione Prenotazioni</h2>
 </div>
 
-<div class="card shadow-sm">
+<div class="card shadow-sm border-0">
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>Richiedente</th>
-                        <th>Email / Telefono</th>
+                        <th class="ps-3">Richiedente</th>
+                        <th>Servizio / Tour / Veicolo</th>
                         <th>Data Servizio</th>
                         <th>Stato</th>
                         <th>Data Richiesta</th>
+                        <th class="text-end pe-3">Azioni</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,31 +28,197 @@
                         foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.FullName</td>
-                                <td>
-                                    <div>@item.Email</div>
+                                <td class="ps-3">
+                                    <strong>@item.FullName</strong>
+                                    <div class="small text-muted">@item.Email</div>
                                     @if(!string.IsNullOrEmpty(item.Phone)) {
-                                        <small class="text-muted">@item.Phone</small>
+                                        <small class="text-muted"><i class="bi bi-telephone me-1"></i>@item.Phone</small>
                                     }
                                 </td>
-                                <td>@item.ServiceDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (item.Tour != null)
+                                    {
+                                        <span class="badge bg-primary">Tour</span>
+                                        <small class="d-block">@item.Tour.Name</small>
+                                    }
+                                    else if (item.Vehicle != null)
+                                    {
+                                        <span class="badge bg-dark">Flotta</span>
+                                        <small class="d-block">@item.Vehicle.Name</small>
+                                    }
+                                    else if (item.ServiceType != null)
+                                    {
+                                        <span class="badge bg-info text-dark">Servizio</span>
+                                        <small class="d-block">@item.ServiceType.Code</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted italic small">Non specificato</span>
+                                    }
+                                </td>
+                                <td>
+                                    <strong>@item.ServiceDate.ToString("dd/MM/yyyy")</strong>
+                                    <small class="d-block text-muted">@item.ServiceDate.ToString("HH:mm")</small>
+                                </td>
                                 <td>
                                     @if(item.Status == "Pending") {
                                         <span class="badge bg-warning text-dark">Pending</span>
                                     } else if (item.Status == "Confirmed") {
                                         <span class="badge bg-success">Confermata</span>
+                                    } else if (item.Status == "Cancelled") {
+                                        <span class="badge bg-danger">Annullata</span>
                                     } else {
                                         <span class="badge bg-secondary">@item.Status</span>
                                     }
                                 </td>
-                                <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-end pe-3">
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" title="Dettagli"
+                                                onclick='showBookingDetails(@JsonSerializer.Serialize(item, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.IgnoreCycles }))'>
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        @if (item.Status == "Pending")
+                                        {
+                                            <form asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Confirmed" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-success" title="Conferma">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Cancelled" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-danger" title="Annulla">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Eliminare questa prenotazione?')">
+                                            <button type="submit" class="btn btn-outline-dark" title="Elimina">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     } else {
-                        <tr><td colspan="5" class="text-center text-muted py-4">Nessuna prenotazione presente.</td></tr>
+                        <tr><td colspan="6" class="text-center text-muted py-5">Nessuna prenotazione presente.</td></tr>
                     }
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<!-- Modal Dettaglio -->
+<div class="modal fade" id="bookingDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Dettaglio Prenotazione</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Informazioni Cliente</h6>
+                        <table class="table table-sm table-borderless">
+                            <tr><th>Nome</th><td id="det-name"></td></tr>
+                            <tr><th>Email</th><td id="det-email"></td></tr>
+                            <tr><th>Telefono</th><td id="det-phone"></td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Stato e Date</h6>
+                        <table class="table table-sm table-borderless">
+                            <tr><th>Stato</th><td id="det-status-badge"></td></tr>
+                            <tr><th>Data Servizio</th><td id="det-service-date"></td></tr>
+                            <tr><th>Richiesta il</th><td id="det-created-at"></td></tr>
+                        </table>
+                    </div>
+                    <div class="col-12">
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Dettagli Servizio</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="text-muted small d-block">Tipo / Origine</label>
+                                <span id="det-origin" class="fw-bold"></span>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="text-muted small d-block">Specifiche</label>
+                                <span id="det-specs" class="fw-bold text-primary"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="text-muted small d-block">Passeggeri</label>
+                                <span id="det-passengers"></span>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="text-muted small d-block">Opzione Passeggeri</label>
+                                <span id="det-passenger-opt"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3 border-bottom pb-2">Messaggio del Cliente</h6>
+                        <div class="p-3 bg-light rounded italic" id="det-message"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function showBookingDetails(booking) {
+            document.getElementById('det-name').innerText = booking.FullName;
+            document.getElementById('det-email').innerText = booking.Email;
+            document.getElementById('det-phone').innerText = booking.Phone || '-';
+            document.getElementById('det-service-date').innerText = new Date(booking.ServiceDate).toLocaleString();
+            document.getElementById('det-created-at').innerText = new Date(booking.CreatedAt).toLocaleString();
+            document.getElementById('det-passengers').innerText = booking.MaxSeats || '1';
+            document.getElementById('det-message').innerText = booking.Message || 'Nessun messaggio fornito.';
+
+            // Badge Stato
+            let badge = document.getElementById('det-status-badge');
+            badge.className = 'badge ';
+            if (booking.Status === 'Pending') {
+                badge.className += 'bg-warning text-dark';
+                badge.innerText = 'Pending';
+            } else if (booking.Status === 'Confirmed') {
+                badge.className += 'bg-success';
+                badge.innerText = 'Confermata';
+            } else if (booking.Status === 'Cancelled') {
+                badge.className += 'bg-danger';
+                badge.innerText = 'Annullata';
+            } else {
+                badge.className += 'bg-secondary';
+                badge.innerText = booking.Status;
+            }
+
+            // Origine
+            let origin = document.getElementById('det-origin');
+            let specs = document.getElementById('det-specs');
+
+            if (booking.Tour) {
+                origin.innerHTML = '<span class="badge bg-primary">Tour</span>';
+                specs.innerText = booking.Tour.Name;
+            } else if (booking.Vehicle) {
+                origin.innerHTML = '<span class="badge bg-dark">Flotta</span>';
+                specs.innerText = booking.Vehicle.Name;
+            } else if (booking.ServiceType) {
+                origin.innerHTML = '<span class="badge bg-info text-dark">Servizio</span>';
+                specs.innerText = booking.ServiceType.Code;
+            } else {
+                origin.innerText = 'Non specificato';
+                specs.innerText = '-';
+            }
+
+            document.getElementById('det-passenger-opt').innerText = booking.PassengerOption ? booking.PassengerOption.Name : '-';
+
+            const modal = new bootstrap.Modal(document.getElementById('bookingDetailModal'));
+            modal.show();
+        }
+    </script>
+}

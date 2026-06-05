@@ -118,6 +118,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<SitePage>> CreateSitePage(SitePage sitePage)
         {
             await _sitePageRepository.CreateAsync(sitePage);
+            await _logger.LogInformationAsync("CMS", "CreatePage", $"Page {sitePage.Name} created", "CMS", "SitePage", sitePage.Id);
             return Ok(sitePage);
         }
 
@@ -126,7 +127,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != sitePage.Id) return BadRequest();
             await _sitePageRepository.UpdateAsync(sitePage);
-            await _logger.LogInfoAsync("CMS", "UpdatePage", $"Page {sitePage.Name} updated", id, "SitePage");
+            await _logger.LogInformationAsync("CMS", "UpdatePage", $"Page {sitePage.Name} updated", "CMS", "SitePage", id);
             return NoContent();
         }
 
@@ -134,6 +135,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteSitePage(Guid id)
         {
             await _sitePageRepository.DeleteAsync(id);
+            await _logger.LogInformationAsync("CMS", "DeletePage", $"Page {id} deleted", "CMS", "SitePage", id);
             return NoContent();
         }
     }

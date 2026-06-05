@@ -22,5 +22,23 @@ namespace LiaNcc.BO.Controllers
             var bookings = await _bookingsApiClient.GetAllAsync();
             return View(bookings);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(Guid id, string status)
+        {
+            await _bookingsApiClient.UpdateStatusAsync(id, status);
+            await _logger.LogInformationAsync("Bookings", "UpdateStatus", $"Stato prenotazione {id} aggiornato a {status}", "Bookings", "Booking", id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _bookingsApiClient.DeleteAsync(id);
+            await _logger.LogInformationAsync("Bookings", "Delete", $"Prenotazione {id} eliminata", "Bookings", "Booking", id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

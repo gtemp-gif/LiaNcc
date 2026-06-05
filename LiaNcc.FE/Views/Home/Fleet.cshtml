@@ -85,13 +85,13 @@
 
                     @if (vehicle.IsBookable)
                     {
-                        <button class="w-full py-5 bg-[#D4AF37] text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('@vehicle.Name')">
+                        <button class="w-full py-5 bg-[#D4AF37] text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('@vehicle.Name', '@vehicle.Id')">
                             PRENOTA ORA
                         </button>
                     }
                     else
                     {
-                        <button class="w-full py-5 border border-[#D4AF37] text-[#D4AF37] bg-transparent font-bold uppercase text-[10px] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all" onclick="openBookingModal('@vehicle.Name')">
+                        <button class="w-full py-5 border border-[#D4AF37] text-[#D4AF37] bg-transparent font-bold uppercase text-[10px] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all" onclick="openBookingModal('@vehicle.Name', '@vehicle.Id')">
                             CHIEDI INFORMAZIONI
                         </button>
                     }
@@ -132,45 +132,46 @@
             <p class="text-gray-400 font-light text-lg">Ricevi un preventivo personalizzato per: <span class="text-[#D4AF37] font-semibold" id="selectedCarName"></span></p>
         </div>
         
-        <form class="space-y-8">
+        <form id="fleetBookingForm" class="space-y-8">
+            <input type="hidden" name="VehicleId" id="modalVehicleId" />
+            @Html.AntiForgeryToken()
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-2">
                     <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Nome Completo</label>
-                    <input class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500" placeholder="Mario Rossi" type="text" required />
+                    <input name="FullName" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500" placeholder="Mario Rossi" type="text" required />
                 </div>
                 <div class="space-y-2">
                     <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Email</label>
-                    <input class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500" placeholder="mario@esempio.it" type="email" required />
+                    <input name="Email" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500" placeholder="mario@esempio.it" type="email" required />
                 </div>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-2 relative flex flex-col">
                     <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data del Servizio</label>
-                    <input type="text" placeholder="gg/mm/aaaa" class="luxury-datepicker w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500 cursor-pointer outline-none" required />
+                    <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="gg/mm/aaaa" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500 cursor-pointer outline-none" required />
                     <span class="material-symbols-outlined absolute right-0 bottom-4 text-gray-500 pointer-events-none">calendar_today</span>
                 </div>
                 
                 <div class="space-y-2 relative flex flex-col">
                     <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Tipo di Servizio</label>
-                    <select class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 pr-10 transition-all cursor-pointer outline-none" required>
+                    <select name="ServiceTypeId" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 pr-10 transition-all cursor-pointer outline-none" required>
                         <option class="bg-black text-gray-500" value="" disabled selected>Seleziona un servizio...</option>
                         
                         @if (Model.Services != null)
                         {
                             @foreach (var service in Model.Services)
                             {
-                                <option class="bg-black text-[#D4AF37]" value="@service.Name">@service.Name</option>
+                                <option class="bg-black text-[#D4AF37]" value="@service.Id">@service.Name</option>
                             }
                         }
-                        <option class="bg-black text-[#D4AF37]" value="Altro">Altro</option>
                     </select>
                 </div>
             </div>
             
             <div class="space-y-2">
                 <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Messaggio / Richieste Speciali</label>
-                <textarea class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500 resize-none" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
+                <textarea name="Message" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500 resize-none" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
             </div>
             
             <button class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8" type="submit">Invia Richiesta di Prenotazione</button>
@@ -179,8 +180,49 @@
 </div>
 
 <script>
-    function openBookingModal(carName) {
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr("#custom-date-picker", {
+            locale: "it",
+            dateFormat: "d/m/Y",
+            minDate: "today",
+            disableMobile: "true"
+        });
+
+        const form = document.getElementById('fleetBookingForm');
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            // Format date for the backend if needed
+            const dateStr = formData.get('ServiceDateStr');
+            if (dateStr) {
+                const parts = dateStr.split('/');
+                formData.append('ServiceDate', `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+            }
+
+            try {
+                const response = await fetch('/Bookings/Create', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert(result.message);
+                    closeBookingModal();
+                    form.reset();
+                } else {
+                    alert(result.message || "Si è verificato un errore.");
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert("Errore durante l'invio della prenotazione.");
+            }
+        });
+    });
+
+    function openBookingModal(carName, vehicleId) {
         document.getElementById('selectedCarName').innerText = carName;
+        document.getElementById('modalVehicleId').value = vehicleId;
         document.getElementById('bookingModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }

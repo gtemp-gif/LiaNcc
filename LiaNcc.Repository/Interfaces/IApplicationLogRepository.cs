@@ -10,10 +10,13 @@ namespace LiaNcc.Repository.Interfaces
     {
         Task AddAsync(ApplicationLog log);
         Task AddRangeAsync(IEnumerable<ApplicationLog> logs);
-        Task<ApplicationLog?> GetByIdAsync(Guid id);
-        Task<PagedResult<ApplicationLog>> GetPagedAsync(ApplicationLogFilterRequest filter);
-        Task DeleteOldLogsAsync(DateTime olderThan);
+        Task<ApplicationLogDto?> GetByIdAsync(long id);
+        Task<PaginatedLogsResponse> GetPagedAsync(ApplicationLogFilterRequest filter);
+        Task<int> DeleteOlderThanAsync(DateTime olderThan);
         Task<int> CountErrorsAsync(DateTime fromDate);
         Task<int> CountByLevelAsync(string level, DateTime? fromDate = null);
+
+        // Backward compatibility
+        Task DeleteOldLogsAsync(DateTime olderThan);
     }
 }

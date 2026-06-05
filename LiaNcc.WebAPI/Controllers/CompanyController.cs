@@ -116,7 +116,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<CompanyProfile>> UpdateCompany(CompanyProfile profile)
         {
             var updated = await _companyRepository.CreateOrUpdateProfileAsync(profile);
-            await _logger.LogInfoAsync("Company", "UpdateProfile", "Company profile updated", updated.Id, "CompanyProfile");
+            await _logger.LogInformationAsync("Company", "UpdateProfile", "Company profile updated", "Company", "CompanyProfile", updated.Id);
             return Ok(updated);
         }
 
@@ -124,7 +124,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<CompanyContact>> CreateContact(CompanyContact contact)
         {
             await _companyRepository.CreateContactAsync(contact);
-            await _logger.LogInfoAsync("Company", "CreateContact", $"Contact {contact.Type} added", contact.Id, "CompanyContact");
+            await _logger.LogInformationAsync("Company", "CreateContact", $"Contact {contact.Type} added", "Company", "CompanyContact", contact.Id);
             return Ok(contact);
         }
 
@@ -133,7 +133,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != contact.Id) return BadRequest();
             await _companyRepository.UpdateContactAsync(contact);
-            await _logger.LogInfoAsync("Company", "UpdateContact", $"Contact {contact.Type} updated", contact.Id, "CompanyContact");
+            await _logger.LogInformationAsync("Company", "UpdateContact", $"Contact {contact.Type} updated", "Company", "CompanyContact", contact.Id);
             return NoContent();
         }
 
@@ -141,7 +141,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteContact(Guid id)
         {
             await _companyRepository.DeleteContactAsync(id);
-            await _logger.LogInfoAsync("Company", "DeleteContact", $"Contact {id} deleted", id, "CompanyContact");
+            await _logger.LogInformationAsync("Company", "DeleteContact", $"Contact {id} deleted", "Company", "CompanyContact", id);
             return NoContent();
         }
     }

@@ -14,10 +14,12 @@ namespace LiaNcc.WebAPI.Controllers
     public class PartnersController : ControllerBase
     {
         private readonly IPartnerRepository _partnerRepository;
+        private readonly LiaNcc.WebAPI.Services.IApplicationLoggerService _logger;
 
-        public PartnersController(IPartnerRepository partnerRepository)
+        public PartnersController(IPartnerRepository partnerRepository, LiaNcc.WebAPI.Services.IApplicationLoggerService logger)
         {
             _partnerRepository = partnerRepository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -46,6 +48,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<Partner>> CreatePartner(Partner partner)
         {
             await _partnerRepository.CreateAsync(partner);
+            await _logger.LogInformationAsync("Partners", "CreatePartner", $"Partner {partner.Name} created", "Partners", "Partner", partner.Id);
             return Ok(partner);
         }
 
@@ -54,6 +57,7 @@ namespace LiaNcc.WebAPI.Controllers
         {
             if (id != partner.Id) return BadRequest();
             await _partnerRepository.UpdateAsync(partner);
+            await _logger.LogInformationAsync("Partners", "UpdatePartner", $"Partner {partner.Name} updated", "Partners", "Partner", partner.Id);
             return NoContent();
         }
 
@@ -61,6 +65,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeletePartner(Guid id)
         {
             await _partnerRepository.DeleteAsync(id);
+            await _logger.LogInformationAsync("Partners", "DeletePartner", $"Partner {id} deleted", "Partners", "Partner", id);
             return NoContent();
         }
     }
