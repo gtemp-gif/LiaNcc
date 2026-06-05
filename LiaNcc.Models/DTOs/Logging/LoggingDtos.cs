@@ -21,6 +21,7 @@ namespace LiaNcc.Models.DTOs.Logging
         public string Message { get; set; } = string.Empty;
         public string? Exception { get; set; }
         public string? StackTrace { get; set; }
+        public string? InnerException { get; set; }
         public string? RequestPath { get; set; }
         public string? HttpMethod { get; set; }
         public int? StatusCode { get; set; }
@@ -28,6 +29,7 @@ namespace LiaNcc.Models.DTOs.Logging
         public string? UserAgent { get; set; }
         public string? CorrelationId { get; set; }
         public string? AdditionalDataJson { get; set; }
+        public string? QueryString { get; set; }
 
         // Compatibility
         public string Source { get => ProjectName; set => ProjectName = value; }
@@ -50,6 +52,7 @@ namespace LiaNcc.Models.DTOs.Logging
         public string Message { get; set; } = string.Empty;
         public string? Exception { get; set; }
         public string? StackTrace { get; set; }
+        public string? InnerException { get; set; }
         public string? RequestPath { get; set; }
         public string? HttpMethod { get; set; }
         public int? StatusCode { get; set; }
@@ -57,6 +60,7 @@ namespace LiaNcc.Models.DTOs.Logging
         public string? UserAgent { get; set; }
         public string? CorrelationId { get; set; }
         public string? AdditionalDataJson { get; set; }
+        public string? QueryString { get; set; }
 
         // Compatibility
         public string Source { get => ProjectName; set => ProjectName = value; }

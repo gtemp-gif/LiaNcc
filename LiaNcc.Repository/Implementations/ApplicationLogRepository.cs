@@ -40,26 +40,30 @@ namespace LiaNcc.Repository.Implementations
         {
             var query = _context.ApplicationLogs.AsNoTracking().AsQueryable();
 
-            if (!string.IsNullOrEmpty(filter.Level)) query = query.Where(l => l.Level == filter.Level);
-            if (!string.IsNullOrEmpty(filter.ProjectName)) query = query.Where(l => l.ProjectName == filter.ProjectName);
-            if (!string.IsNullOrEmpty(filter.Area)) query = query.Where(l => l.Area == filter.Area);
-            if (!string.IsNullOrEmpty(filter.Controller)) query = query.Where(l => l.Controller == filter.Controller);
-            if (!string.IsNullOrEmpty(filter.Action)) query = query.Where(l => l.Action == filter.Action);
-            if (!string.IsNullOrEmpty(filter.EventType)) query = query.Where(l => l.EventType == filter.EventType);
-            if (!string.IsNullOrEmpty(filter.EntityName)) query = query.Where(l => l.EntityName == filter.EntityName);
-            if (!string.IsNullOrEmpty(filter.EntityId)) query = query.Where(l => l.EntityId == filter.EntityId);
-            if (!string.IsNullOrEmpty(filter.CorrelationId)) query = query.Where(l => l.CorrelationId == filter.CorrelationId);
-            if (!string.IsNullOrEmpty(filter.UserId)) query = query.Where(l => l.UserId == filter.UserId);
+            if (!string.IsNullOrWhiteSpace(filter.Level)) query = query.Where(l => l.Level == filter.Level);
+            if (!string.IsNullOrWhiteSpace(filter.ProjectName)) query = query.Where(l => l.ProjectName == filter.ProjectName);
+            if (!string.IsNullOrWhiteSpace(filter.Area)) query = query.Where(l => l.Area == filter.Area);
+            if (!string.IsNullOrWhiteSpace(filter.Controller)) query = query.Where(l => l.Controller == filter.Controller);
+            if (!string.IsNullOrWhiteSpace(filter.Action)) query = query.Where(l => l.Action == filter.Action);
+            if (!string.IsNullOrWhiteSpace(filter.EventType)) query = query.Where(l => l.EventType == filter.EventType);
+            if (!string.IsNullOrWhiteSpace(filter.EntityName)) query = query.Where(l => l.EntityName == filter.EntityName);
+            if (!string.IsNullOrWhiteSpace(filter.EntityId)) query = query.Where(l => l.EntityId == filter.EntityId);
+            if (!string.IsNullOrWhiteSpace(filter.CorrelationId)) query = query.Where(l => l.CorrelationId == filter.CorrelationId);
+            if (!string.IsNullOrWhiteSpace(filter.UserId)) query = query.Where(l => l.UserId == filter.UserId);
             if (filter.TenantId.HasValue) query = query.Where(l => l.TenantId == filter.TenantId);
             if (filter.FromDate.HasValue) query = query.Where(l => l.Timestamp >= filter.FromDate.Value);
             if (filter.ToDate.HasValue) query = query.Where(l => l.Timestamp <= filter.ToDate.Value);
 
-            if (!string.IsNullOrEmpty(filter.SearchTerm))
+            if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
             {
-                query = query.Where(l => l.Message.Contains(filter.SearchTerm)
-                                      || (l.Exception != null && l.Exception.Contains(filter.SearchTerm))
-                                      || (l.StackTrace != null && l.StackTrace.Contains(filter.SearchTerm))
-                                      || (l.AdditionalDataJson != null && l.AdditionalDataJson.Contains(filter.SearchTerm)));
+                var term = filter.SearchTerm.Trim();
+                query = query.Where(l => l.Message.Contains(term)
+                                      || (l.Exception != null && l.Exception.Contains(term))
+                                      || (l.StackTrace != null && l.StackTrace.Contains(term))
+                                      || (l.AdditionalDataJson != null && l.AdditionalDataJson.Contains(term))
+                                      || (l.RequestPath != null && l.RequestPath.Contains(term))
+                                      || (l.Controller != null && l.Controller.Contains(term))
+                                      || (l.Action != null && l.Action.Contains(term)));
             }
 
             var totalCount = await query.CountAsync();
@@ -79,13 +83,7 @@ namespace LiaNcc.Repository.Implementations
 
         public async Task<int> DeleteOlderThanAsync(DateTime olderThan)
         {
-            var logsToDelete = await _context.ApplicationLogs.Where(l => l.Timestamp < olderThan).ToListAsync();
-            int count = logsToDelete.Count;
-            if (count > 0)
-            {
-                _context.ApplicationLogs.RemoveRange(logsToDelete);
-                await _context.SaveChangesAsync();
-            }
+            var count = await _context.ApplicationLogs.Where(l => l.Timestamp < olderThan).ExecuteDeleteAsync();
             return count;
         }
 
@@ -121,17 +119,18 @@ namespace LiaNcc.Repository.Implementations
                 Message = log.Message,
                 Exception = log.Exception,
                 StackTrace = log.StackTrace,
+                InnerException = log.InnerException,
                 RequestPath = log.RequestPath,
                 HttpMethod = log.HttpMethod,
                 StatusCode = log.StatusCode,
                 IpAddress = log.IpAddress,
                 UserAgent = log.UserAgent,
                 CorrelationId = log.CorrelationId,
-                AdditionalDataJson = log.AdditionalDataJson
+                AdditionalDataJson = log.AdditionalDataJson,
+                QueryString = log.QueryString
             };
         }
 
-        // Keep old methods for backward compatibility if interfaces still use them
         public async Task DeleteOldLogsAsync(DateTime olderThan) => await DeleteOlderThanAsync(olderThan);
     }
 }

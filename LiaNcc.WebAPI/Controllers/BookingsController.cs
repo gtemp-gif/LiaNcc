@@ -58,8 +58,13 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<Booking>> CreateBooking(BookingCreateRequest request)
+        public async Task<IActionResult> CreateBooking(BookingCreateRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var booking = new Booking
             {
                 FullName = request.FullName,
@@ -77,23 +82,49 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _bookingRepository.CreateAsync(booking);
-            await _logger.LogInformationAsync("Bookings", "CreateBooking", $"Booking created for {booking.FullName}", "Bookings", "Booking", booking.Id, ApplicationEventType.Booking);
 
-            // Invia email asincronamente
-            _ = Task.Run(async () =>
+            await _logger.LogInformationAsync(
+                "Bookings",
+                "CreateBooking",
+                $"Booking created for {booking.FullName}",
+                "Bookings",
+                "Booking",
+                booking.Id,
+                ApplicationEventType.Booking
+            );
+
+            var emailSent = false;
+
+            try
             {
-                try
-                {
-                    await _mailService.SendBookingNotificationAsync(booking);
-                    await _mailService.SendBookingCustomerConfirmationAsync(booking);
-                }
-                catch (Exception ex)
-                {
-                    await _logger.LogErrorAsync("Bookings", "EmailNotificationError", $"Errore invio email per prenotazione {booking.Id}", ex, null, "Bookings", "Booking", booking.Id);
-                }
-            });
+                await _mailService.SendBookingNotificationAsync(booking);
+                await _mailService.SendBookingCustomerConfirmationAsync(booking);
 
-            return Ok(booking);
+                emailSent = true;
+            }
+            catch (Exception ex)
+            {
+                await _logger.LogErrorAsync(
+                    "Bookings",
+                    "EmailNotificationError",
+                    $"Errore invio email per prenotazione {booking.Id}",
+                    ex,
+                    null,
+                    "Bookings",
+                    "Booking",
+                    booking.Id
+                );
+            }
+
+            return Ok(new
+            {
+                success = true,
+                booking,
+                emailSent,
+                message = emailSent
+                    ? "Prenotazione inviata correttamente."
+                    : "Prenotazione salvata, ma non è stato possibile inviare le email."
+            });
         }
 
         [HttpPut("{id}")]

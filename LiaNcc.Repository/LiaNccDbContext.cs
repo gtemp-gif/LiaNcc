@@ -267,6 +267,7 @@ namespace LiaNcc.Repository
 
             // ApplicationLogs
             modelBuilder.Entity<ApplicationLog>(entity => {
+                entity.ToTable("ApplicationLogs", "dbo");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Timestamp).HasDefaultValueSql("SYSUTCDATETIME()");
@@ -285,6 +286,7 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.HttpMethod).HasMaxLength(20);
                 entity.Property(e => e.IpAddress).HasMaxLength(100);
                 entity.Property(e => e.UserAgent).HasMaxLength(1000);
+                entity.Property(e => e.QueryString).HasMaxLength(1000);
 
                 entity.Ignore(e => e.Source);
                 entity.Ignore(e => e.CreatedAt);
