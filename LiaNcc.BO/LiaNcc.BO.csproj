@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
     <ProjectReference Include="..\LiaNcc.Models\LiaNcc.Models.csproj" />
@@ -7,6 +7,18 @@
   <ItemGroup>
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MailHelper">
+      <HintPath>..\..\..\..\013 - Utilities\Jules\Mail-tool\bin\Release\MailHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="MailKit">
+      <HintPath>..\..\..\..\013 - Utilities\Jules\Mail-tool\bin\Release\MailKit.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit">
+      <HintPath>..\..\..\..\013 - Utilities\Jules\Mail-tool\bin\Release\MimeKit.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <PropertyGroup>

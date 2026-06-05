@@ -26,7 +26,7 @@ namespace LiaNcc.BO.Controllers
             return View(result);
         }
 
-        public async Task<IActionResult> Details(Guid id)
+        public async Task<IActionResult> Details(long id)
         {
             var log = await _logsApiClient.GetLogByIdAsync(id);
             if (log == null) return NotFound();

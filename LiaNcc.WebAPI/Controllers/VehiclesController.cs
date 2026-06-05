@@ -166,7 +166,7 @@ namespace LiaNcc.WebAPI.Controllers
             };
 
             await _vehicleRepository.CreateAsync(vehicle);
-            await _logger.LogInfoAsync("Vehicles", "CreateVehicle", $"Vehicle {vehicle.Name} created", vehicle.Id, "Vehicle");
+            await _logger.LogInformationAsync("Vehicles", "CreateVehicle", $"Vehicle {vehicle.Name} created", "Vehicles", "Vehicle", vehicle.Id);
 
             foreach (var f in request.Features)
             {
@@ -200,7 +200,7 @@ namespace LiaNcc.WebAPI.Controllers
             vehicle.SortOrder = request.SortOrder;
 
             await _vehicleRepository.UpdateAsync(vehicle);
-            await _logger.LogInfoAsync("Vehicles", "UpdateVehicle", $"Vehicle {vehicle.Name} updated", vehicle.Id, "Vehicle");
+            await _logger.LogInformationAsync("Vehicles", "UpdateVehicle", $"Vehicle {vehicle.Name} updated", "Vehicles", "Vehicle", vehicle.Id);
 
             await _vehicleRepository.ClearFeaturesAsync(id);
             foreach (var f in request.Features)
@@ -221,7 +221,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteVehicle(Guid id)
         {
             await _vehicleRepository.DeleteAsync(id);
-            await _logger.LogInfoAsync("Vehicles", "DeleteVehicle", $"Vehicle {id} deleted", id, "Vehicle");
+            await _logger.LogInformationAsync("Vehicles", "DeleteVehicle", $"Vehicle {id} deleted", "Vehicles", "Vehicle", id);
             return NoContent();
         }
 
@@ -229,7 +229,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteGalleryImage(Guid imageId)
         {
             await _mediaRepository.RemoveMediaFromEntityAsync(imageId);
-            await _logger.LogInfoAsync("Vehicles", "DeleteGalleryImage", $"Gallery image {imageId} removed", imageId, "VehicleGalleryImage");
+            await _logger.LogInformationAsync("Vehicles", "DeleteGalleryImage", $"Gallery image {imageId} removed", "Vehicles", "VehicleGalleryImage", imageId);
             return NoContent();
         }
 

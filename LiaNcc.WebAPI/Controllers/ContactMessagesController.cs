@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LiaNcc.Models.DTOs.Requests;
 using LiaNcc.Models.Entities;
+using LiaNcc.Models.Enums;
 using LiaNcc.Repository.Interfaces;
 using LiaNcc.WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,11 +17,16 @@ namespace LiaNcc.WebAPI.Controllers
     public class ContactMessagesController : ControllerBase
     {
         private readonly IContactMessageRepository _contactMessageRepository;
+        private readonly IMailService _mailService;
         private readonly IApplicationLoggerService _logger;
 
-        public ContactMessagesController(IContactMessageRepository contactMessageRepository, IApplicationLoggerService logger)
+        public ContactMessagesController(
+            IContactMessageRepository contactMessageRepository,
+            IMailService mailService,
+            IApplicationLoggerService logger)
         {
             _contactMessageRepository = contactMessageRepository;
+            _mailService = mailService;
             _logger = logger;
         }
 
@@ -46,18 +52,35 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<ContactMessage>> CreateContactMessage(CreateContactMessageRequest request)
+        public async Task<ActionResult<ContactMessage>> CreateContactMessage(ContactMessageCreateRequest request)
         {
             var message = new ContactMessage
             {
                 FullName = request.FullName,
                 Email = request.Email,
                 Message = request.Message,
-                IsRead = false
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow
             };
 
             await _contactMessageRepository.CreateAsync(message);
-            await _logger.LogInfoAsync("Contact", "CreateMessage", $"Contact message from {message.FullName}", message.Id, "ContactMessage");
+            await _logger.LogInformationAsync("Contact", "CreateMessage", $"Contact message from {message.FullName} created", "Contact", "ContactMessage", message.Id, ApplicationEventType.Contact);
+
+            // Invia email asincronamente
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await _mailService.SendContactNotificationAsync(message);
+                    await _mailService.SendContactCustomerConfirmationAsync(message);
+                }
+                catch (Exception ex)
+                {
+                    // L'errore è già loggato dentro MailService, ma logghiamo anche qui per contesto
+                    await _logger.LogErrorAsync("Contact", "EmailNotificationError", $"Errore invio email per messaggio {message.Id}", ex, null, "Contact", "ContactMessage", message.Id);
+                }
+            });
+
             return Ok(message);
         }
 

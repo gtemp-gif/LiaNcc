@@ -53,6 +53,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<ActionResult<LocalizedContent>> CreateLocalizedContent(LocalizedContent content)
         {
             await _localizedContentRepository.CreateAsync(content);
+            await _logger.LogInformationAsync("Localization", "CreateLocalization", $"Localization for {content.EntityName} {content.EntityId} created", "Localization", content.EntityName, content.EntityId);
             return Ok(content);
         }
 
@@ -63,7 +64,7 @@ namespace LiaNcc.WebAPI.Controllers
             var firstItem = items.FirstOrDefault();
             if (firstItem != null)
             {
-                await _logger.LogInfoAsync("Localization", "UpsertBatch", $"Localization updated for {firstItem.EntityName} {firstItem.EntityId}", firstItem.EntityId, firstItem.EntityName);
+                await _logger.LogInformationAsync("Localization", "UpsertBatch", $"Localization batch updated for {firstItem.EntityName} {firstItem.EntityId}", "Localization", firstItem.EntityName, firstItem.EntityId);
             }
             return Ok();
         }

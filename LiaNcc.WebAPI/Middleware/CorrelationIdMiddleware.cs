@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace LiaNcc.BO.Middleware
+namespace LiaNcc.WebAPI.Middleware
 {
     public class CorrelationIdMiddleware
     {

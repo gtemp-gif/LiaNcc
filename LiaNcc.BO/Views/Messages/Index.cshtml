@@ -18,6 +18,7 @@
                         <th>Messaggio</th>
                         <th>Letto</th>
                         <th>Data</th>
+                        <th style="width: 100px;">Azioni</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,6 +37,23 @@
                                     }
                                 </td>
                                 <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        @if (!item.IsRead)
+                                        {
+                                            <form asp-action="MarkAsRead" asp-route-id="@item.Id" method="post">
+                                                <button type="submit" class="btn btn-outline-success" title="Segna come letto">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Eliminare questo messaggio?')">
+                                            <button type="submit" class="btn btn-outline-danger" title="Elimina">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     } else {

@@ -37,6 +37,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+builder.Services.AddTransient<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"];
 
@@ -51,49 +52,64 @@ Action<IServiceProvider, HttpClient> configureClient = (sp, client) =>
 };
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IAuthApiClient, LiaNcc.BO.Services.Implementations.AuthApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILocalizedContentsApiClient, LiaNcc.BO.Services.Implementations.LocalizedContentsApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IDashboardApiClient, LiaNcc.BO.Services.Implementations.DashboardApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IFilesApiClient, LiaNcc.BO.Services.Implementations.FilesApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IToursApiClient, LiaNcc.BO.Services.Implementations.ToursApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IVehiclesApiClient, LiaNcc.BO.Services.Implementations.VehiclesApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IServicesApiClient, LiaNcc.BO.Services.Implementations.ServicesApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IMediaAssetsApiClient, LiaNcc.BO.Services.Implementations.MediaAssetsApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ISitePagesApiClient, LiaNcc.BO.Services.Implementations.SitePagesApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ICompanyApiClient, LiaNcc.BO.Services.Implementations.CompanyApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IPartnersApiClient, LiaNcc.BO.Services.Implementations.PartnersApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IUsersApiClient, LiaNcc.BO.Services.Implementations.UsersApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IBookingsApiClient, LiaNcc.BO.Services.Implementations.BookingsApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.IContactMessagesApiClient, LiaNcc.BO.Services.Implementations.ContactMessagesApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILanguagesApiClient, LiaNcc.BO.Services.Implementations.LanguagesApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILogsApiClient, LiaNcc.BO.Services.Implementations.LogsApiClient>(configureClient)
     .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();

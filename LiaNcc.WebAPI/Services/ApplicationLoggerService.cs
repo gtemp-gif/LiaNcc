@@ -16,18 +16,18 @@ namespace LiaNcc.WebAPI.Services
         private readonly IApplicationLogRepository _repository;
         private readonly ILogger<ApplicationLoggerService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly string _source;
+        private readonly string _projectName;
 
         public ApplicationLoggerService(
             IApplicationLogRepository repository,
             ILogger<ApplicationLoggerService> logger,
             IHttpContextAccessor httpContextAccessor,
-            string source = "WebAPI")
+            string projectName = "LiaNcc.WebAPI")
         {
             _repository = repository;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
-            _source = source;
+            _projectName = projectName;
         }
 
         public async Task LogAsync(CreateApplicationLogRequest request)
@@ -38,27 +38,28 @@ namespace LiaNcc.WebAPI.Services
 
                 var log = new ApplicationLog
                 {
-                    Source = string.IsNullOrEmpty(request.Source) ? _source : request.Source,
+                    ProjectName = string.IsNullOrEmpty(request.ProjectName) ? _projectName : request.ProjectName,
                     Area = request.Area,
+                    Controller = request.Controller,
                     Action = request.Action,
                     Level = request.Level,
                     Message = request.Message,
-                    ExceptionMessage = request.ExceptionMessage,
+                    Exception = request.Exception,
                     StackTrace = request.StackTrace,
-                    InnerException = request.InnerException,
                     UserId = request.UserId ?? httpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                    UserEmail = request.UserEmail ?? httpContext?.User?.FindFirst(ClaimTypes.Email)?.Value,
+                    UserName = request.UserName ?? httpContext?.User?.FindFirst(ClaimTypes.Email)?.Value,
+                    TenantId = request.TenantId,
                     RequestPath = request.RequestPath ?? httpContext?.Request?.Path,
-                    QueryString = request.QueryString ?? httpContext?.Request?.QueryString.ToString(),
                     HttpMethod = request.HttpMethod ?? httpContext?.Request?.Method,
                     StatusCode = request.StatusCode,
                     EntityName = request.EntityName,
                     EntityId = request.EntityId,
+                    EventType = request.EventType,
                     IpAddress = request.IpAddress ?? httpContext?.Connection?.RemoteIpAddress?.ToString(),
                     UserAgent = request.UserAgent ?? httpContext?.Request?.Headers["User-Agent"].ToString(),
                     CorrelationId = request.CorrelationId ?? httpContext?.Items["CorrelationId"]?.ToString(),
-                    AdditionalData = request.AdditionalData,
-                    CreatedAt = DateTime.UtcNow
+                    AdditionalDataJson = request.AdditionalDataJson,
+                    Timestamp = DateTime.UtcNow
                 };
 
                 // Write to database
@@ -69,15 +70,15 @@ namespace LiaNcc.WebAPI.Services
                 {
                     "Trace" => LogLevel.Trace,
                     "Debug" => LogLevel.Debug,
-                    "Info" => LogLevel.Information,
+                    "Information" => LogLevel.Information,
                     "Warning" => LogLevel.Warning,
                     "Error" => LogLevel.Error,
                     "Critical" => LogLevel.Critical,
                     _ => LogLevel.Information
                 };
 
-                _logger.Log(logLevel, "[{Source}] {Area} - {Action}: {Message} {Exception}",
-                    log.Source, log.Area, log.Action, log.Message, log.ExceptionMessage);
+                _logger.Log(logLevel, "[{ProjectName}] {Area}.{Controller}.{Action} - {EventType}: {Message} {Exception}",
+                    log.ProjectName, log.Area, log.Controller, log.Action, log.EventType, log.Message, log.Exception);
             }
             catch (Exception ex)
             {
@@ -86,68 +87,80 @@ namespace LiaNcc.WebAPI.Services
             }
         }
 
-        public Task LogInfoAsync(string area, string action, string message, Guid? entityId = null, string? entityName = null, object? additionalData = null)
+        public async Task LogInformationAsync(string area, string action, string message, string? controller = null, string? entityName = null, object? entityId = null, string? eventType = null, object? additionalData = null)
         {
-            return LogAsync(new CreateApplicationLogRequest
+            await LogAsync(new CreateApplicationLogRequest
             {
-                Level = "Info",
+                Level = "Information",
                 Area = area,
+                Controller = controller,
                 Action = action,
                 Message = message,
-                EntityId = entityId,
                 EntityName = entityName,
-                AdditionalData = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
+                EntityId = entityId?.ToString(),
+                EventType = eventType,
+                AdditionalDataJson = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
             });
         }
 
-        public Task LogWarningAsync(string area, string action, string message, Guid? entityId = null, string? entityName = null, object? additionalData = null)
+        public async Task LogWarningAsync(string area, string action, string message, string? controller = null, string? entityName = null, object? entityId = null, string? eventType = null, object? additionalData = null)
         {
-            return LogAsync(new CreateApplicationLogRequest
+            await LogAsync(new CreateApplicationLogRequest
             {
                 Level = "Warning",
                 Area = area,
+                Controller = controller,
                 Action = action,
                 Message = message,
-                EntityId = entityId,
                 EntityName = entityName,
-                AdditionalData = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
+                EntityId = entityId?.ToString(),
+                EventType = eventType,
+                AdditionalDataJson = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
             });
         }
 
-        public Task LogErrorAsync(string area, string action, string message, Exception? exception = null, int? statusCode = null, Guid? entityId = null, string? entityName = null, object? additionalData = null)
+        public async Task LogErrorAsync(string area, string action, string message, Exception? exception = null, int? statusCode = null, string? controller = null, string? entityName = null, object? entityId = null, string? eventType = "Exception", object? additionalData = null)
         {
-            return LogAsync(new CreateApplicationLogRequest
+            await LogAsync(new CreateApplicationLogRequest
             {
                 Level = "Error",
                 Area = area,
+                Controller = controller,
                 Action = action,
                 Message = message,
-                ExceptionMessage = exception?.Message,
+                Exception = exception?.Message,
                 StackTrace = exception?.StackTrace,
-                InnerException = exception?.InnerException?.Message,
                 StatusCode = statusCode,
-                EntityId = entityId,
                 EntityName = entityName,
-                AdditionalData = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
+                EntityId = entityId?.ToString(),
+                EventType = eventType,
+                AdditionalDataJson = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
             });
         }
 
-        public Task LogCriticalAsync(string area, string action, string message, Exception? exception = null, int? statusCode = null, Guid? entityId = null, string? entityName = null, object? additionalData = null)
+        public async Task LogCriticalAsync(string area, string action, string message, Exception? exception = null, int? statusCode = null, string? controller = null, string? entityName = null, object? entityId = null, string? eventType = "CriticalException", object? additionalData = null)
         {
-            return LogAsync(new CreateApplicationLogRequest
+            await LogAsync(new CreateApplicationLogRequest
             {
                 Level = "Critical",
                 Area = area,
+                Controller = controller,
                 Action = action,
                 Message = message,
-                ExceptionMessage = exception?.Message,
+                Exception = exception?.Message,
                 StackTrace = exception?.StackTrace,
-                InnerException = exception?.InnerException?.Message,
                 StatusCode = statusCode,
-                EntityId = entityId,
                 EntityName = entityName,
-                AdditionalData = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
+                EntityId = entityId?.ToString(),
+                EventType = eventType,
+                AdditionalDataJson = additionalData != null ? JsonSerializer.Serialize(additionalData) : null
             });
+        }
+
+        // Backward compatibility
+        public Task LogInfoAsync(string area, string action, string message, Guid? entityId = null, string? entityName = null, object? additionalData = null)
+        {
+            return LogInformationAsync(area, action, message, null, entityName, entityId, null, additionalData);
         }
     }
 }

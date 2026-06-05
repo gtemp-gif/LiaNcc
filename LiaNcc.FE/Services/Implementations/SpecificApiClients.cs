@@ -161,10 +161,33 @@ namespace LiaNcc.FE.Services.Implementations
     public class ContactMessagesApiClient : IContactMessagesApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         public ContactMessagesApiClient(HttpClient httpClient) { _httpClient = httpClient; }
-        public async Task CreateAsync(ContactMessage message)
+        public async Task CreateAsync(LiaNcc.Models.DTOs.Requests.ContactMessageCreateRequest request)
         {
-            var response = await _httpClient.PostAsJsonAsync("contactmessages", message);
+            var response = await _httpClient.PostAsJsonAsync("contact-messages", request);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<IEnumerable<ContactMessage>> GetAllAsync()
+        {
+            return await _httpClient.GetFromJsonAsync<IEnumerable<ContactMessage>>("contact-messages", _jsonSerializerOptions) ?? Array.Empty<ContactMessage>();
+        }
+
+        public async Task<ContactMessage?> GetByIdAsync(Guid id)
+        {
+            return await _httpClient.GetFromJsonAsync<ContactMessage>($"contact-messages/{id}", _jsonSerializerOptions);
+        }
+
+        public async Task MarkAsReadAsync(Guid id)
+        {
+            var response = await _httpClient.PatchAsync($"contact-messages/{id}/read", null);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var response = await _httpClient.DeleteAsync($"contact-messages/{id}");
             response.EnsureSuccessStatusCode();
         }
     }
@@ -172,11 +195,40 @@ namespace LiaNcc.FE.Services.Implementations
     public class BookingsApiClient : IBookingsApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         public BookingsApiClient(HttpClient httpClient) { _httpClient = httpClient; }
-        public async Task CreateAsync(Booking booking)
+        public async Task CreateAsync(LiaNcc.Models.DTOs.Requests.BookingCreateRequest request)
         {
-            var response = await _httpClient.PostAsJsonAsync("bookings", booking);
+            var response = await _httpClient.PostAsJsonAsync("bookings", request);
             response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<IEnumerable<Booking>> GetAllAsync()
+        {
+            return await _httpClient.GetFromJsonAsync<IEnumerable<Booking>>("bookings", _jsonSerializerOptions) ?? Array.Empty<Booking>();
+        }
+
+        public async Task<Booking?> GetByIdAsync(Guid id)
+        {
+            return await _httpClient.GetFromJsonAsync<Booking>($"bookings/{id}", _jsonSerializerOptions);
+        }
+
+        public async Task UpdateStatusAsync(Guid id, string status)
+        {
+            var response = await _httpClient.PatchAsJsonAsync($"bookings/{id}/status", status);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<IEnumerable<BookingServiceType>> GetServiceTypesAsync(string? culture = null)
+        {
+            var url = string.IsNullOrEmpty(culture) ? "bookings/service-types" : $"bookings/service-types?culture={culture}";
+            return await _httpClient.GetFromJsonAsync<IEnumerable<BookingServiceType>>(url, _jsonSerializerOptions) ?? Array.Empty<BookingServiceType>();
+        }
+
+        public async Task<IEnumerable<BookingPassengerOption>> GetPassengerOptionsAsync(string? culture = null)
+        {
+            var url = string.IsNullOrEmpty(culture) ? "bookings/passenger-options" : $"bookings/passenger-options?culture={culture}";
+            return await _httpClient.GetFromJsonAsync<IEnumerable<BookingPassengerOption>>(url, _jsonSerializerOptions) ?? Array.Empty<BookingPassengerOption>();
         }
     }
 }

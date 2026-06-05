@@ -3,5 +3,8 @@ using LiaNcc.Models.Entities;
 
 namespace LiaNcc.BO.Services.Interfaces
 {
-    public interface IContactMessagesApiClient : IApiClient<ContactMessage, Guid> { }
+    public interface IContactMessagesApiClient : IApiClient<ContactMessage, Guid>
+    {
+        Task MarkAsReadAsync(Guid id);
+    }
 }

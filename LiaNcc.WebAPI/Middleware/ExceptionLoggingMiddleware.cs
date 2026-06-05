@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LiaNcc.WebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LiaNcc.WebAPI.Middleware
 {
@@ -21,24 +22,26 @@ namespace LiaNcc.WebAPI.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var correlationId = context.Request.Headers["X-Correlation-ID"].ToString();
-            if (string.IsNullOrEmpty(correlationId))
-            {
-                correlationId = Guid.NewGuid().ToString();
-            }
-            context.Items["CorrelationId"] = correlationId;
-            context.Response.Headers["X-Correlation-ID"] = correlationId;
-
             try
             {
                 await _next(context);
 
                 if (context.Response.StatusCode >= 400 && context.Response.StatusCode < 500)
                 {
-                    var applicationLogger = context.RequestServices.GetRequiredService<IApplicationLoggerService>();
-                    await applicationLogger.LogWarningAsync("HTTP", "ClientError",
-                        $"Client error occurred: {context.Response.StatusCode}",
-                        null, null, new { Path = context.Request.Path.Value, Method = context.Request.Method });
+                    // Avoid logging 401/404 too noisily or logs endpoint
+                    if (!context.Request.Path.StartsWithSegments("/api/logs"))
+                    {
+                        var applicationLogger = context.RequestServices.GetRequiredService<IApplicationLoggerService>();
+                        await applicationLogger.LogWarningAsync(
+                            "HTTP",
+                            "ClientError",
+                            $"Client error occurred: {context.Response.StatusCode}",
+                            null,
+                            "WebAPI",
+                            null,
+                            "HttpClientError",
+                            new { Path = context.Request.Path.Value, Method = context.Request.Method, StatusCode = context.Response.StatusCode });
+                    }
                 }
             }
             catch (Exception ex)
@@ -49,23 +52,35 @@ namespace LiaNcc.WebAPI.Middleware
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            _logger.LogError(exception, "Unhandled exception occurred");
+
             var applicationLogger = context.RequestServices.GetRequiredService<IApplicationLoggerService>();
             var correlationId = context.Items["CorrelationId"]?.ToString() ?? Guid.NewGuid().ToString();
 
-            await applicationLogger.LogCriticalAsync("Global", "UnhandledException",
+            await applicationLogger.LogCriticalAsync(
+                "Global",
+                "UnhandledException",
                 "An unhandled exception occurred in the WebAPI.",
-                exception, (int)HttpStatusCode.InternalServerError);
+                exception,
+                (int)HttpStatusCode.InternalServerError,
+                null,
+                "WebAPI",
+                null,
+                "CriticalException");
 
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-            var response = new
+            if (!context.Response.HasStarted)
             {
-                message = "Si è verificato un errore inatteso nel server.",
-                correlationId = correlationId
-            };
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+                var response = new
+                {
+                    message = "Si è verificato un errore inatteso nel server.",
+                    correlationId = correlationId
+                };
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            }
         }
     }
 }

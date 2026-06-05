@@ -23,5 +23,23 @@ namespace LiaNcc.BO.Controllers
             var messages = await _contactMessagesApiClient.GetAllAsync();
             return View(messages);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsRead(Guid id)
+        {
+            await _contactMessagesApiClient.MarkAsReadAsync(id);
+            await _logger.LogInformationAsync("Messages", "MarkAsRead", $"Messaggio {id} segnato come letto", "Messages", "ContactMessage", id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _contactMessagesApiClient.DeleteAsync(id);
+            await _logger.LogInformationAsync("Messages", "Delete", $"Messaggio {id} eliminato", "Messages", "ContactMessage", id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

@@ -61,7 +61,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> DeleteMedia(Guid id)
         {
             await _mediaRepository.DeleteAsync(id);
-            await _logger.LogInfoAsync("Media", "DeleteMedia", $"Media asset {id} deleted", id, "MediaAsset");
+            await _logger.LogInformationAsync("Media", "DeleteMedia", $"Media asset {id} deleted", "Media", "MediaAsset", id);
             return NoContent();
         }
 
@@ -69,7 +69,7 @@ namespace LiaNcc.WebAPI.Controllers
         public async Task<IActionResult> RemoveMediaFromEntity(Guid id)
         {
             await _mediaRepository.RemoveMediaFromEntityAsync(id);
-            await _logger.LogInfoAsync("Media", "RemoveMediaFromEntity", $"Media association {id} removed", id, "EntityMedia");
+            await _logger.LogInformationAsync("Media", "RemoveMediaFromEntity", $"Media association {id} removed", "Media", "EntityMedia", id);
             return NoContent();
         }
     }
