@@ -112,8 +112,7 @@ builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILanguagesApiClient
     .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
 
 builder.Services.AddHttpClient<LiaNcc.BO.Services.Interfaces.ILogsApiClient, LiaNcc.BO.Services.Implementations.LogsApiClient>(configureClient)
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>()
-    .AddHttpMessageHandler<LiaNcc.BO.Helpers.ApiLoggingHandler>();
+    .AddHttpMessageHandler<LiaNcc.BO.Helpers.CorrelationIdHandler>();
 
 builder.Services.AddScoped<LiaNcc.BO.Services.Interfaces.IApplicationLoggerService, LiaNcc.BO.Services.Implementations.ApplicationLoggerService>();
 

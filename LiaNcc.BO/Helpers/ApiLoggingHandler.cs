@@ -22,7 +22,8 @@ namespace LiaNcc.BO.Helpers
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             // Evita loop infiniti se la chiamata è verso l'endpoint dei log
-            if (request.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/logs", System.StringComparison.OrdinalIgnoreCase))
+            if (request.RequestUri != null &&
+    request.RequestUri.AbsolutePath.Contains("/api/logs", System.StringComparison.OrdinalIgnoreCase))
             {
                 return await base.SendAsync(request, cancellationToken);
             }
