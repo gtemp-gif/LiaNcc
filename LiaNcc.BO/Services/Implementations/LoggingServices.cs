@@ -46,6 +46,7 @@ namespace LiaNcc.BO.Services.Implementations
                 request.HttpMethod ??= httpContext?.Request?.Method;
                 request.IpAddress ??= httpContext?.Connection?.RemoteIpAddress?.ToString();
                 request.UserAgent ??= httpContext?.Request?.Headers["User-Agent"].ToString();
+                request.QueryString ??= httpContext?.Request?.QueryString.ToString();
 
                 // 1. Write to standard logger (file/console via Serilog)
                 var logLevel = request.Level switch
@@ -114,6 +115,7 @@ namespace LiaNcc.BO.Services.Implementations
                 Message = message,
                 Exception = exception?.Message,
                 StackTrace = exception?.StackTrace,
+                InnerException = exception?.InnerException?.Message,
                 StatusCode = statusCode,
                 EntityName = entityName,
                 EntityId = entityId?.ToString(),

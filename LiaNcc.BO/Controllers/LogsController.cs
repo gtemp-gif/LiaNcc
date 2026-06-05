@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace LiaNcc.BO.Controllers
 {
     [Authorize]
-    public class LogController : Controller
+    public class LogsController : Controller
     {
         private readonly ILogsApiClient _logsApiClient;
 
-        public LogController(ILogsApiClient logsApiClient)
+        public LogsController(ILogsApiClient logsApiClient)
         {
             _logsApiClient = logsApiClient;
         }
@@ -20,7 +20,8 @@ namespace LiaNcc.BO.Controllers
         public async Task<IActionResult> Index(ApplicationLogFilterRequest filter)
         {
             if (filter.Page <= 0) filter.Page = 1;
-            filter.PageSize = 50;
+            if (filter.PageSize <= 0) filter.PageSize = 50;
+
             var result = await _logsApiClient.GetLogsAsync(filter);
             ViewBag.Filter = filter;
             return View(result);
@@ -34,7 +35,7 @@ namespace LiaNcc.BO.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Cleanup(int olderThanDays = 30)
+        public async Task<IActionResult> CleanupLogs(int olderThanDays = 30)
         {
             await _logsApiClient.CleanupAsync(olderThanDays);
             TempData["SuccessMessage"] = "Log ripuliti correttamente.";

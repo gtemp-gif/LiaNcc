@@ -59,7 +59,10 @@ namespace LiaNcc.Repository.Implementations
                 query = query.Where(l => l.Message.Contains(filter.SearchTerm)
                                       || (l.Exception != null && l.Exception.Contains(filter.SearchTerm))
                                       || (l.StackTrace != null && l.StackTrace.Contains(filter.SearchTerm))
-                                      || (l.AdditionalDataJson != null && l.AdditionalDataJson.Contains(filter.SearchTerm)));
+                                      || (l.AdditionalDataJson != null && l.AdditionalDataJson.Contains(filter.SearchTerm))
+                                      || (l.RequestPath != null && l.RequestPath.Contains(filter.SearchTerm))
+                                      || (l.Controller != null && l.Controller.Contains(filter.SearchTerm))
+                                      || (l.Action != null && l.Action.Contains(filter.SearchTerm)));
             }
 
             var totalCount = await query.CountAsync();
@@ -121,13 +124,15 @@ namespace LiaNcc.Repository.Implementations
                 Message = log.Message,
                 Exception = log.Exception,
                 StackTrace = log.StackTrace,
+                InnerException = log.InnerException,
                 RequestPath = log.RequestPath,
                 HttpMethod = log.HttpMethod,
                 StatusCode = log.StatusCode,
                 IpAddress = log.IpAddress,
                 UserAgent = log.UserAgent,
                 CorrelationId = log.CorrelationId,
-                AdditionalDataJson = log.AdditionalDataJson
+                AdditionalDataJson = log.AdditionalDataJson,
+                QueryString = log.QueryString
             };
         }
 
