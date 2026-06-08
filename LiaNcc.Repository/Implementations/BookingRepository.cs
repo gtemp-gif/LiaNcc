@@ -19,17 +19,40 @@ namespace LiaNcc.Repository.Implementations
 
         public async Task<IEnumerable<Booking>> GetAllAsync()
         {
-            return await _context.Bookings.AsNoTracking().OrderByDescending(b => b.CreatedAt).ToListAsync();
+            return await _context.Bookings
+                .Include(b => b.ServiceType)
+                .Include(b => b.PassengerOption)
+                .Include(b => b.Tour)
+                .Include(b => b.Vehicle)
+                    .ThenInclude(v => v!.VehicleCategory)
+                .AsNoTracking()
+                .OrderByDescending(b => b.CreatedAt)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Booking>> GetByStatusAsync(string status)
         {
-            return await _context.Bookings.AsNoTracking().Where(b => b.Status == status).OrderByDescending(b => b.CreatedAt).ToListAsync();
+            return await _context.Bookings
+                .Include(b => b.ServiceType)
+                .Include(b => b.PassengerOption)
+                .Include(b => b.Tour)
+                .Include(b => b.Vehicle)
+                    .ThenInclude(v => v!.VehicleCategory)
+                .AsNoTracking()
+                .Where(b => b.Status == status)
+                .OrderByDescending(b => b.CreatedAt)
+                .ToListAsync();
         }
 
         public async Task<Booking?> GetByIdAsync(Guid id)
         {
-            return await _context.Bookings.FindAsync(id);
+            return await _context.Bookings
+                .Include(b => b.ServiceType)
+                .Include(b => b.PassengerOption)
+                .Include(b => b.Tour)
+                .Include(b => b.Vehicle)
+                    .ThenInclude(v => v!.VehicleCategory)
+                .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<Booking> CreateAsync(Booking booking)

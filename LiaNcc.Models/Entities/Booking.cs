@@ -16,6 +16,7 @@ namespace LiaNcc.Models.Entities
         public string? Message { get; set; }
         public int? MaxSeats { get; set; }
         public string Status { get; set; } = "Pending";
+        public string? SourcePage { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
 

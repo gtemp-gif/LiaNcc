@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LiaNcc.Models.DTOs.Requests;
+using LiaNcc.Models.DTOs.Responses;
 using LiaNcc.Models.Entities;
 using LiaNcc.Models.Enums;
 using LiaNcc.Repository.Interfaces;
@@ -37,23 +39,25 @@ namespace LiaNcc.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
+        public async Task<ActionResult<IEnumerable<BookingDetailDto>>> GetBookings()
         {
-            return Ok(await _bookingRepository.GetAllAsync());
+            var bookings = await _bookingRepository.GetAllAsync();
+            return Ok(bookings.Select(MapToDetailDto));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Booking>> GetBooking(Guid id)
+        public async Task<ActionResult<BookingDetailDto>> GetBooking(Guid id)
         {
             var booking = await _bookingRepository.GetByIdAsync(id);
             if (booking == null) return NotFound();
-            return Ok(booking);
+            return Ok(MapToDetailDto(booking));
         }
 
         [HttpGet("status/{status}")]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetByStatus(string status)
+        public async Task<ActionResult<IEnumerable<BookingDetailDto>>> GetByStatus(string status)
         {
-            return Ok(await _bookingRepository.GetByStatusAsync(status));
+            var bookings = await _bookingRepository.GetByStatusAsync(status);
+            return Ok(bookings.Select(MapToDetailDto));
         }
 
         [AllowAnonymous]
@@ -78,10 +82,18 @@ namespace LiaNcc.WebAPI.Controllers
                 Message = request.Message,
                 MaxSeats = request.MaxSeats,
                 Status = "Pending",
+                SourcePage = request.SourcePage,
                 CreatedAt = DateTime.UtcNow
             };
 
             await _bookingRepository.CreateAsync(booking);
+
+            // Reload booking with navigation properties for email notifications
+            var detailedBooking = await _bookingRepository.GetByIdAsync(booking.Id);
+            if (detailedBooking != null)
+            {
+                booking = detailedBooking;
+            }
 
             await _logger.LogInformationAsync(
                 area: "Bookings",
@@ -203,6 +215,37 @@ namespace LiaNcc.WebAPI.Controllers
                 }
             }
             return Ok(options);
+        }
+
+        private BookingDetailDto MapToDetailDto(Booking booking)
+        {
+            return new BookingDetailDto
+            {
+                Id = booking.Id,
+                FullName = booking.FullName,
+                Email = booking.Email,
+                Phone = booking.Phone,
+                ServiceDate = booking.ServiceDate,
+                ServiceTypeId = booking.ServiceTypeId,
+                ServiceTypeName = booking.ServiceType?.Name ?? booking.ServiceType?.Code,
+                ServiceTypeDescription = null, // Can be added if needed, BookingServiceType entity doesn't have it yet
+                PassengerOptionId = booking.PassengerOptionId,
+                PassengerOptionName = booking.PassengerOption?.Name,
+                PassengerOptionDescription = null,
+                TourId = booking.TourId,
+                TourName = booking.Tour?.Name,
+                TourDescription = booking.Tour?.Description,
+                VehicleId = booking.VehicleId,
+                VehicleName = booking.Vehicle?.Name,
+                VehicleCategoryName = booking.Vehicle?.VehicleCategory?.Name,
+                VehicleDescription = booking.Vehicle?.Description,
+                MaxSeats = booking.MaxSeats,
+                Message = booking.Message,
+                Status = booking.Status,
+                SourcePage = booking.SourcePage,
+                CreatedAt = booking.CreatedAt,
+                UpdatedAt = booking.UpdatedAt
+            };
         }
     }
 }

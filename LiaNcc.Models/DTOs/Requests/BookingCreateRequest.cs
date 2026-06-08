@@ -24,5 +24,6 @@ namespace LiaNcc.Models.DTOs.Requests
 
         public string? Message { get; set; }
         public int? MaxSeats { get; set; }
+        public string? SourcePage { get; set; }
     }
 }
