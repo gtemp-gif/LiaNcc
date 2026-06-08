@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = Model.Page?.MetaTitle ?? "Home";
     Layout = "_Layout";
-
+    var companyProfile = Model.Company;
     var heroSection = Model.Page?.PageSections.FirstOrDefault(s => s.Name == "Hero");
     var aboutSection = Model.Page?.PageSections.FirstOrDefault(s => s.Name == "About");
     var servicesSection = Model.Page?.PageSections.FirstOrDefault(s => s.Name == "Services");
@@ -12,7 +12,6 @@
     var contactSection = Model.Page?.PageSections.FirstOrDefault(s => s.Name == "Contact");
 }
 
-<!-- Hero Section -->
 <section class="relative h-screen flex items-center justify-center text-center px-6 overflow-hidden">
     <div class="absolute inset-0 z-0">
         <img alt="Lussuosa berlina nera" class="w-full h-full object-cover cinematic-img" src="https://www.liancc.it/LiaNccFiles/hero.png" />
@@ -45,28 +44,55 @@
     </div>
 </section>
 
-<!-- Chi Siamo -->
 <section class="py-32 px-6 md:px-16 bg-black">
-    <div class="max-w-7xl mx-auto text-center">
-        <h2 class="text-4xl md:text-5xl font-semibold text-white mb-12 section-title text-[24px] font-medium">@(aboutSection?.Title ?? "Chi Siamo")</h2>
-        <div class="max-w-[800px] mx-auto mb-16">
-            <p class="text-lg md:text-xl text-on-surface leading-relaxed font-light text-[15px]">
-                @(aboutSection?.Description ?? "LIA NCC è un’azienda specializzata nel servizio di noleggio con conducente (NCC) e nell’organizzazione di transfer e tour personalizzati, operativa principalmente tra Basilicata e Puglia.")
-            </p>
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="mb-16 text-left">
+            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@(companyProfile?.AboutTitle ?? "Chi Siamo")</h2>
+            <div class="w-24 h-1 bg-[#D4AF37]"></div>
         </div>
-        <div class="border-t border-[#D4AF37]/20 pt-10">
-            <div class="flex flex-wrap items-center justify-center gap-0 text-center uppercase tracking-widest text-[10px] text-on-surface-variant font-semibold">
-                <div class="px-8 py-4 border-r border-[#D4AF37] w-full md:w-auto">Puntualità e affidabilità</div>
-                <div class="px-8 py-4 border-r border-[#D4AF37] w-full md:w-auto">Comfort e sicurezza</div>
-                <div class="px-8 py-4 border-r border-[#D4AF37] w-full md:w-auto">Massima disponibilità</div>
-                <div class="px-8 py-4 border-r border-[#D4AF37] w-full md:w-auto">Servizi personalizzati</div>
-                <div class="px-8 py-4 w-full md:w-auto">Conoscenza del territorio</div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            <div class="lg:col-span-5 relative w-full max-w-[480px] mx-auto lg:mx-0">
+                <img alt="Chi Siamo - Lia NCC"
+                     class="w-full h-auto z-10 relative"
+                     src="@(!string.IsNullOrEmpty(companyProfile?.AboutImageUrl) ? MediaUrlBuilder.Build(companyProfile?.AboutImageUrl) : "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=2070&auto=format&fit=crop")" />
             </div>
+            
+            <div class="lg:col-span-7 text-left">
+                
+                <div class="text-gray-300 leading-loose font-light text-[14px] whitespace-pre-line">
+                    @(companyProfile?.AboutDescription ?? "LIA NCC è un’azienda specializzata nel servizio di noleggio con conducente (NCC) e nell’organizzazione di transfer e tour personalizzati, operativa principalmente tra Basilicata e Puglia.")
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-[#D4AF37]/20">
+                    <ul class="grid grid-cols-1 sm:grid-cols-3 gap-y-5 gap-x-6 uppercase tracking-widest text-[10px] text-gray-400 font-semibold">
+                        <li class="flex items-center gap-3">
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Puntualità e affidabilità
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Comfort e sicurezza
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Massima disponibilità
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Servizi personalizzati
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Conoscenza del territorio
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+            
         </div>
+        
     </div>
 </section>
 
-<!-- I Nostri Servizi -->
 <section class="py-32 bg-[#050505]" id="servizi">
     <div class="px-6 md:px-16 max-w-7xl mx-auto">
         <div class="mb-20 text-left">
@@ -81,8 +107,9 @@
                     <h3 class="text-2xl font-semibold mb-2 text-[24px] font-medium">@service.Name</h3>
                     <p class="text-gray-500 mb-6 font-light text-[15px]">@service.Description</p>
                     <div class="text-[#D4AF37] font-bold text-xl flex justify-between items-center w-full mt-4">
-                        @if(service.IsBookable) {
-                            <a class="service-book-btn btn-secondary !px-6 !py-2 !text-[10px] ml-4" data-service="@service.Name" href="#booking-form">PRENOTA ORA</a>
+                        @if (service.IsBookable)
+                        {
+                            <a class="service-book-btn btn-secondary !px-6 !py-2 !text-[10px] ml-4" data-service="@service.Id" href="#booking-form">PRENOTA ORA</a>
                         }
                     </div>
                 </div>
@@ -103,7 +130,6 @@
     </div>
 </section>
 
-<!-- Destinazioni -->
 <section class="py-32 px-6 md:px-16 overflow-hidden">
     <div class="max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start mb-16 gap-6">
@@ -132,7 +158,6 @@
     </div>
 </section>
 
-<!-- Fleet -->
 <section class="py-32 bg-[#0a0a0a]" id="fleet">
     <div class="px-6 md:px-16 max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start mb-16 gap-6">
@@ -142,7 +167,7 @@
             <a class="group font-display uppercase text-[#D4AF37] text-[12px] tracking-[0.2em] transition-all duration-300 hover:underline hover:underline-offset-4" asp-action="Fleet" asp-controller="Home">MOSTRA TUTTA LA FLOTTA <span class="inline-block transition-transform duration-300 group-hover:translate-x-2">➔</span></a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @foreach (var vehicle in Model.FeaturedVehicles)
+            @foreach (var vehicle in Model.FeaturedVehicles.Take(3))
             {
                 <div class="charcoal-border bg-black overflow-hidden group">
                     <div class="relative h-64 overflow-hidden">
@@ -165,78 +190,90 @@
     </div>
 </section>
 
-@* <!-- Partners -->
-<section class="py-20 bg-black border-y border-[#1A1A1A]">
-    <div class="px-6 md:px-16 max-w-7xl mx-auto flex flex-wrap justify-center items-center gap-20 opacity-40 grayscale hover:opacity-100 transition-opacity duration-700">
-        @foreach (var partner in Model.Partners)
-        {
-            @if (!string.IsNullOrEmpty(partner.LogoUrl))
-            {
-                <img src="@MediaUrlBuilder.Build(partner.LogoUrl)" alt="@partner.Name" class="h-12 w-auto object-contain" />
-            }
-            else
-            {
-                <span class="font-bold text-2xl text-[#D4AF37] tracking-widest uppercase">@partner.Name</span>
-            }
-        }
-        @if (!Model.Partners.Any())
-        {
-            <span class="font-bold text-2xl text-[#D4AF37] tracking-widest uppercase">Hilton</span>
-            <span class="font-bold text-2xl text-[#D4AF37] tracking-widest uppercase">Marriott</span>
-            <span class="font-bold text-2xl text-[#D4AF37] tracking-widest uppercase">Four Seasons</span>
-            <span class="font-bold text-2xl text-[#D4AF37] tracking-widest uppercase">Hyatt</span>
-            <span class="font-bold text-2xl text-[#D4AF37] tracking-widest uppercase">Ritz</span>
-        }
-    </div>
-</section>
- *@
-<!-- Reservation Form -->
 <section class="py-32 px-6 md:px-16" id="booking-form">
     <div class="max-w-4xl mx-auto">
         <div class="mb-12 text-left">
-            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@(contactSection?.Title ?? "Richiesta Prenotazione VIP")</h2>
+            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@(contactSection?.Title ?? "Richiesta Prenotazione")</h2>
             <p class="text-gray-400 font-light text-lg text-[15px]">@(contactSection?.Description ?? "Compila il modulo per ricevere un preventivo personalizzato immediato.")</p>
         </div>
         <div class="charcoal-border bg-[#050505] p-8 md:p-20 relative">
-            <form asp-action="Create" asp-controller="Bookings" method="post" id="form-booking" class="space-y-8">
+            <form id="form-booking" class="space-y-10">
                 @Html.AntiForgeryToken()
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div class="space-y-2">
                         <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Nome Completo</label>
-                        <input name="FullName" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all" placeholder="Mario Rossi" type="text" />
+                        <input name="FullName" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="Mario Rossi" type="text" />
                     </div>
                     <div class="space-y-2">
                         <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Email</label>
-                        <input name="Email" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all" placeholder="mario@esempio.it" type="email" />
+                        <input name="Email" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="mario@esempio.it" type="email" />
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-2 flex flex-col">
+                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Telefono <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
+                        <input name="Phone" type="tel" placeholder="+39 333 1234567" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors" />
+                    </div>
+                    <div class="space-y-2 relative flex flex-col z-0">
                         <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data del Servizio</label>
-                        <input name="ServiceDate" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all [color-scheme:dark]" type="date" />
+                        <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="gg/mm/aaaa" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all cursor-pointer outline-none placeholder-gray-500" />
+                        <span class="material-symbols-outlined absolute right-0 bottom-4 text-gray-500 pointer-events-none">calendar_today</span>
                     </div>
-                    <div class="space-y-2">
+                </div>
+                
+                <div class="grid grid-cols-1 gap-10">
+                    <div class="space-y-2 relative flex flex-col w-full z-50" id="service-dropdown-container">
                         <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Tipo di Servizio</label>
-                        <select name="ServiceType" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all" id="service-select">
-                            <option class="bg-black">Transfer Aeroportuale</option>
-                            <option class="bg-black">Tour Personalizzato</option>
-                            <option class="bg-black">Evento Speciale</option>
-                            <option class="bg-black">Altro</option>
+                        
+                        <select id="desktop-service-select" class="hidden md:block w-full truncate bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-gray-500 py-4 pr-10 font-light text-[15px] transition-all cursor-pointer outline-none appearance-none !bg-none" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;">
+                            <option class="bg-black text-gray-500" value="" hidden selected>Seleziona un servizio...</option>
+                            @if (Model.FeaturedServices != null)
+                            {
+                                @foreach (var service in Model.FeaturedServices)
+                                {
+                                    <option class="bg-black text-[#D4AF37]" value="@service.Id">@service.Name</option>
+                                }
+                            }
+                            <option class="bg-black text-[#D4AF37]" value="Altro">Altro</option>
                         </select>
+                        <span class="hidden md:block material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
+
+                        <div class="block md:hidden relative w-full">
+                            <input type="hidden" id="mobile-service-input" />
+                            <div id="service-btn" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] py-4 pr-10 text-gray-500 font-light text-[15px] cursor-pointer flex justify-between items-center outline-none">
+                                <span id="service-text" class="truncate text-gray-500">Seleziona un servizio...</span>
+                                <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
+                            </div>
+                            <ul id="service-menu" class="hidden absolute top-[100%] left-0 w-full bg-[#050505] border border-[#1A1A1A] shadow-2xl m-0 p-0 list-none max-h-64 overflow-y-auto">
+                                @if (Model.FeaturedServices != null)
+                                {
+                                    @foreach (var service in Model.FeaturedServices)
+                                    {
+                                        <li class="px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light border-b border-[#1A1A1A]" data-value="@service.Id">@service.Name</li>
+                                    }
+                                }
+                                <li class="px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light" data-value="Altro">Altro</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+                
                 <div class="space-y-2">
-                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Messaggio / Richieste Speciali</label>
-                    <textarea name="Message" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Messaggio / Richieste Speciali <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
+                    <textarea name="Message" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all resize-none placeholder-gray-500" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
                 </div>
-                <button class="w-full py-6 gold-bg text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8" type="submit">Invia Richiesta di Prenotazione</button>
+                
+                <button class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8 flex items-center justify-center" type="submit">
+                    Invia Richiesta di Prenotazione
+                </button>
                 <div id="booking-message" class="hidden mt-4 p-4 text-center font-bold"></div>
             </form>
         </div>
     </div>
 </section>
 
-<!-- Map & Location -->
 <section class="py-32 px-6 md:px-16 max-w-7xl mx-auto border-t border-[#1A1A1A]">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
         <div class="h-full min-h-[400px] border border-[#1A1A1A] relative overflow-hidden">
@@ -255,8 +292,7 @@
     </div>
 </section>
 
-<!-- Contatti Rapidi -->
-<section class="py-32 bg-[#050505]" id="contatti">
+<section class="pt-32 pb-16 bg-black" id="contatti">
     <div class="px-6 md:px-16 max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
             <div class="text-left">
@@ -266,7 +302,7 @@
                         <span class="material-symbols-outlined text-[#D4AF37] text-4xl">phone_iphone</span>
                         <div>
                             <p class="font-bold text-gray-500 uppercase tracking-widest mb-2 text-[10px] text-[15px]">Cellulare</p>
-                            @foreach(var contact in (await CompanyApi.GetContactsAsync()).Where(c => c.Type == "Phone" || c.Type == "WhatsApp"))
+                            @foreach (var contact in (await CompanyApi.GetContactsAsync()).Where(c => c.Type == "Phone" || c.Type == "WhatsApp"))
                             {
                                 <p class="text-2xl font-bold text-white text-[15px]">@contact.Value</p>
                             }
@@ -276,7 +312,7 @@
                         <span class="material-symbols-outlined text-[#D4AF37] text-4xl">mail</span>
                         <div>
                             <p class="font-bold text-gray-500 uppercase tracking-widest mb-2 text-[10px] text-[15px]">Email</p>
-                            @foreach(var contact in (await CompanyApi.GetContactsAsync()).Where(c => c.Type == "Email"))
+                            @foreach (var contact in (await CompanyApi.GetContactsAsync()).Where(c => c.Type == "Email"))
                             {
                                 <p class="text-2xl font-bold text-white text-[15px]">@contact.Value</p>
                             }
@@ -284,13 +320,16 @@
                     </div>
                 </div>
             </div>
-            <div class="charcoal-border p-12 bg-black">
-                <form asp-action="SendMessage" asp-controller="Contact" method="post" id="form-contact" class="space-y-6">
+            <div class="charcoal-border p-12 bg-[#050505]">
+                <form id="form-contact" class="space-y-6">
                     @Html.AntiForgeryToken()
                     <input name="FullName" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light" placeholder="Il Tuo Nome" type="text" />
                     <input name="Email" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light" placeholder="Indirizzo Email" type="email" />
-                    <textarea name="Message" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light" placeholder="Scrivi qui la tua richiesta..." rows="4"></textarea>
-                    <button class="w-full btn-secondary !text-[11px] !py-5" type="submit">Invia Messaggio</button>
+                    <textarea name="Message" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light resize-none" placeholder="Scrivi qui la tua richiesta..." rows="4"></textarea>
+                    
+                    <button class="w-full btn-secondary !text-[11px] !py-5 flex items-center justify-center" type="submit">
+                        Invia Messaggio
+                    </button>
                     <div id="contact-message" class="hidden mt-4 p-4 text-center font-bold"></div>
                 </form>
             </div>
@@ -300,47 +339,253 @@
 
 @section Scripts {
     <script>
-        document.querySelectorAll('.service-book-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const service = this.getAttribute('data-service');
-                const select = document.getElementById('service-select');
-                if (select && service) {
-                    for (let i = 0; i < select.options.length; i++) {
-                        if (select.options[i].text === service) {
-                            select.selectedIndex = i;
-                            break;
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Inizializza Flatpickr
+            const dateInput = document.getElementById('custom-date-picker');
+            if (dateInput) {
+                flatpickr(dateInput, {
+                    locale: "it",
+                    dateFormat: "d/m/Y",
+                    minDate: "today",
+                    disableMobile: true
+                });
+            }
+
+            // 2. Logica Desktop Select
+            const desktopServiceSelect = document.getElementById('desktop-service-select');
+            if (desktopServiceSelect) {
+                desktopServiceSelect.addEventListener('change', function() {
+                    this.classList.remove('text-gray-500');
+                    this.classList.add('text-white');
+                });
+            }
+
+            // 3. Logica Custom Select Anti-Sbordamento (Mobile)
+            const serviceBtn = document.getElementById('service-btn');
+            const serviceMenu = document.getElementById('service-menu');
+            const serviceText = document.getElementById('service-text');
+            const mobileInput = document.getElementById('mobile-service-input');
+
+            if (serviceBtn && serviceMenu) {
+                const serviceOptions = serviceMenu.querySelectorAll('li');
+
+                serviceBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    serviceMenu.classList.toggle('hidden');
+                });
+
+                serviceOptions.forEach(option => {
+                    option.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        mobileInput.value = this.getAttribute('data-value');
+                        serviceText.innerText = this.innerText;
+                        serviceText.classList.remove('text-gray-500');
+                        serviceText.classList.add('text-white');
+                        serviceMenu.classList.add('hidden');
+                    });
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!serviceBtn.contains(e.target) && !serviceMenu.contains(e.target)) {
+                        serviceMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Selezione Rapida dai box Servizi
+            document.querySelectorAll('.service-book-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const serviceId = this.getAttribute('data-service');
+                    
+                    // Cerca il nome del servizio corrispondente dall'opzione
+                    let serviceName = "Servizio Selezionato";
+                    if (desktopServiceSelect) {
+                        for (let i = 0; i < desktopServiceSelect.options.length; i++) {
+                            if (desktopServiceSelect.options[i].value === serviceId) {
+                                serviceName = desktopServiceSelect.options[i].text;
+                                break;
+                            }
                         }
                     }
-                }
-            });
-        });
 
-        async function handleFormSubmit(event, messageId) {
-            event.preventDefault();
-            const form = event.target;
-            const messageDiv = document.getElementById(messageId);
-            const formData = new FormData(form);
-
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData
+                    if (serviceId) {
+                        if (desktopServiceSelect) {
+                            desktopServiceSelect.value = serviceId;
+                            desktopServiceSelect.classList.remove('text-gray-500');
+                            desktopServiceSelect.classList.add('text-white');
+                        }
+                        if (mobileInput && serviceText) {
+                            mobileInput.value = serviceId;
+                            serviceText.innerText = serviceName;
+                            serviceText.classList.remove('text-gray-500');
+                            serviceText.classList.add('text-white');
+                        }
+                    }
                 });
-                const result = await response.json();
+            });
 
-                messageDiv.textContent = result.message;
-                messageDiv.classList.remove('hidden', 'text-red-500', 'text-green-500');
-                messageDiv.classList.add(result.success ? 'text-green-500' : 'text-red-500');
-
-                if (result.success) form.reset();
-            } catch (error) {
-                messageDiv.textContent = "Si è verificato un errore.";
-                messageDiv.classList.remove('hidden', 'text-green-500');
-                messageDiv.classList.add('text-red-500');
+            // Funzione Pulizia Form Prenotazione Home
+            function clearHomeBookingForm() {
+                const form = document.getElementById('form-booking');
+                if (form) form.reset();
+                if (dateInput && dateInput._flatpickr) dateInput._flatpickr.clear();
+                
+                if (desktopServiceSelect) {
+                    desktopServiceSelect.selectedIndex = 0;
+                    desktopServiceSelect.classList.remove('text-white');
+                    desktopServiceSelect.classList.add('text-gray-500');
+                }
+                if (serviceText && mobileInput) {
+                    serviceText.innerText = "Seleziona un servizio...";
+                    serviceText.classList.remove('text-white');
+                    serviceText.classList.add('text-gray-500');
+                    mobileInput.value = "";
+                }
             }
-        }
 
-        document.getElementById('form-booking')?.addEventListener('submit', (e) => handleFormSubmit(e, 'booking-message'));
-        document.getElementById('form-contact')?.addEventListener('submit', (e) => handleFormSubmit(e, 'contact-message'));
+            // 4. INVIO FORM PRENOTAZIONE (Sicuro con URLSearchParams)
+            const bookingForm = document.getElementById('form-booking');
+            if (bookingForm) {
+                bookingForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const isDesktop = window.innerWidth >= 768;
+                    const finalServiceValue = isDesktop ? desktopServiceSelect.value : mobileInput.value;
+
+                    if (!finalServiceValue) {
+                        alert("Seleziona il tipo di servizio desiderato.");
+                        return;
+                    }
+
+                    const messageDiv = document.getElementById('booking-message');
+                    const submitBtn = bookingForm.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+
+                    submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> INVIO IN CORSO...`;
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+
+                    const formData = new FormData(bookingForm);
+                    const params = new URLSearchParams();
+                    
+                    params.append('FullName', formData.get('FullName'));
+                    params.append('Email', formData.get('Email'));
+                    
+                    const phone = formData.get('Phone');
+                    if (phone && phone.trim() !== '') params.append('Phone', phone);
+
+                    const message = formData.get('Message');
+                    if (message && message.trim() !== '') params.append('Message', message);
+
+                    // Sicurezza Guid: Se è "Altro" non passiamo l'ID
+                    if (finalServiceValue && finalServiceValue !== "Altro") {
+                        params.append('ServiceTypeId', finalServiceValue);
+                    }
+
+                    const dateStr = formData.get('ServiceDateStr');
+                    if (dateStr && dateStr.trim() !== '') {
+                        const parts = dateStr.split('/');
+                        if (parts.length === 3) params.append('ServiceDate', `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+                    }
+
+                    const token = formData.get('__RequestVerificationToken');
+                    if (token) params.append('__RequestVerificationToken', token);
+
+                    try {
+                        const response = await fetch('/Bookings/Create', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: params.toString()
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok && result.success) {
+                            messageDiv.textContent = result.message || "Richiesta inviata con successo!";
+                            messageDiv.classList.remove('hidden', 'text-red-500');
+                            messageDiv.classList.add('text-green-500');
+                            
+                            clearHomeBookingForm();
+
+                            setTimeout(() => {
+                                messageDiv.classList.add('hidden');
+                                messageDiv.textContent = '';
+                            }, 5000);
+                        } else {
+                            throw new Error(result.message || 'Errore server');
+                        }
+                    } catch (error) {
+                        messageDiv.textContent = "Si è verificato un errore.";
+                        messageDiv.classList.remove('hidden', 'text-green-500');
+                        messageDiv.classList.add('text-red-500');
+                    } finally {
+                        submitBtn.innerHTML = originalBtnText;
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                    }
+                });
+            }
+
+            // 5. INVIO FORM CONTATTI (URLSearchParams per coerenza)
+            const contactForm = document.getElementById('form-contact');
+            if (contactForm) {
+                contactForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const messageDiv = document.getElementById('contact-message');
+                    const submitBtn = contactForm.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+
+                    submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> INVIO IN CORSO...`;
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+
+                    const formData = new FormData(contactForm);
+                    const params = new URLSearchParams();
+                    
+                    params.append('FullName', formData.get('FullName'));
+                    params.append('Email', formData.get('Email'));
+                    params.append('Message', formData.get('Message'));
+                    
+                    const token = formData.get('__RequestVerificationToken');
+                    if (token) params.append('__RequestVerificationToken', token);
+
+                    try {
+                        const response = await fetch('/Contact/SendMessage', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: params.toString()
+                        });
+                        
+                        const result = await response.json();
+
+                        if (response.ok && result.success) {
+                            messageDiv.textContent = result.message || "Messaggio inviato con successo!";
+                            messageDiv.classList.remove('hidden', 'text-red-500');
+                            messageDiv.classList.add('text-green-500');
+                            
+                            contactForm.reset();
+
+                            setTimeout(() => {
+                                messageDiv.classList.add('hidden');
+                                messageDiv.textContent = '';
+                            }, 5000);
+                        } else {
+                            throw new Error('Errore server');
+                        }
+                    } catch (error) {
+                        messageDiv.textContent = "Si è verificato un errore.";
+                        messageDiv.classList.remove('hidden', 'text-green-500');
+                        messageDiv.classList.add('text-red-500');
+                    } finally {
+                        submitBtn.innerHTML = originalBtnText;
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                    }
+                });
+            }
+        });
     </script>
 }

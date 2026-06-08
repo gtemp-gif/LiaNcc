@@ -5,10 +5,6 @@
 }
 
 <style>
-    .luxury-gradient-bg {
-        background: radial-gradient(circle at 50% -20%, #1A1A1A 0%, #000000 100%);
-    }
-
     .vehicle-glow {
         filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.15));
     }
@@ -19,7 +15,7 @@
     }
 </style>
 
-<main class="luxury-gradient-bg pt-32">
+<main class="bg-black pt-32">
     <section class="px-6 md:px-12 py-24 max-w-screen-2xl mx-auto text-center">
         <h1 class="section-title text-4xl md:text-5xl text-white mb-6 uppercase tracking-[3px] font-semibold">LA NOSTRA FLOTTA</h1>
         <p class="font-light text-lg text-[#d0c5af] max-w-2xl mx-auto opacity-80">
@@ -85,13 +81,13 @@
 
                     @if (vehicle.IsBookable)
                     {
-                        <button class="w-full py-5 bg-[#D4AF37] text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('@vehicle.Name', '@vehicle.Id')">
+                        <button class="w-full py-5 bg-[#D4AF37] text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('@vehicle.Name', '@vehicle.Id', @vehicle.Seats)">
                             PRENOTA ORA
                         </button>
                     }
                     else
                     {
-                        <button class="w-full py-5 border border-[#D4AF37] text-[#D4AF37] bg-transparent font-bold uppercase text-[10px] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all" onclick="openBookingModal('@vehicle.Name', '@vehicle.Id')">
+                        <button class="w-full py-5 border border-[#D4AF37] text-[#D4AF37] bg-transparent font-bold uppercase text-[10px] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all" onclick="openBookingModal('@vehicle.Name', '@vehicle.Id', @vehicle.Seats)">
                             CHIEDI INFORMAZIONI
                         </button>
                     }
@@ -128,36 +124,43 @@
         </button>
         
         <div class="mb-12 text-left">
-            <h2 class="section-title text-3xl md:text-4xl text-white mb-2 uppercase tracking-[3px]">Prenotazione VIP</h2>
+            <h2 class="section-title text-3xl md:text-4xl text-white mb-2 uppercase tracking-[3px]">Richiesta Prenotazione</h2>
             <p class="text-gray-400 font-light text-lg">Ricevi un preventivo personalizzato per: <span class="text-[#D4AF37] font-semibold" id="selectedCarName"></span></p>
         </div>
         
-        <form id="fleetBookingForm" class="space-y-8">
+        <form id="fleetBookingForm" class="space-y-10">
             <input type="hidden" name="VehicleId" id="modalVehicleId" />
             @Html.AntiForgeryToken()
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div class="space-y-2">
                     <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Nome Completo</label>
-                    <input name="FullName" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500" placeholder="Mario Rossi" type="text" required />
+                    <input name="FullName" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="Mario Rossi" type="text" required />
                 </div>
                 <div class="space-y-2">
                     <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Email</label>
-                    <input name="Email" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500" placeholder="mario@esempio.it" type="email" required />
+                    <input name="Email" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="mario@esempio.it" type="email" required />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="space-y-2">
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Telefono <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
+                    <input name="Phone" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="+39 333 1234567" type="tel" />
+                </div>
+                <div class="space-y-2 relative flex flex-col z-0">
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data del Servizio</label>
+                    <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="gg/mm/aaaa" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500 cursor-pointer outline-none" required />
+                    <span class="material-symbols-outlined absolute right-0 bottom-4 text-gray-500 pointer-events-none">calendar_today</span>
                 </div>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-2 relative flex flex-col">
-                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data del Servizio</label>
-                    <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="gg/mm/aaaa" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500 cursor-pointer outline-none" required />
-                    <span class="material-symbols-outlined absolute right-0 bottom-4 text-gray-500 pointer-events-none">calendar_today</span>
-                </div>
-                
-                <div class="space-y-2 relative flex flex-col">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="space-y-2 relative flex flex-col w-full z-50">
                     <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Tipo di Servizio</label>
-                    <select name="ServiceTypeId" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 pr-10 transition-all cursor-pointer outline-none" required>
-                        <option class="bg-black text-gray-500" value="" disabled selected>Seleziona un servizio...</option>
-                        
+                    
+                    <select id="desktop-service-select" class="hidden md:block w-full truncate bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-gray-500 py-4 pr-10 font-light text-[15px] transition-all cursor-pointer outline-none appearance-none !bg-none" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;">
+                        <option class="bg-black text-gray-500" value="" hidden selected>Seleziona un servizio...</option>
                         @if (Model.Services != null)
                         {
                             @foreach (var service in Model.Services)
@@ -165,77 +168,304 @@
                                 <option class="bg-black text-[#D4AF37]" value="@service.Id">@service.Name</option>
                             }
                         }
+                        <option class="bg-black text-[#D4AF37]" value="Altro">Altro</option>
                     </select>
+                    <span class="hidden md:block material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
+
+                    <div class="block md:hidden relative w-full">
+                        <input type="hidden" id="mobile-service-input" />
+                        <div id="service-btn" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] py-4 pr-10 text-gray-500 font-light text-[15px] cursor-pointer flex justify-between items-center outline-none">
+                            <span id="service-text" class="truncate">Seleziona un servizio...</span>
+                            <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
+                        </div>
+                        <ul id="service-menu" class="hidden absolute top-[100%] left-0 w-full bg-[#050505] border border-[#1A1A1A] shadow-2xl z-[60] m-0 p-0 list-none max-h-64 overflow-y-auto">
+                            @if (Model.Services != null)
+                            {
+                                @foreach (var service in Model.Services)
+                                {
+                                    <li class="px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light border-b border-[#1A1A1A]" data-value="@service.Id">@service.Name</li>
+                                }
+                            }
+                            <li class="px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light" data-value="Altro">Altro</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="space-y-2 relative flex flex-col w-full z-40">
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Numero Ospiti</label>
+                    
+                    <select id="desktop-guests-select" class="hidden md:block w-full truncate bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-gray-500 py-4 pr-10 font-light text-[15px] transition-all cursor-pointer outline-none appearance-none !bg-none" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;">
+                    </select>
+                    <span class="hidden md:block material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
+
+                    <div class="block md:hidden relative w-full">
+                        <input type="hidden" id="mobile-guests-input" />
+                        <div id="guests-btn" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] py-4 pr-10 text-gray-500 font-light text-[15px] cursor-pointer flex justify-between items-center outline-none">
+                            <span id="guests-text" class="truncate text-gray-500">Seleziona numero ospiti</span>
+                            <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
+                        </div>
+                        <ul id="guests-menu" class="hidden absolute top-[100%] left-0 w-full bg-[#050505] border border-[#1A1A1A] shadow-2xl m-0 p-0 list-none max-h-64 overflow-y-auto">
+                        </ul>
+                    </div>
                 </div>
             </div>
             
             <div class="space-y-2">
-                <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Messaggio / Richieste Speciali</label>
-                <textarea name="Message" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500 resize-none" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
+                <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Note Aggiuntive <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
+                <textarea name="Message" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500 resize-none font-light text-[15px]" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
             </div>
             
-            <button class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8" type="submit">Invia Richiesta di Prenotazione</button>
+            <button class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8 flex items-center justify-center" type="submit">
+                Invia Richiesta di Prenotazione
+            </button>
+            <div id="modal-booking-message" class="hidden mt-4 p-4 text-center font-bold"></div>
         </form>
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        flatpickr("#custom-date-picker", {
-            locale: "it",
-            dateFormat: "d/m/Y",
-            minDate: "today",
-            disableMobile: "true"
-        });
+@section Scripts {
+    <script>
+        function clearFleetForm() {
+            const form = document.getElementById('fleetBookingForm');
+            const dateInput = document.getElementById('custom-date-picker');
+            const desktopServiceSelect = document.getElementById('desktop-service-select');
+            const serviceText = document.getElementById('service-text');
+            const mobileServiceInput = document.getElementById('mobile-service-input');
+            const desktopGuestsSelect = document.getElementById('desktop-guests-select');
+            const guestsText = document.getElementById('guests-text');
+            const mobileGuestsInput = document.getElementById('mobile-guests-input');
+            const messageDiv = document.getElementById('modal-booking-message');
 
-        const form = document.getElementById('fleetBookingForm');
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const formData = new FormData(form);
+            if (form) form.reset();
+            if (dateInput && dateInput._flatpickr) dateInput._flatpickr.clear();
 
-            // Format date for the backend if needed
-            const dateStr = formData.get('ServiceDateStr');
-            if (dateStr) {
-                const parts = dateStr.split('/');
-                formData.append('ServiceDate', `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+            if (desktopServiceSelect) {
+                desktopServiceSelect.selectedIndex = 0;
+                desktopServiceSelect.classList.remove('text-white');
+                desktopServiceSelect.classList.add('text-gray-500');
+            }
+            if (serviceText && mobileServiceInput) {
+                serviceText.innerText = "Seleziona un servizio...";
+                serviceText.classList.remove('text-white');
+                serviceText.classList.add('text-gray-500');
+                mobileServiceInput.value = "";
             }
 
-            try {
-                const response = await fetch('/Bookings/Create', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                if (result.success) {
-                    alert(result.message);
-                    closeBookingModal();
-                    form.reset();
-                } else {
-                    alert(result.message || "Si è verificato un errore.");
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert("Errore durante l'invio della prenotazione.");
+            if (desktopGuestsSelect) {
+                desktopGuestsSelect.selectedIndex = 0;
+                desktopGuestsSelect.classList.remove('text-white');
+                desktopGuestsSelect.classList.add('text-gray-500');
             }
-        });
-    });
+            if (guestsText && mobileGuestsInput) {
+                guestsText.innerText = "Seleziona numero ospiti";
+                guestsText.classList.remove('text-white');
+                guestsText.classList.add('text-gray-500');
+                mobileGuestsInput.value = "";
+            }
 
-    function openBookingModal(carName, vehicleId) {
-        document.getElementById('selectedCarName').innerText = carName;
-        document.getElementById('modalVehicleId').value = vehicleId;
-        document.getElementById('bookingModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeBookingModal() {
-        document.getElementById('bookingModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    window.onclick = function(event) {
-        let modal = document.getElementById('bookingModal');
-        if (event.target == modal) {
-            closeBookingModal();
+            if (messageDiv) { messageDiv.classList.add('hidden'); messageDiv.textContent = ''; }
         }
-    }
-</script>
+
+        function openBookingModal(carName, vehicleId, maxSeats) {
+            document.getElementById('selectedCarName').innerText = carName;
+            document.getElementById('modalVehicleId').value = vehicleId;
+
+            // Popola Tendina Desktop
+            const desktopSelect = document.getElementById('desktop-guests-select');
+            if (desktopSelect) {
+                desktopSelect.innerHTML = '<option class="bg-black text-gray-500" value="" hidden selected>Seleziona numero ospiti</option>';
+                for (let i = 1; i <= maxSeats; i++) {
+                    let label = i === 1 ? 'Persona' : 'Persone';
+                    desktopSelect.innerHTML += `<option class="bg-black text-[#D4AF37]" value="${i}">${i} ${label}</option>`;
+                }
+            }
+
+            // Popola Tendina Custom Mobile
+            const mobileMenu = document.getElementById('guests-menu');
+            if (mobileMenu) {
+                mobileMenu.innerHTML = '';
+                for (let i = 1; i <= maxSeats; i++) {
+                    let label = i === 1 ? 'Persona' : 'Persone';
+                    const li = document.createElement('li');
+                    li.className = "px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light border-b border-[#1A1A1A]";
+                    li.setAttribute('data-value', i);
+                    li.innerText = `${i} ${label}`;
+                    
+                    li.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        document.getElementById('mobile-guests-input').value = this.getAttribute('data-value');
+                        const text = document.getElementById('guests-text');
+                        text.innerText = this.innerText;
+                        text.classList.remove('text-gray-500');
+                        text.classList.add('text-white');
+                        mobileMenu.classList.add('hidden');
+                    });
+                    mobileMenu.appendChild(li);
+                }
+            }
+
+            document.getElementById('bookingModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            clearFleetForm();
+        }
+
+        window.onclick = function(event) {
+            let modal = document.getElementById('bookingModal');
+            if (event.target == modal) closeBookingModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('custom-date-picker');
+            if (dateInput) {
+                flatpickr(dateInput, { locale: "it", dateFormat: "d/m/Y", minDate: "today", disableMobile: true });
+            }
+
+            const desktopServiceSelect = document.getElementById('desktop-service-select');
+            if (desktopServiceSelect) {
+                desktopServiceSelect.addEventListener('change', function() { this.classList.remove('text-gray-500'); this.classList.add('text-white'); });
+            }
+            const desktopGuestsSelect = document.getElementById('desktop-guests-select');
+            if (desktopGuestsSelect) {
+                desktopGuestsSelect.addEventListener('change', function() { this.classList.remove('text-gray-500'); this.classList.add('text-white'); });
+            }
+
+            const serviceBtn = document.getElementById('service-btn');
+            const serviceMenu = document.getElementById('service-menu');
+            const serviceText = document.getElementById('service-text');
+            const mobileServiceInput = document.getElementById('mobile-service-input');
+            
+            if (serviceBtn && serviceMenu) {
+                const serviceOptions = serviceMenu.querySelectorAll('li');
+                serviceBtn.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); serviceMenu.classList.toggle('hidden'); });
+                serviceOptions.forEach(option => {
+                    option.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        mobileServiceInput.value = this.getAttribute('data-value');
+                        serviceText.innerText = this.innerText;
+                        serviceText.classList.remove('text-gray-500');
+                        serviceText.classList.add('text-white');
+                        serviceMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            const guestsBtn = document.getElementById('guests-btn');
+            const guestsMenu = document.getElementById('guests-menu');
+            if (guestsBtn && guestsMenu) {
+                guestsBtn.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); guestsMenu.classList.toggle('hidden'); });
+            }
+
+            document.addEventListener('click', function(e) {
+                if (serviceBtn && serviceMenu && !serviceBtn.contains(e.target) && !serviceMenu.contains(e.target)) serviceMenu.classList.add('hidden');
+                if (guestsBtn && guestsMenu && !guestsBtn.contains(e.target) && !guestsMenu.contains(e.target)) guestsMenu.classList.add('hidden');
+            });
+
+            const form = document.getElementById('fleetBookingForm');
+            if (form) {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // LETTURA SICURA DEI DATI ANTI-BYPASS
+                    let finalServiceValue = desktopServiceSelect ? desktopServiceSelect.value : "";
+                    if (!finalServiceValue || finalServiceValue.trim() === "" || finalServiceValue.startsWith("Seleziona")) {
+                        finalServiceValue = mobileServiceInput ? mobileServiceInput.value : "";
+                    }
+
+                    let finalGuestsValue = desktopGuestsSelect ? desktopGuestsSelect.value : "";
+                    if (!finalGuestsValue || finalGuestsValue.trim() === "" || finalGuestsValue.startsWith("Seleziona")) {
+                        finalGuestsValue = document.getElementById('mobile-guests-input') ? document.getElementById('mobile-guests-input').value : "";
+                    }
+
+                    // VALIDAZIONE RIGIDA
+                    if (!finalServiceValue || finalServiceValue.trim() === "") {
+                        alert("Seleziona il tipo di servizio desiderato.");
+                        return;
+                    }
+                    if (!finalGuestsValue || finalGuestsValue.trim() === "") {
+                        alert("Seleziona il numero di ospiti.");
+                        return;
+                    }
+
+                    const messageDiv = document.getElementById('modal-booking-message');
+                    messageDiv.classList.add('hidden'); // Nasconde messaggi di errore precedenti
+
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+
+                    submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> INVIO IN CORSO...`;
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+
+                    const formData = new FormData(form);
+                    const params = new URLSearchParams();
+                    
+                    params.append('FullName', formData.get('FullName'));
+                    params.append('Email', formData.get('Email'));
+                    params.append('MaxSeats', finalGuestsValue);
+
+                    const phone = formData.get('Phone');
+                    if (phone && phone.trim() !== '') params.append('Phone', phone);
+
+                    const message = formData.get('Message');
+                    if (message && message.trim() !== '') params.append('Message', message);
+
+                    const vehicleId = formData.get('VehicleId');
+                    if (vehicleId && vehicleId.trim() !== '') params.append('VehicleId', vehicleId);
+
+                    // Sicurezza per C#: se scelgono 'Altro' non inviamo il parametro (il C# riceverà null)
+                    if (finalServiceValue && finalServiceValue !== "Altro") {
+                        params.append('ServiceTypeId', finalServiceValue);
+                    }
+
+                    const dateStr = formData.get('ServiceDateStr');
+                    if (dateStr && dateStr.trim() !== '') {
+                        const parts = dateStr.split('/');
+                        if (parts.length === 3) params.append('ServiceDate', `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+                    }
+
+                    const token = formData.get('__RequestVerificationToken');
+                    if (token) params.append('__RequestVerificationToken', token);
+
+                    try {
+                        const response = await fetch('/Bookings/Create', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: params.toString()
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok && result.success) {
+                            messageDiv.textContent = result.message || "Richiesta inviata con successo!";
+                            messageDiv.classList.remove('hidden', 'text-red-500');
+                            messageDiv.classList.add('text-green-500');
+                            
+                            clearFleetForm();
+                            
+                            setTimeout(() => {
+                                closeBookingModal();
+                                messageDiv.classList.add('hidden');
+                            }, 3000);
+                        } else {
+                            throw new Error(result.message || 'Errore server');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        messageDiv.textContent = "Errore durante l'invio. Riprova.";
+                        messageDiv.classList.remove('hidden', 'text-green-500');
+                        messageDiv.classList.add('text-red-500');
+                    } finally {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -3,6 +3,9 @@
     ViewData["Title"] = Model.Tour?.Name ?? "Dettaglio Tour";
     Layout = "_Layout";
     var tour = Model.Tour;
+    
+    // Calcoliamo i posti massimi dinamicamente dal veicolo del tour (default 4 se non specificato)
+    int maxSeats = tour?.Vehicle?.Seats ?? 4;
 }
 
 @if (tour != null)
@@ -110,17 +113,21 @@
         </section>
     }
 
-    <section id="reservations" class="py-32">
+    <section id="reservations" class="py-32 px-6 md:px-16">
         <div class="max-w-4xl mx-auto">
             <div class="text-left mb-12">
-                <h2 class="text-4xl font-semibold text-white mb-4 section-title text-[24px]">Richiesta Prenotazione VIP</h2>
+                <h2 class="text-4xl font-semibold text-white mb-4 section-title text-[24px]">Richiesta Prenotazione</h2>
                 <p class="text-gray-400 font-light text-[15px]">Compila il modulo per ricevere un preventivo personalizzato immediato.</p>
             </div>
 
             <div class="bg-black p-8 md:p-20 relative charcoal-border mt-16">
 
-                <form id="tourBookingForm" class="space-y-12">
+                <form id="tourBookingForm" class="space-y-10">
                     <input type="hidden" name="TourId" value="@tour.Id" />
+                    @if (tour.Vehicle != null)
+                    {
+                        <input type="hidden" name="VehicleId" value="@tour.Vehicle.Id" />
+                    }
                     @Html.AntiForgeryToken()
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -135,201 +142,211 @@
                         </div>
                     </div>
 
+                    <div class="space-y-2 flex flex-col">
+                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Telefono <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
+                        <input name="Phone" type="tel" placeholder="+39 333 1234567" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors" />
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <div class="space-y-2 flex flex-col relative">
+                        <div class="space-y-2 flex flex-col relative z-0">
                             <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data Desiderata</label>
-                            <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="gg/mm/aaaa" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors cursor-pointer" required />
+                            <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="gg/mm/aaaa" class="luxury-datepicker w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors cursor-pointer outline-none" required />
                             <span class="material-symbols-outlined absolute right-0 bottom-4 text-gray-500 pointer-events-none">calendar_today</span>
                         </div>
 
-                        <div class="space-y-2 flex flex-col relative">
+                        <div class="space-y-2 relative flex flex-col w-full z-50">
                             <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Numero Ospiti</label>
-                            <select name="PassengerOptionId" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white py-4 pr-10 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors cursor-pointer outline-none" required>
-                                <option class="bg-black text-gray-500" value="" disabled selected>Seleziona numero ospiti</option>
-                                @if (ViewData["PassengerOptions"] is IEnumerable<LiaNcc.Models.Entities.BookingPassengerOption> passengerOptions)
+                            
+                            <select id="desktop-guests-select" class="hidden md:block w-full truncate bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-gray-500 py-4 pr-10 transition-all cursor-pointer outline-none appearance-none !bg-none" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;">
+                                <option class="bg-black text-gray-500" value="" hidden selected>Seleziona numero ospiti</option>
+                                @for (int i = 1; i <= maxSeats; i++)
                                 {
-                                    @foreach (var opt in passengerOptions)
-                                    {
-                                        <option class="bg-black text-[#D4AF37]" value="@opt.Id">@opt.Name</option>
-                                    }
-                                }
-                                else
-                                {
-                                    <option class="bg-black text-[#D4AF37]" value="1">1 Persona</option>
-                                    <option class="bg-black text-[#D4AF37]" value="2">2 Persone</option>
-                                    <option class="bg-black text-[#D4AF37]" value="3">3 - 5 Persone</option>
+                                    <option class="bg-black text-[#D4AF37]" value="@i">@i @(i == 1 ? "Persona" : "Persone")</option>
                                 }
                             </select>
-                            <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
+                            <span class="hidden md:block material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
+
+                            <div class="block md:hidden relative w-full">
+                                <input type="hidden" id="mobile-guests-input" />
+                                <div id="guests-btn" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] py-4 pr-10 text-gray-500 font-light text-[15px] cursor-pointer flex justify-between items-center outline-none">
+                                    <span id="guests-text" class="truncate text-gray-500">Seleziona numero ospiti</span>
+                                    <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
+                                </div>
+                                <ul id="guests-menu" class="hidden absolute top-[100%] left-0 w-full bg-[#050505] border border-[#1A1A1A] shadow-2xl m-0 p-0 list-none max-h-64 overflow-y-auto">
+                                    @for (int i = 1; i <= maxSeats; i++)
+                                    {
+                                        <li class="px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light border-b border-[#1A1A1A]" data-value="@i">@i @(i == 1 ? "Persona" : "Persone")</li>
+                                    }
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
                     <div class="space-y-2 flex flex-col">
-                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Note Aggiuntive (Discrezione Garantita)</label>
+                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Note Aggiuntive <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
                         <textarea name="Message" placeholder="Indica eventuali richieste particolari..." rows="3" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors resize-none"></textarea>
                     </div>
 
-                    <button type="submit" class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.3em] hover:bg-[#E5C158] transition-all">
+                    <button type="submit" class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.3em] hover:bg-[#E5C158] transition-all flex items-center justify-center">
                         Invia Richiesta di Prenotazione
                     </button>
+                    
+                    <div id="tour-booking-message" class="hidden mt-4 p-4 text-center font-bold"></div>
                 </form>
             </div>
         </div>
     </section>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    @section Scripts {
+        <script>
+            function clearTourBookingForm() {
+                const form = document.getElementById('tourBookingForm');
+                const dateInput = document.getElementById('custom-date-picker');
+                const desktopSelect = document.getElementById('desktop-guests-select');
+                const guestsText = document.getElementById('guests-text');
+                const mobileInput = document.getElementById('mobile-guests-input');
 
-    <style>
-        /* 1. FIX SELECT MESI E PLACEHOLDER */
-        select:invalid {
-            color: #6B7280;
-        }
+                if (form) form.reset();
+                if (dateInput && dateInput._flatpickr) dateInput._flatpickr.clear();
 
-        select option {
-            color: #D4AF37;
-        }
-
-        select.flatpickr-monthDropdown-months {
-            -webkit-appearance: none !important;
-            -moz-appearance: none !important;
-            appearance: none !important;
-            background-image: url('data:image/svg+xml;utf8,<svg fill="%23D4AF37" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') !important;
-            background-repeat: no-repeat !important;
-            background-position: right 0px center !important;
-            background-size: 16px !important;
-            padding-right: 20px !important;
-            outline: none !important;
-            box-shadow: none !important;
-            border: none !important;
-            background-color: transparent !important;
-            cursor: pointer !important;
-            color-scheme: dark !important;
-        }
-
-            select.flatpickr-monthDropdown-months:focus,
-            select.flatpickr-monthDropdown-months:active {
-                outline: none !important;
-                box-shadow: none !important;
-                border: none !important;
-            }
-
-        /* 2. STILE BASE CALENDARIO FLATPICKR LUSSO */
-        .flatpickr-calendar {
-            background: #050505 !important;
-            border: 1px solid #1A1A1A !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.9) !important;
-            font-family: 'Montserrat', sans-serif !important;
-        }
-
-        .flatpickr-months .flatpickr-month,
-        .flatpickr-current-month .flatpickr-monthDropdown-months {
-            color: #D4AF37 !important;
-            fill: #D4AF37 !important;
-        }
-
-            .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
-                background-color: #1A1A1A !important;
-                color: #D4AF37 !important;
-            }
-
-        .flatpickr-months .flatpickr-prev-month,
-        .flatpickr-months .flatpickr-next-month {
-            fill: #D4AF37 !important;
-        }
-
-            .flatpickr-months .flatpickr-prev-month:hover svg,
-            .flatpickr-months .flatpickr-next-month:hover svg {
-                fill: #E5C158 !important;
-            }
-
-        .flatpickr-current-month .numInputWrapper {
-            margin-left: 1rem !important;
-        }
-
-            .flatpickr-current-month .numInputWrapper .arrowUp,
-            .flatpickr-current-month .numInputWrapper .arrowDown {
-                display: none !important;
-            }
-
-        /* 3. GIORNI E SETTIMANE */
-        span.flatpickr-weekday {
-            color: #D4AF37 !important;
-            font-weight: bold !important;
-            background: transparent !important;
-        }
-
-        .flatpickr-day {
-            color: #e2e2e2 !important;
-        }
-
-            .flatpickr-day:hover, .flatpickr-day:focus {
-                background: #1A1A1A !important;
-                border-color: #D4AF37 !important;
-                outline: none !important;
-            }
-
-            .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
-                background: #D4AF37 !important;
-                border-color: #D4AF37 !important;
-                color: #000000 !important;
-                font-weight: bold;
-            }
-
-            .flatpickr-day.today {
-                border-color: #D4AF37 !important;
-            }
-
-            /* 4. GIORNI DISABILITATI (Passati) */
-            .flatpickr-day.flatpickr-disabled,
-            .flatpickr-day.flatpickr-disabled:hover {
-                color: #3f3f46 !important; /* Grigio scuro spento */
-                background: transparent !important;
-                border-color: transparent !important;
-                cursor: not-allowed !important;
-            }
-    </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/it.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            flatpickr("#custom-date-picker", {
-                locale: "it",
-                dateFormat: "d/m/Y",
-                minDate: "today",
-                disableMobile: "true"
-            });
-
-            const form = document.getElementById('tourBookingForm');
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const formData = new FormData(form);
-
-                const dateStr = formData.get('ServiceDateStr');
-                if (dateStr) {
-                    const parts = dateStr.split('/');
-                    formData.append('ServiceDate', `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+                if (desktopSelect) {
+                    desktopSelect.selectedIndex = 0;
+                    desktopSelect.classList.remove('text-white');
+                    desktopSelect.classList.add('text-gray-500');
                 }
 
-                try {
-                    const response = await fetch('/Bookings/Create', {
-                        method: 'POST',
-                        body: formData
+                if (guestsText && mobileInput) {
+                    guestsText.innerText = "Seleziona numero ospiti";
+                    guestsText.classList.remove('text-white');
+                    guestsText.classList.add('text-gray-500');
+                    mobileInput.value = "";
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const dateInput = document.getElementById('custom-date-picker');
+                if (dateInput) {
+                    flatpickr(dateInput, { locale: "it", dateFormat: "d/m/Y", minDate: "today", disableMobile: true });
+                }
+
+                const desktopSelect = document.getElementById('desktop-guests-select');
+                if (desktopSelect) {
+                    desktopSelect.addEventListener('change', function() {
+                        this.classList.remove('text-gray-500');
+                        this.classList.add('text-white');
                     });
-                    const result = await response.json();
-                    if (result.success) {
-                        alert(result.message);
-                        form.reset();
-                    } else {
-                        alert(result.message || "Si è verificato un errore.");
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert("Errore durante l'invio della prenotazione.");
+                }
+
+                const btn = document.getElementById('guests-btn');
+                const menu = document.getElementById('guests-menu');
+                const text = document.getElementById('guests-text');
+                const mobileInput = document.getElementById('mobile-guests-input');
+
+                if (btn && menu) {
+                    const options = menu.querySelectorAll('li');
+
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault(); e.stopPropagation(); menu.classList.toggle('hidden');
+                    });
+
+                    options.forEach(option => {
+                        option.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            mobileInput.value = this.getAttribute('data-value');
+                            text.innerText = this.innerText;
+                            text.classList.remove('text-gray-500');
+                            text.classList.add('text-white');
+                            menu.classList.add('hidden');
+                        });
+                    });
+
+                    document.addEventListener('click', function(e) {
+                        if (!btn.contains(e.target) && !menu.contains(e.target)) menu.classList.add('hidden');
+                    });
+                }
+
+                const form = document.getElementById('tourBookingForm');
+                if (form) {
+                    form.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        
+                        const isDesktop = window.innerWidth >= 768;
+                        const finalGuestsValue = isDesktop ? desktopSelect.value : mobileInput.value;
+
+                        if (!finalGuestsValue) {
+                            alert("Seleziona il numero di ospiti.");
+                            return;
+                        }
+
+                        const messageDiv = document.getElementById('tour-booking-message');
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        const originalText = submitBtn.innerHTML;
+                        
+                        submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> INVIO IN CORSO...`;
+                        submitBtn.disabled = true;
+                        submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+
+                        const formData = new FormData(form);
+                        const params = new URLSearchParams();
+                        
+                        params.append('FullName', formData.get('FullName'));
+                        params.append('Email', formData.get('Email'));
+                        params.append('MaxSeats', finalGuestsValue);
+
+                        const phone = formData.get('Phone');
+                        if (phone && phone.trim() !== '') params.append('Phone', phone);
+
+                        const message = formData.get('Message');
+                        if (message && message.trim() !== '') params.append('Message', message);
+
+                        const tourId = formData.get('TourId');
+                        if (tourId && tourId.trim() !== '') params.append('TourId', tourId);
+
+                        const vehicleId = formData.get('VehicleId');
+                        if (vehicleId && vehicleId.trim() !== '') params.append('VehicleId', vehicleId);
+
+                        const dateStr = formData.get('ServiceDateStr');
+                        if (dateStr && dateStr.trim() !== '') {
+                            const parts = dateStr.split('/');
+                            if (parts.length === 3) params.append('ServiceDate', `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+                        }
+
+                        const token = formData.get('__RequestVerificationToken');
+                        if (token) params.append('__RequestVerificationToken', token);
+
+                        try {
+                            const response = await fetch('/Bookings/Create', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: params.toString()
+                            });
+                            
+                            const result = await response.json();
+                            
+                            if (response.ok && result.success) {
+                                messageDiv.textContent = result.message || "Richiesta inviata con successo!";
+                                messageDiv.classList.remove('hidden', 'text-red-500');
+                                messageDiv.classList.add('text-green-500');
+                                clearTourBookingForm();
+                                setTimeout(() => { messageDiv.classList.add('hidden'); messageDiv.textContent = ''; }, 5000);
+                            } else {
+                                throw new Error(result.message || 'Errore server');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            messageDiv.textContent = "Errore durante l'invio della prenotazione. Riprova.";
+                            messageDiv.classList.remove('hidden', 'text-green-500');
+                            messageDiv.classList.add('text-red-500');
+                        } finally {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                        }
+                    });
                 }
             });
-        });
-    </script>
+        </script>
+    }
 }
 else
 {

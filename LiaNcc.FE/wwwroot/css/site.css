@@ -1,5 +1,10 @@
+/* ==========================================================================
+   IMPOSTAZIONI BASE E FIX
+   ========================================================================== */
 html {
     font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -8,30 +13,18 @@ html {
     }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    margin-bottom: 60px;
-}
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-    color: var(--bs-secondary-color);
-    text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-    text-align: start;
+/* Rimuove lo sfondo bianco di default per l'autocompletamento di Chrome/Safari */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #050505 inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 /* ==========================================================================
-   FLATPICKR E SELECT CUSTOM (TEMA LUSSO)
+   SELECT CUSTOM (TEMA LUSSO PER TUTTI I FORM)
    ========================================================================== */
 select:invalid {
     color: #6B7280 !important;
@@ -44,7 +37,11 @@ select option {
 /* 1. Stile comune per le tendine (Freccia dorata per form e calendario) */
 select.flatpickr-monthDropdown-months,
 #bookingModal select,
-#reservations select {
+#reservations select,
+#fleetBookingForm select,
+#form-booking select,
+select[name="ServiceTypeId"],
+select[name="ServiceType"] {
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
     appearance: none !important;
@@ -72,13 +69,15 @@ select.flatpickr-monthDropdown-months {
 
     select.flatpickr-monthDropdown-months:focus,
     #bookingModal select:focus,
-    #reservations select:focus {
+    #reservations select:focus,
+    #fleetBookingForm select:focus,
+    #form-booking select:focus {
         outline: none !important;
         box-shadow: none !important;
     }
 
 /* ==========================================================================
-   STILE BASE CALENDARIO
+   STILE BASE CALENDARIO FLATPICKR
    ========================================================================== */
 body .flatpickr-calendar {
     background: #050505 !important;
