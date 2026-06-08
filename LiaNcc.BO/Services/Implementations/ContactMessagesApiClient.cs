@@ -9,7 +9,7 @@ namespace LiaNcc.BO.Services.Implementations
     public class ContactMessagesApiClient : BaseApiClient<ContactMessage, Guid>, IContactMessagesApiClient
     {
         public ContactMessagesApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
-            : base(httpClient, httpContextAccessor, "contact-messages") { }
+            : base(httpClient, httpContextAccessor, "contactmessages") { }
 
         public async Task MarkAsReadAsync(Guid id)
         {

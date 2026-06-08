@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/bookings")]
     [Authorize]
     public class BookingsController : ControllerBase
     {
@@ -84,35 +84,37 @@ namespace LiaNcc.WebAPI.Controllers
             await _bookingRepository.CreateAsync(booking);
 
             await _logger.LogInformationAsync(
-                "Bookings",
-                "CreateBooking",
-                $"Booking created for {booking.FullName}",
-                "Bookings",
-                "Booking",
-                booking.Id,
-                ApplicationEventType.Booking
+                area: "Bookings",
+                action: "CreateBooking",
+                message: "Booking created from public FE form",
+                controller: "Bookings",
+                entityName: "Booking",
+                entityId: booking.Id,
+                eventType: ApplicationEventType.Create.ToString(),
+                additionalData: request
             );
 
             var emailSent = false;
 
             try
             {
-                await _mailService.SendBookingNotificationAsync(booking);
-                await _mailService.SendBookingCustomerConfirmationAsync(booking);
+                await _mailService.SendBookingNotificationAsync(booking, request);
+                await _mailService.SendBookingCustomerConfirmationAsync(booking, request);
 
                 emailSent = true;
             }
             catch (Exception ex)
             {
                 await _logger.LogErrorAsync(
-                    "Bookings",
-                    "EmailNotificationError",
-                    $"Errore invio email per prenotazione {booking.Id}",
-                    ex,
-                    null,
-                    "Bookings",
-                    "Booking",
-                    booking.Id
+                    area: "Mail",
+                    action: "BookingEmailFailed",
+                    message: "Booking saved but email sending failed",
+                    exception: ex,
+                    controller: "Bookings",
+                    entityName: "Booking",
+                    entityId: booking.Id,
+                    eventType: "Exception",
+                    additionalData: request
                 );
             }
 
