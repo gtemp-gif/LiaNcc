@@ -162,36 +162,37 @@ namespace LiaNcc.FE.Services.Implementations
     {
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
         public ContactMessagesApiClient(HttpClient httpClient) { _httpClient = httpClient; }
+
         public async Task CreateAsync(LiaNcc.Models.DTOs.Requests.ContactMessageCreateRequest request)
         {
-            var response = await _httpClient.PostAsJsonAsync("contactmessages", request);
+            var response = await _httpClient.PostAsJsonAsync("contact-messages", request);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task<IEnumerable<ContactMessage>> GetAllAsync()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<ContactMessage>>("contactmessages", _jsonSerializerOptions) ?? Array.Empty<ContactMessage>();
+            return await _httpClient.GetFromJsonAsync<IEnumerable<ContactMessage>>("contact-messages", _jsonSerializerOptions) ?? Array.Empty<ContactMessage>();
         }
 
         public async Task<ContactMessage?> GetByIdAsync(Guid id)
         {
-            return await _httpClient.GetFromJsonAsync<ContactMessage>($"contactmessages/{id}", _jsonSerializerOptions);
+            return await _httpClient.GetFromJsonAsync<ContactMessage>($"contact-messages/{id}", _jsonSerializerOptions);
         }
 
         public async Task MarkAsReadAsync(Guid id)
         {
-            var response = await _httpClient.PatchAsync($"contactmessages/{id}/read", null);
+            var response = await _httpClient.PatchAsync($"contact-messages/{id}/read", null);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var response = await _httpClient.DeleteAsync($"contactmessages/{id}");
+            var response = await _httpClient.DeleteAsync($"contact-messages/{id}");
             response.EnsureSuccessStatusCode();
         }
     }
-
     public class BookingsApiClient : IBookingsApiClient
     {
         private readonly HttpClient _httpClient;
