@@ -165,29 +165,29 @@ namespace LiaNcc.FE.Services.Implementations
         public ContactMessagesApiClient(HttpClient httpClient) { _httpClient = httpClient; }
         public async Task CreateAsync(LiaNcc.Models.DTOs.Requests.ContactMessageCreateRequest request)
         {
-            var response = await _httpClient.PostAsJsonAsync("contact-messages", request);
+            var response = await _httpClient.PostAsJsonAsync("contactmessages", request);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task<IEnumerable<ContactMessage>> GetAllAsync()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<ContactMessage>>("contact-messages", _jsonSerializerOptions) ?? Array.Empty<ContactMessage>();
+            return await _httpClient.GetFromJsonAsync<IEnumerable<ContactMessage>>("contactmessages", _jsonSerializerOptions) ?? Array.Empty<ContactMessage>();
         }
 
         public async Task<ContactMessage?> GetByIdAsync(Guid id)
         {
-            return await _httpClient.GetFromJsonAsync<ContactMessage>($"contact-messages/{id}", _jsonSerializerOptions);
+            return await _httpClient.GetFromJsonAsync<ContactMessage>($"contactmessages/{id}", _jsonSerializerOptions);
         }
 
         public async Task MarkAsReadAsync(Guid id)
         {
-            var response = await _httpClient.PatchAsync($"contact-messages/{id}/read", null);
+            var response = await _httpClient.PatchAsync($"contactmessages/{id}/read", null);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var response = await _httpClient.DeleteAsync($"contact-messages/{id}");
+            var response = await _httpClient.DeleteAsync($"contactmessages/{id}");
             response.EnsureSuccessStatusCode();
         }
     }
