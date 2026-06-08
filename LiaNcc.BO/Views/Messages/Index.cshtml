@@ -41,7 +41,7 @@
                                 <td onclick='showMessageDetails(this.closest("tr").dataset.message)'>
                                     <div class="text-truncate" style="max-width: 400px;">@item.Message</div>
                                 </td>
-                                <td onclick='showMessageDetails(this.closest("tr").dataset.message)'>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td onclick='showMessageDetails(this.closest("tr").dataset.message)'>@item.CreatedAt.ToDisplayString()</td>
                                 <td class="text-end pe-3">
                                     <div class="btn-group btn-group-sm">
                                         <button type="button" class="btn btn-outline-primary" title="Leggi"
@@ -167,7 +167,7 @@
             const msg = typeof msgData === 'string' ? JSON.parse(msgData) : msgData;
             document.getElementById('det-msg-name').innerText = msg.FullName;
             document.getElementById('det-msg-email').innerText = msg.Email;
-            document.getElementById('det-msg-date').innerText = new Date(msg.CreatedAt).toLocaleString();
+            document.getElementById('det-msg-date').innerText = formatRomeDate(msg.CreatedAt);
             document.getElementById('det-msg-content').innerText = msg.Message;
             document.getElementById('det-msg-id').value = msg.Id;
 

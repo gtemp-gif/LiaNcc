@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using LiaNcc.Models.Entities;
 using LiaNcc.Models.Enums;
@@ -157,15 +158,48 @@ namespace LiaNcc.WebAPI.Services
 
         public async Task SendReplyEmailAsync(string toEmail, string subject, string body, List<(string FileName, byte[] Content, string ContentType)>? attachments = null, string? relatedEntityName = null, Guid? relatedEntityId = null)
         {
-            await SendEmailInternalAsync(toEmail, subject, body, attachments, relatedEntityName, relatedEntityId);
+            var attachmentFiles = new List<AttachmentFile>();
+            var tempFiles = new List<string>();
+
+            try
+            {
+                if (attachments != null)
+                {
+                    foreach (var att in attachments)
+                    {
+                        var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + "_" + att.FileName);
+                        await File.WriteAllBytesAsync(tempPath, att.Content);
+                        tempFiles.Add(tempPath);
+
+                        attachmentFiles.Add(new AttachmentFile
+                        {
+                            FilePath = tempPath,
+                            DisplayName = att.FileName,
+                            MediaType = att.ContentType,
+                            Inline = false
+                        });
+                    }
+                }
+
+                await SendEmailInternalAsync(toEmail, subject, body, attachmentFiles, null, relatedEntityName, relatedEntityId);
+            }
+            finally
+            {
+                // Note: Ideally, delete files after mailer.SendEmailHtmlAsync is done.
+                // Since SendEmailInternalAsync is awaited, it should be safe here.
+                foreach (var file in tempFiles)
+                {
+                    try { if (File.Exists(file)) File.Delete(file); } catch { }
+                }
+            }
         }
 
         public async Task SendEmailHtmlAsync(string toEmail, string subject, string htmlBody, string? relatedEntityName = null, Guid? relatedEntityId = null)
         {
-            await SendEmailInternalAsync(toEmail, subject, htmlBody, null, relatedEntityName, relatedEntityId);
+            await SendEmailInternalAsync(toEmail, subject, htmlBody, null, null, relatedEntityName, relatedEntityId);
         }
 
-        private async Task SendEmailInternalAsync(string toEmail, string subject, string htmlBody, List<(string FileName, byte[] Content, string ContentType)>? attachments, string? relatedEntityName, Guid? relatedEntityId)
+        private async Task SendEmailInternalAsync(string toEmail, string subject, string htmlBody, IEnumerable<AttachmentFile>? attachments, IEnumerable<InlineImage>? inlineImages, string? relatedEntityName, Guid? relatedEntityId)
         {
             var emailLog = new EmailMessage
             {
@@ -188,22 +222,13 @@ namespace LiaNcc.WebAPI.Services
 
                 var mailer = CreateMailer();
 
-                if (attachments != null && attachments.Count > 0)
-                {
-                    // If the DLL doesn't support attachments in SendEmailHtmlAsync, we might need to handle it.
-                    // But the requirement says: "La DLL espone anche metodi per email HTML e invio con evento calendario"
-                    // HelperMailKit might not have a direct SendEmailHtmlAsync with attachments in the signature I was given,
-                    // but the instruction says "Usare direttamente HelperMailKit".
-                    // I will check if I can see the DLL methods somehow or just assume the basic one for now.
-                    // Actually, if it doesn't support it, I should stick to what's requested.
-
-                    // Since I don't have the metadata for the DLL, I'll use SendEmailHtmlAsync as per example.
-                    await mailer.SendEmailHtmlAsync(toEmail, subject, htmlBody);
-                }
-                else
-                {
-                    await mailer.SendEmailHtmlAsync(toEmail, subject, htmlBody);
-                }
+                await mailer.SendEmailHtmlAsync(
+                    toEmail,
+                    subject,
+                    htmlBody,
+                    inlineImages,
+                    attachments
+                );
 
                 emailLog.Status = "Sent";
                 emailLog.SentAt = DateTime.UtcNow;
@@ -241,7 +266,7 @@ namespace LiaNcc.WebAPI.Services
                     new { EmailId = emailLog.Id }
                 );
 
-                throw; // Re-throw to allow controller to handle it if needed
+                throw;
             }
         }
     }
