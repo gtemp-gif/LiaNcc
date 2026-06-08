@@ -136,10 +136,31 @@ namespace LiaNcc.WebAPI.Controllers
         }
 
         [HttpPatch("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] string status)
+        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] BookingStatusUpdateRequest request)
         {
-            await _bookingRepository.UpdateStatusAsync(id, status);
-            await _logger.LogInformationAsync("Bookings", "UpdateStatus", $"Booking {id} status updated to {status}", "Bookings", "Booking", id);
+            await _bookingRepository.UpdateStatusAsync(id, request.Status);
+            await _logger.LogInformationAsync("Bookings", "UpdateStatus", $"Booking {id} status updated to {request.Status}", "Bookings", "Booking", id);
+
+            var booking = await _bookingRepository.GetByIdAsync(id);
+            if (booking != null)
+            {
+                try
+                {
+                    if (request.Status == "Confirmed")
+                    {
+                        await _mailService.SendBookingAcceptedAsync(booking);
+                    }
+                    else if (request.Status == "Cancelled")
+                    {
+                        await _mailService.SendBookingRejectedAsync(booking, request.Note ?? "Richiesta annullata dall'amministratore.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await _logger.LogErrorAsync("Bookings", "StatusUpdateEmailError", $"Errore invio email per cambio stato prenotazione {id}", ex);
+                }
+            }
+
             return NoContent();
         }
 

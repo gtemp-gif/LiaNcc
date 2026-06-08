@@ -80,16 +80,15 @@
                                         </button>
                                         @if (item.Status == "Pending")
                                         {
-                                            <form asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Confirmed" method="post" class="d-inline">
+                                            <form asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Confirmed" method="post" class="d-inline" onsubmit="return confirm('Confermare questa prenotazione? Verrà inviata una mail al cliente.')">
                                                 <button type="submit" class="btn btn-outline-success" title="Conferma">
                                                     <i class="bi bi-check-circle"></i>
                                                 </button>
                                             </form>
-                                            <form asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="Cancelled" method="post" class="d-inline">
-                                                <button type="submit" class="btn btn-outline-danger" title="Annulla">
-                                                    <i class="bi bi-x-circle"></i>
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn btn-outline-danger" title="Rifiuta"
+                                                    onclick="openRejectModal('@item.Id')">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
                                         }
                                         <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Eliminare questa prenotazione?')">
                                             <button type="submit" class="btn btn-outline-dark" title="Elimina">
@@ -105,6 +104,33 @@
                     }
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Rifiuto -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form asp-action="UpdateStatus" method="post">
+                <input type="hidden" name="id" id="reject-booking-id" />
+                <input type="hidden" name="status" value="Cancelled" />
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Rifiuta Prenotazione</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Inserisci la motivazione del rifiuto. Questa verrà inviata via email al cliente.</p>
+                    <div class="form-group">
+                        <label class="form-label">Motivazione</label>
+                        <textarea name="note" class="form-control" rows="4" required placeholder="Es: Purtroppo non abbiamo disponibilità per la data richiesta..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="submit" class="btn btn-danger">Invia Rifiuto</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -171,6 +197,12 @@
 
 @section Scripts {
     <script>
+        function openRejectModal(bookingId) {
+            document.getElementById('reject-booking-id').value = bookingId;
+            const modal = new bootstrap.Modal(document.getElementById('rejectModal'));
+            modal.show();
+        }
+
         function showBookingDetails(booking) {
             document.getElementById('det-name').innerText = booking.FullName;
             document.getElementById('det-email').innerText = booking.Email;

@@ -98,7 +98,52 @@ namespace LiaNcc.WebAPI.Services
             await SendEmailHtmlAsync(booking.Email, subject, body, "Booking", booking.Id);
         }
 
+        public async Task SendBookingAcceptedAsync(Booking booking)
+        {
+            string subject = "Prenotazione Accettata - Lia NCC";
+            string body = $@"
+                <h2>La tua prenotazione è stata accettata</h2>
+                <p>Gentile {booking.FullName},</p>
+                <p>siamo lieti di comunicarti che la tua richiesta di prenotazione è stata accettata.</p>
+                <h3>Riepilogo della prenotazione:</h3>
+                <ul>
+                    <li><strong>Data Servizio:</strong> {booking.ServiceDate:dd/MM/yyyy HH:mm}</li>
+                    <li><strong>Passeggeri:</strong> {booking.MaxSeats ?? 1}</li>
+                </ul>
+                <p>Ti ringraziamo per averci scelto.</p>
+                <p>Cordiali saluti,<br/>Lo staff di Lia NCC</p>
+            ";
+
+            await SendEmailHtmlAsync(booking.Email, subject, body, "Booking", booking.Id);
+        }
+
+        public async Task SendBookingRejectedAsync(Booking booking, string reason)
+        {
+            string subject = "Aggiornamento Prenotazione - Lia NCC";
+            string body = $@"
+                <h2>Informazioni sulla tua richiesta di prenotazione</h2>
+                <p>Gentile {booking.FullName},</p>
+                <p>ti informiamo che purtroppo non è stato possibile accettare la tua richiesta di prenotazione per il giorno {booking.ServiceDate:dd/MM/yyyy HH:mm}.</p>
+                <p><strong>Motivazione del rifiuto:</strong></p>
+                <blockquote style='border-left: 5px solid #ccc; padding-left: 10px;'>{reason}</blockquote>
+                <p>Rimaniamo a tua disposizione per ulteriori necessità.</p>
+                <p>Cordiali saluti,<br/>Lo staff di Lia NCC</p>
+            ";
+
+            await SendEmailHtmlAsync(booking.Email, subject, body, "Booking", booking.Id);
+        }
+
+        public async Task SendReplyEmailAsync(string toEmail, string subject, string body, List<(string FileName, byte[] Content, string ContentType)>? attachments = null, string? relatedEntityName = null, Guid? relatedEntityId = null)
+        {
+            await SendEmailInternalAsync(toEmail, subject, body, attachments, relatedEntityName, relatedEntityId);
+        }
+
         public async Task SendEmailHtmlAsync(string toEmail, string subject, string htmlBody, string? relatedEntityName = null, Guid? relatedEntityId = null)
+        {
+            await SendEmailInternalAsync(toEmail, subject, htmlBody, null, relatedEntityName, relatedEntityId);
+        }
+
+        private async Task SendEmailInternalAsync(string toEmail, string subject, string htmlBody, List<(string FileName, byte[] Content, string ContentType)>? attachments, string? relatedEntityName, Guid? relatedEntityId)
         {
             var emailLog = new EmailMessage
             {
@@ -125,53 +170,28 @@ namespace LiaNcc.WebAPI.Services
                 message.Subject = subject;
 
                 var bodyBuilder = new BodyBuilder { HtmlBody = htmlBody };
+                if (attachments != null)
+                {
+                    foreach (var attachment in attachments)
+                    {
+                        bodyBuilder.Attachments.Add(attachment.FileName, attachment.Content, ContentType.Parse(attachment.ContentType));
+                    }
+                }
                 message.Body = bodyBuilder.ToMessageBody();
 
-               var helper = new MailHelper.HelperMailKit(emailLog.FromEmail,_settings.FromEmailPwd,_settings.Host,_settings.Port,_settings.EnableSSL,_settings.SenderName);
-
-                try
+                using (var client = new SmtpClient())
                 {
-                    _logger.LogInformation("connection to client SMTP");
-                    await helper.SendEmailHtmlAsync(toEmail,subject, emailLog.Body);
-                    _logger.LogInformation("Sent email to {ToEmail} with subject {Subject}", toEmail, subject);
+                    _logger.LogInformation("Connecting to SMTP server {Host}:{Port}", _settings.Host, _settings.Port);
+                    await client.ConnectAsync(_settings.Host, _settings.Port, _settings.EnableSSL ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
+
+                    if (!string.IsNullOrEmpty(_settings.FromEmailPwd))
+                    {
+                        await client.AuthenticateAsync(_settings.FromEmail, _settings.FromEmailPwd);
+                    }
+
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
                 }
-                catch (Exception ex)
-                {
-
-                    _logger.LogError(ex, "Error while sending email to {ToEmail}", toEmail);
-
-                    emailLog.Status = "Failed";
-                    emailLog.ErrorMessage = ex.Message;
-                    await _emailRepository.UpdateAsync(emailLog);
-
-                    await _appLogger.LogErrorAsync(
-                        "Mail",
-                        "SmtpConnectionSendFailed",
-                        $"Invio email a {toEmail} fallito: {ex.Message}",
-                        ex,
-                        null,
-                        "MailService",
-                        relatedEntityName,
-                        relatedEntityId,
-                        ApplicationEventType.Email,
-                        new { EmailId = emailLog.Id }
-                    );
-                }
-                //using (var client = new SmtpClient())
-                //{
-                //    // For development/demo, we might want to bypass certificate validation
-                //    //client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-
-                //    await client.ConnectAsync(_settings.Host, _settings.Port, _settings.EnableSSL ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
-
-                //    if (!string.IsNullOrEmpty(_settings.FromEmailPwd))
-                //    {
-                //        await client.AuthenticateAsync(_settings.FromEmail, _settings.FromEmailPwd);
-                //    }
-
-                //    await client.SendAsync(message);
-                //    await client.DisconnectAsync(true);
-                //}
 
                 emailLog.Status = "Sent";
                 emailLog.SentAt = DateTime.UtcNow;

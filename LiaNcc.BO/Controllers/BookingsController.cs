@@ -25,10 +25,10 @@ namespace LiaNcc.BO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStatus(Guid id, string status)
+        public async Task<IActionResult> UpdateStatus(Guid id, string status, string? note = null)
         {
-            await _bookingsApiClient.UpdateStatusAsync(id, status);
-            await _logger.LogInformationAsync("Bookings", "UpdateStatus", $"Stato prenotazione {id} aggiornato a {status}", "Bookings", "Booking", id);
+            await _bookingsApiClient.UpdateStatusAsync(id, status, note);
+            await _logger.LogInformationAsync("Bookings", "UpdateStatus", $"Stato prenotazione {id} aggiornato a {status}. Nota: {note}", "Bookings", "Booking", id);
             return RedirectToAction(nameof(Index));
         }
 

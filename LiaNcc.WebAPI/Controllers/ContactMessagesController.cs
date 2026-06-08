@@ -106,6 +106,38 @@ namespace LiaNcc.WebAPI.Controllers
             return NoContent();
         }
 
+        [HttpPost("{id}/reply")]
+        public async Task<IActionResult> Reply(Guid id, [FromForm] ReplyMessageRequest request, List<IFormFile>? attachmentsFiles)
+        {
+            var msg = await _contactMessageRepository.GetByIdAsync(id);
+            if (msg == null) return NotFound();
+
+            var attachments = new List<(string FileName, byte[] Content, string ContentType)>();
+            if (attachmentsFiles != null)
+            {
+                foreach (var file in attachmentsFiles)
+                {
+                    using var ms = new System.IO.MemoryStream();
+                    await file.CopyToAsync(ms);
+                    attachments.Add((file.FileName, ms.ToArray(), file.ContentType));
+                }
+            }
+
+            await _mailService.SendReplyEmailAsync(msg.Email, request.Subject, request.Body, attachments, "ContactMessage", id);
+
+            await _logger.LogInformationAsync(
+                "Contact",
+                "ReplyMessage",
+                $"Reply sent to {msg.Email} for message {id}",
+                "Contact",
+                "ContactMessage",
+                id,
+                ApplicationEventType.Email
+            );
+
+            return Ok(new { success = true });
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContactMessage(Guid id)
         {
