@@ -57,8 +57,8 @@
                                     }
                                 </td>
                                 <td>
-                                    <strong>@item.ServiceDate.ToString("dd/MM/yyyy")</strong>
-                                    <small class="d-block text-muted">@item.ServiceDate.ToString("HH:mm")</small>
+                                    <strong>@item.ServiceDate.ToDisplayString(false)</strong>
+                                    <small class="d-block text-muted">@item.ServiceDate.ToRomeTime().ToString("HH:mm")</small>
                                 </td>
                                 <td>
                                     @if(item.Status == "Pending") {
@@ -71,7 +71,7 @@
                                         <span class="badge bg-secondary">@item.Status</span>
                                     }
                                 </td>
-                                <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@item.CreatedAt.ToDisplayString()</td>
                                 <td class="text-end pe-3">
                                     <div class="btn-group btn-group-sm">
                                         <button type="button" class="btn btn-outline-primary" title="Dettagli"
@@ -207,8 +207,8 @@
             document.getElementById('det-name').innerText = booking.FullName;
             document.getElementById('det-email').innerText = booking.Email;
             document.getElementById('det-phone').innerText = booking.Phone || '-';
-            document.getElementById('det-service-date').innerText = new Date(booking.ServiceDate).toLocaleString();
-            document.getElementById('det-created-at').innerText = new Date(booking.CreatedAt).toLocaleString();
+            document.getElementById('det-service-date').innerText = formatRomeDate(booking.ServiceDate);
+            document.getElementById('det-created-at').innerText = formatRomeDate(booking.CreatedAt);
             document.getElementById('det-passengers').innerText = booking.MaxSeats || '1';
             document.getElementById('det-message').innerText = booking.Message || 'Nessun messaggio fornito.';
 
