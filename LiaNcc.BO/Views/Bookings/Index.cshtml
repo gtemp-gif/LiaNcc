@@ -1,6 +1,6 @@
 @using System.Text.Json
 @using System.Text.Json.Serialization
-@model IEnumerable<LiaNcc.Models.Entities.Booking>
+@model IEnumerable<LiaNcc.Models.DTOs.Responses.BookingDetailDto>
 @{
     ViewData["Title"] = "Gestione Prenotazioni";
 }
@@ -19,6 +19,7 @@
                         <th>Servizio / Tour / Veicolo</th>
                         <th>Data Servizio</th>
                         <th>Stato</th>
+                        <th>Provenienza</th>
                         <th>Data Richiesta</th>
                         <th class="text-end pe-3">Azioni</th>
                     </tr>
@@ -36,20 +37,20 @@
                                     }
                                 </td>
                                 <td>
-                                    @if (item.Tour != null)
+                                    @if (item.TourId.HasValue)
                                     {
                                         <span class="badge bg-primary">Tour</span>
-                                        <small class="d-block">@item.Tour.Name</small>
+                                        <small class="d-block">@item.TourName</small>
                                     }
-                                    else if (item.Vehicle != null)
+                                    else if (item.VehicleId.HasValue)
                                     {
                                         <span class="badge bg-dark">Flotta</span>
-                                        <small class="d-block">@item.Vehicle.Name</small>
+                                        <small class="d-block">@item.VehicleName @(!string.IsNullOrEmpty(item.VehicleCategoryName) ? $"({item.VehicleCategoryName})" : "")</small>
                                     }
-                                    else if (item.ServiceType != null)
+                                    else if (item.ServiceTypeId.HasValue)
                                     {
                                         <span class="badge bg-info text-dark">Servizio</span>
-                                        <small class="d-block">@item.ServiceType.Code</small>
+                                        <small class="d-block">@item.ServiceTypeName</small>
                                     }
                                     else
                                     {
@@ -69,6 +70,13 @@
                                         <span class="badge bg-danger">Annullata</span>
                                     } else {
                                         <span class="badge bg-secondary">@item.Status</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if(!string.IsNullOrEmpty(item.SourcePage)) {
+                                        <span class="badge bg-light text-dark border">@item.SourcePage</span>
+                                    } else {
+                                        <span class="text-muted small">-</span>
                                     }
                                 </td>
                                 <td>@item.CreatedAt.ToDisplayString()</td>
@@ -168,7 +176,11 @@
                                 <label class="text-muted small d-block">Tipo / Origine</label>
                                 <span id="det-origin" class="fw-bold"></span>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-4">
+                                <label class="text-muted small d-block">Provenienza</label>
+                                <span id="det-source-page" class="fw-bold"></span>
+                            </div>
+                            <div class="col-md-4">
                                 <label class="text-muted small d-block">Specifiche</label>
                                 <span id="det-specs" class="fw-bold text-primary"></span>
                             </div>
@@ -232,22 +244,23 @@
             // Origine
             let origin = document.getElementById('det-origin');
             let specs = document.getElementById('det-specs');
+            document.getElementById('det-source-page').innerText = booking.SourcePage || '-';
 
-            if (booking.Tour) {
+            if (booking.TourId) {
                 origin.innerHTML = '<span class="badge bg-primary">Tour</span>';
-                specs.innerText = booking.Tour.Name;
-            } else if (booking.Vehicle) {
+                specs.innerText = booking.TourName;
+            } else if (booking.VehicleId) {
                 origin.innerHTML = '<span class="badge bg-dark">Flotta</span>';
-                specs.innerText = booking.Vehicle.Name;
-            } else if (booking.ServiceType) {
+                specs.innerText = booking.VehicleName + (booking.VehicleCategoryName ? ' (' + booking.VehicleCategoryName + ')' : '');
+            } else if (booking.ServiceTypeId) {
                 origin.innerHTML = '<span class="badge bg-info text-dark">Servizio</span>';
-                specs.innerText = booking.ServiceType.Code;
+                specs.innerText = booking.ServiceTypeName;
             } else {
                 origin.innerText = 'Non specificato';
                 specs.innerText = '-';
             }
 
-            document.getElementById('det-passenger-opt').innerText = booking.PassengerOption ? booking.PassengerOption.Name : '-';
+            document.getElementById('det-passenger-opt').innerText = booking.PassengerOptionName || '-';
 
             const modal = new bootstrap.Modal(document.getElementById('bookingDetailModal'));
             modal.show();

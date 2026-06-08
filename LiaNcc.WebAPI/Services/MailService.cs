@@ -87,13 +87,14 @@ namespace LiaNcc.WebAPI.Services
                 <p><strong>Email:</strong> {booking.Email}</p>
                 <p><strong>Telefono:</strong> {booking.Phone ?? "Non fornito"}</p>
                 <p><strong>Data Servizio:</strong> {booking.ServiceDate:dd/MM/yyyy HH:mm}</p>
-                <p><strong>ID Tipo Servizio:</strong> {booking.ServiceTypeId}</p>
-                <p><strong>ID Opzione Passeggeri:</strong> {booking.PassengerOptionId}</p>
-                <p><strong>ID Tour:</strong> {booking.TourId?.ToString() ?? "-"}</p>
-                <p><strong>ID Veicolo:</strong> {booking.VehicleId?.ToString() ?? "-"}</p>
+                <p><strong>Servizio:</strong> {booking.ServiceType?.Name ?? booking.ServiceType?.Code ?? "-"}</p>
+                <p><strong>Opzione Passeggeri:</strong> {booking.PassengerOption?.Name ?? "-"}</p>
+                <p><strong>Tour:</strong> {booking.Tour?.Name ?? "-"}</p>
+                <p><strong>Veicolo:</strong> {(booking.Vehicle != null ? $"{booking.Vehicle.Name} ({booking.Vehicle.VehicleCategory?.Name})" : "-")}</p>
                 <p><strong>Posti Max:</strong> {booking.MaxSeats ?? 1}</p>
                 <p><strong>Messaggio:</strong><br/>{booking.Message ?? "-"}</p>
                 <p><strong>Stato:</strong> {booking.Status}</p>
+                <p><strong>Provenienza:</strong> {booking.SourcePage ?? "Sito Web"}</p>
                 <p><strong>Data Creazione:</strong> {booking.CreatedAt:dd/MM/yyyy HH:mm}</p>
             ";
 
@@ -105,6 +106,13 @@ namespace LiaNcc.WebAPI.Services
             if (!_settings.SendCustomerConfirmation) return;
 
             string subject = "Richiesta di prenotazione ricevuta - Lia NCC";
+
+            string requestedDetails = "";
+            if (booking.Tour != null) requestedDetails += $"<li><strong>Tour:</strong> {booking.Tour.Name}</li>";
+            if (booking.ServiceType != null) requestedDetails += $"<li><strong>Servizio:</strong> {booking.ServiceType.Name ?? booking.ServiceType.Code}</li>";
+            if (booking.Vehicle != null) requestedDetails += $"<li><strong>Veicolo:</strong> {booking.Vehicle.Name} ({booking.Vehicle.VehicleCategory?.Name})</li>";
+            if (booking.PassengerOption != null) requestedDetails += $"<li><strong>Opzione Passeggeri:</strong> {booking.PassengerOption.Name}</li>";
+
             string body = $@"
                 <h2>Richiesta di prenotazione ricevuta</h2>
                 <p>Gentile {booking.FullName},</p>
@@ -112,6 +120,7 @@ namespace LiaNcc.WebAPI.Services
                 <p><strong>Riepilogo richiesta:</strong></p>
                 <ul>
                     <li><strong>Data:</strong> {booking.ServiceDate:dd/MM/yyyy HH:mm}</li>
+                    {requestedDetails}
                     <li><strong>Passeggeri:</strong> {booking.MaxSeats ?? 1}</li>
                 </ul>
                 <p>La tua richiesta è in attesa di conferma. Ti contatteremo a breve.</p>
@@ -124,6 +133,13 @@ namespace LiaNcc.WebAPI.Services
         public async Task SendBookingAcceptedAsync(Booking booking)
         {
             string subject = "Prenotazione Accettata - Lia NCC";
+
+            string requestedDetails = "";
+            if (booking.Tour != null) requestedDetails += $"<li><strong>Tour:</strong> {booking.Tour.Name}</li>";
+            if (booking.ServiceType != null) requestedDetails += $"<li><strong>Servizio:</strong> {booking.ServiceType.Name ?? booking.ServiceType.Code}</li>";
+            if (booking.Vehicle != null) requestedDetails += $"<li><strong>Veicolo:</strong> {booking.Vehicle.Name} ({booking.Vehicle.VehicleCategory?.Name})</li>";
+            if (booking.PassengerOption != null) requestedDetails += $"<li><strong>Opzione Passeggeri:</strong> {booking.PassengerOption.Name}</li>";
+
             string body = $@"
                 <h2>La tua prenotazione è stata accettata</h2>
                 <p>Gentile {booking.FullName},</p>
@@ -131,6 +147,7 @@ namespace LiaNcc.WebAPI.Services
                 <h3>Riepilogo della prenotazione:</h3>
                 <ul>
                     <li><strong>Data Servizio:</strong> {booking.ServiceDate:dd/MM/yyyy HH:mm}</li>
+                    {requestedDetails}
                     <li><strong>Passeggeri:</strong> {booking.MaxSeats ?? 1}</li>
                 </ul>
                 <p>Ti ringraziamo per averci scelto.</p>
@@ -143,11 +160,24 @@ namespace LiaNcc.WebAPI.Services
         public async Task SendBookingRejectedAsync(Booking booking, string reason)
         {
             string subject = "Aggiornamento Prenotazione - Lia NCC";
+
+            string requestedDetails = "";
+            if (booking.Tour != null) requestedDetails += $"<li><strong>Tour:</strong> {booking.Tour.Name}</li>";
+            if (booking.ServiceType != null) requestedDetails += $"<li><strong>Servizio:</strong> {booking.ServiceType.Name ?? booking.ServiceType.Code}</li>";
+            if (booking.Vehicle != null) requestedDetails += $"<li><strong>Veicolo:</strong> {booking.Vehicle.Name} ({booking.Vehicle.VehicleCategory?.Name})</li>";
+            if (booking.PassengerOption != null) requestedDetails += $"<li><strong>Opzione Passeggeri:</strong> {booking.PassengerOption.Name}</li>";
+
             string body = $@"
                 <h2>Informazioni sulla tua richiesta di prenotazione</h2>
                 <p>Gentile {booking.FullName},</p>
                 <p>ti informiamo che purtroppo non è stato possibile accettare la tua richiesta di prenotazione per il giorno {booking.ServiceDate:dd/MM/yyyy HH:mm}.</p>
-                <p><strong>Motivazione:</strong></p>
+                <p><strong>Riepilogo richiesta:</strong></p>
+                <ul>
+                    <li><strong>Data:</strong> {booking.ServiceDate:dd/MM/yyyy HH:mm}</li>
+                    {requestedDetails}
+                    <li><strong>Passeggeri:</strong> {booking.MaxSeats ?? 1}</li>
+                </ul>
+                <p><strong>Motivazione del rifiuto:</strong></p>
                 <blockquote style='border-left: 5px solid #ccc; padding-left: 10px;'>{reason}</blockquote>
                 <p>Rimaniamo a tua disposizione per ulteriori necessità.</p>
                 <p>Cordiali saluti,<br/>Lo staff di Lia NCC</p>
