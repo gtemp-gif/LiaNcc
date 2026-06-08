@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using LiaNcc.BO.Helpers;
 using LiaNcc.BO.Services.Interfaces;
 using LiaNcc.Models.DTOs.Logging;
 using Microsoft.AspNetCore.Authorization;
@@ -21,8 +22,24 @@ namespace LiaNcc.BO.Controllers
         {
             if (filter.Page <= 0) filter.Page = 1;
             if (filter.PageSize <= 0) filter.PageSize = 50;
+
+            // Convert local Rome dates to UTC for API query
+            if (filter.FromDate.HasValue)
+            {
+                filter.FromDate = filter.FromDate.Value.ToUtcFromRome();
+            }
+            if (filter.ToDate.HasValue)
+            {
+                // Set to end of day before converting
+                filter.ToDate = filter.ToDate.Value.Date.AddDays(1).AddTicks(-1).ToUtcFromRome();
+            }
             
             var result = await _logsApiClient.GetLogsAsync(filter);
+
+            // Re-convert to Rome for display in filter inputs
+            if (filter.FromDate.HasValue) filter.FromDate = filter.FromDate.Value.ToRomeTime();
+            if (filter.ToDate.HasValue) filter.ToDate = filter.ToDate.Value.ToRomeTime();
+
             ViewBag.Filter = filter;
             return View(result);
         }

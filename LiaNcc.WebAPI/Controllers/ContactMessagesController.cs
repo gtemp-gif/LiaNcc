@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/contact-messages")]
+    [Route("api/contactmessages")]
     [Authorize]
     public class ContactMessagesController : ControllerBase
     {
@@ -49,10 +49,14 @@ namespace LiaNcc.WebAPI.Controllers
             if (msg == null) return NotFound();
             return Ok(msg);
         }
+
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<ContactMessage>> CreateContactMessage(ContactMessageCreateRequest request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var message = new ContactMessage
             {
                 FullName = request.FullName,
@@ -65,35 +69,37 @@ namespace LiaNcc.WebAPI.Controllers
             await _contactMessageRepository.CreateAsync(message);
 
             await _logger.LogInformationAsync(
-                "Contact",
-                "CreateMessage",
-                $"Contact message from {message.FullName} created",
-                "Contact",
-                "ContactMessage",
-                message.Id,
-                ApplicationEventType.Contact
+                area: "Contact",
+                action: "CreateContactMessage",
+                message: "Contact message created",
+                controller: "ContactMessages",
+                entityName: "ContactMessage",
+                entityId: message.Id,
+                eventType: ApplicationEventType.Create.ToString(),
+                additionalData: request
             );
 
             try
             {
                 await _mailService.SendContactNotificationAsync(message);
+                await _logger.LogInformationAsync("Contact", "ContactAdminEmailSent", $"Admin notification sent for message {message.Id}", "ContactMessages", "ContactMessage", message.Id);
+
                 await _mailService.SendContactCustomerConfirmationAsync(message);
+                await _logger.LogInformationAsync("Contact", "ContactCustomerEmailSent", $"Customer confirmation sent for message {message.Id}", "ContactMessages", "ContactMessage", message.Id);
             }
             catch (Exception ex)
             {
                 await _logger.LogErrorAsync(
-                    "Contact",
-                    "EmailNotificationError",
-                    $"Errore invio email per messaggio {message.Id}",
-                    ex,
-                    null,
-                    "Contact",
-                    "ContactMessage",
-                    message.Id
+                    area: "Mail",
+                    action: "ContactEmailFailed",
+                    message: $"Errore invio email per messaggio {message.Id}",
+                    exception: ex,
+                    controller: "ContactMessages",
+                    entityName: "ContactMessage",
+                    entityId: message.Id,
+                    eventType: "Exception",
+                    additionalData: request
                 );
-
-                // Puoi decidere se restituire comunque OK oppure errore.
-                // Per ora consiglio OK, perché il messaggio è stato salvato.
             }
 
             return Ok(message);
@@ -104,6 +110,38 @@ namespace LiaNcc.WebAPI.Controllers
         {
             await _contactMessageRepository.MarkAsReadAsync(id);
             return NoContent();
+        }
+
+        [HttpPost("{id}/reply")]
+        public async Task<IActionResult> Reply(Guid id, [FromForm] ReplyMessageRequest request, List<IFormFile>? attachmentsFiles)
+        {
+            var msg = await _contactMessageRepository.GetByIdAsync(id);
+            if (msg == null) return NotFound();
+
+            var attachments = new List<(string FileName, byte[] Content, string ContentType)>();
+            if (attachmentsFiles != null)
+            {
+                foreach (var file in attachmentsFiles)
+                {
+                    using var ms = new System.IO.MemoryStream();
+                    await file.CopyToAsync(ms);
+                    attachments.Add((file.FileName, ms.ToArray(), file.ContentType));
+                }
+            }
+
+            await _mailService.SendReplyEmailAsync(msg.Email, request.Subject, request.Body, attachments, "ContactMessage", id);
+
+            await _logger.LogInformationAsync(
+                "Contact",
+                "ReplyMessage",
+                $"Reply sent to {msg.Email} for message {id}",
+                "ContactMessages",
+                "ContactMessage",
+                id,
+                ApplicationEventType.Email
+            );
+
+            return Ok(new { success = true });
         }
 
         [HttpDelete("{id}")]

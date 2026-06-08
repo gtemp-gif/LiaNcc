@@ -41,5 +41,14 @@ namespace LiaNcc.BO.Controllers
             await _logger.LogInformationAsync("Messages", "Delete", $"Messaggio {id} eliminato", "Messages", "ContactMessage", id);
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reply(Guid id, string subject, string body, List<IFormFile>? attachments)
+        {
+            await _contactMessagesApiClient.ReplyAsync(id, subject, body, attachments);
+            await _logger.LogInformationAsync("Messages", "Reply", $"Risposta inviata per il messaggio {id}", "Messages", "ContactMessage", id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

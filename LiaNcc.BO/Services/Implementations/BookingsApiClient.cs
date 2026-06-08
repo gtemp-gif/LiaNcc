@@ -11,10 +11,10 @@ namespace LiaNcc.BO.Services.Implementations
         public BookingsApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
             : base(httpClient, httpContextAccessor, "bookings") { }
 
-        public async Task UpdateStatusAsync(Guid id, string status)
+        public async Task UpdateStatusAsync(Guid id, string status, string? note = null)
         {
             SetBearerToken();
-            var response = await _httpClient.PatchAsJsonAsync($"{_endpointUrl}/{id}/status", status, _jsonSerializerOptions);
+            var response = await _httpClient.PatchAsJsonAsync($"{_endpointUrl}/{id}/status", new { Status = status, Note = note }, _jsonSerializerOptions);
             EnsureValidResponse(response);
         }
     }
