@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiaNcc.Models.Entities;
+using LiaNcc.Models.DTOs.Requests;
 using LiaNcc.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,9 +18,31 @@ namespace LiaNcc.Repository.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<ContactMessage>> GetAllAsync()
+        public async Task<IEnumerable<ContactMessage>> GetAllAsync(ContactMessageFilterRequest? filter = null)
         {
-            return await _context.ContactMessages.AsNoTracking().OrderByDescending(m => m.CreatedAt).ToListAsync();
+            var query = _context.ContactMessages.AsNoTracking();
+
+            if (filter != null)
+            {
+                if (filter.IsRead.HasValue)
+                    query = query.Where(m => m.IsRead == filter.IsRead.Value);
+
+                if (filter.FromDate.HasValue)
+                    query = query.Where(m => m.CreatedAt >= filter.FromDate.Value);
+
+                if (filter.ToDate.HasValue)
+                    query = query.Where(m => m.CreatedAt <= filter.ToDate.Value);
+
+                if (!string.IsNullOrEmpty(filter.SearchText))
+                {
+                    var search = filter.SearchText.ToLower();
+                    query = query.Where(m => m.FullName.ToLower().Contains(search) ||
+                                             m.Email.ToLower().Contains(search) ||
+                                             m.Message.ToLower().Contains(search));
+                }
+            }
+
+            return await query.OrderByDescending(m => m.CreatedAt).ToListAsync();
         }
 
         public async Task<IEnumerable<ContactMessage>> GetUnreadAsync()

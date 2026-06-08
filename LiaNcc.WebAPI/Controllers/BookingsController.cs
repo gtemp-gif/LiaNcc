@@ -39,9 +39,9 @@ namespace LiaNcc.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BookingDetailDto>>> GetBookings()
+        public async Task<ActionResult<IEnumerable<BookingDetailDto>>> GetBookings([FromQuery] BookingFilterRequest filter)
         {
-            var bookings = await _bookingRepository.GetAllAsync();
+            var bookings = await _bookingRepository.GetAllAsync(filter);
             return Ok(bookings.Select(MapToDetailDto));
         }
 

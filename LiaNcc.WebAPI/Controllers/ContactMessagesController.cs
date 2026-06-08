@@ -31,9 +31,9 @@ namespace LiaNcc.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ContactMessage>>> GetContactMessages()
+        public async Task<ActionResult<IEnumerable<ContactMessage>>> GetContactMessages([FromQuery] ContactMessageFilterRequest filter)
         {
-            return Ok(await _contactMessageRepository.GetAllAsync());
+            return Ok(await _contactMessageRepository.GetAllAsync(filter));
         }
 
         [HttpGet("unread")]
