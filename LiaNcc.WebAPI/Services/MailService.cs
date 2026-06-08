@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using LiaNcc.Models.Entities;
 using LiaNcc.Models.Enums;
+using LiaNcc.Models.DTOs.Requests;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using LiaNcc.Repository.Interfaces;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+using MailHelper;
 
 namespace LiaNcc.WebAPI.Services
 {
@@ -30,11 +31,23 @@ namespace LiaNcc.WebAPI.Services
             _emailRepository = emailRepository;
         }
 
+        private HelperMailKit CreateMailer()
+        {
+            return new HelperMailKit(
+                _settings.FromEmail,
+                _settings.FromEmailPwd,
+                _settings.Host,
+                _settings.Port,
+                _settings.EnableSSL,
+                _settings.SenderName
+            );
+        }
+
         public async Task SendContactNotificationAsync(ContactMessage contactMessage)
         {
             if (!_settings.SendAdminNotification) return;
 
-            string subject = "Nuovo messaggio da Lia NCC";
+            string subject = "Nuovo messaggio dal sito Lia NCC";
             string body = $@"
                 <h2>Nuovo messaggio di contatto</h2>
                 <p><strong>Nome:</strong> {contactMessage.FullName}</p>
@@ -63,26 +76,31 @@ namespace LiaNcc.WebAPI.Services
             await SendEmailHtmlAsync(contactMessage.Email, subject, body, "ContactMessage", contactMessage.Id);
         }
 
-        public async Task SendBookingNotificationAsync(Booking booking)
+        public async Task SendBookingNotificationAsync(Booking booking, BookingCreateRequest request)
         {
             if (!_settings.SendAdminNotification) return;
 
-            string subject = "Nuova richiesta di prenotazione Lia NCC";
+            string subject = "Nuova richiesta di prenotazione - Lia NCC";
             string body = $@"
                 <h2>Nuova richiesta di prenotazione</h2>
-                <p><strong>Cliente:</strong> {booking.FullName}</p>
+                <p><strong>Nome:</strong> {booking.FullName}</p>
                 <p><strong>Email:</strong> {booking.Email}</p>
                 <p><strong>Telefono:</strong> {booking.Phone ?? "Non fornito"}</p>
                 <p><strong>Data Servizio:</strong> {booking.ServiceDate:dd/MM/yyyy HH:mm}</p>
-                <p><strong>Passeggeri:</strong> {booking.MaxSeats ?? 1}</p>
-                <p><strong>Messaggio:</strong> {booking.Message ?? "-"}</p>
+                <p><strong>ID Tipo Servizio:</strong> {booking.ServiceTypeId}</p>
+                <p><strong>ID Opzione Passeggeri:</strong> {booking.PassengerOptionId}</p>
+                <p><strong>ID Tour:</strong> {booking.TourId?.ToString() ?? "-"}</p>
+                <p><strong>ID Veicolo:</strong> {booking.VehicleId?.ToString() ?? "-"}</p>
+                <p><strong>Posti Max:</strong> {booking.MaxSeats ?? 1}</p>
+                <p><strong>Messaggio:</strong><br/>{booking.Message ?? "-"}</p>
                 <p><strong>Stato:</strong> {booking.Status}</p>
+                <p><strong>Data Creazione:</strong> {booking.CreatedAt:dd/MM/yyyy HH:mm}</p>
             ";
 
             await SendEmailHtmlAsync(_settings.AdminEmail, subject, body, "Booking", booking.Id);
         }
 
-        public async Task SendBookingCustomerConfirmationAsync(Booking booking)
+        public async Task SendBookingCustomerConfirmationAsync(Booking booking, BookingCreateRequest request)
         {
             if (!_settings.SendCustomerConfirmation) return;
 
@@ -90,8 +108,13 @@ namespace LiaNcc.WebAPI.Services
             string body = $@"
                 <h2>Richiesta di prenotazione ricevuta</h2>
                 <p>Gentile {booking.FullName},</p>
-                <p>la tua richiesta di prenotazione per il giorno {booking.ServiceDate:dd/MM/yyyy HH:mm} è stata presa in carico.</p>
-                <p>Ti contatteremo a breve per la conferma definitiva.</p>
+                <p>abbiamo ricevuto la tua richiesta di prenotazione per il giorno {booking.ServiceDate:dd/MM/yyyy HH:mm}.</p>
+                <p><strong>Riepilogo richiesta:</strong></p>
+                <ul>
+                    <li><strong>Data:</strong> {booking.ServiceDate:dd/MM/yyyy HH:mm}</li>
+                    <li><strong>Passeggeri:</strong> {booking.MaxSeats ?? 1}</li>
+                </ul>
+                <p>La tua richiesta è in attesa di conferma. Ti contatteremo a breve.</p>
                 <p>Cordiali saluti,<br/>Lo staff di Lia NCC</p>
             ";
 
@@ -124,7 +147,7 @@ namespace LiaNcc.WebAPI.Services
                 <h2>Informazioni sulla tua richiesta di prenotazione</h2>
                 <p>Gentile {booking.FullName},</p>
                 <p>ti informiamo che purtroppo non è stato possibile accettare la tua richiesta di prenotazione per il giorno {booking.ServiceDate:dd/MM/yyyy HH:mm}.</p>
-                <p><strong>Motivazione del rifiuto:</strong></p>
+                <p><strong>Motivazione:</strong></p>
                 <blockquote style='border-left: 5px solid #ccc; padding-left: 10px;'>{reason}</blockquote>
                 <p>Rimaniamo a tua disposizione per ulteriori necessità.</p>
                 <p>Cordiali saluti,<br/>Lo staff di Lia NCC</p>
@@ -135,15 +158,48 @@ namespace LiaNcc.WebAPI.Services
 
         public async Task SendReplyEmailAsync(string toEmail, string subject, string body, List<(string FileName, byte[] Content, string ContentType)>? attachments = null, string? relatedEntityName = null, Guid? relatedEntityId = null)
         {
-            await SendEmailInternalAsync(toEmail, subject, body, attachments, relatedEntityName, relatedEntityId);
+            var attachmentFiles = new List<AttachmentFile>();
+            var tempFiles = new List<string>();
+
+            try
+            {
+                if (attachments != null)
+                {
+                    foreach (var att in attachments)
+                    {
+                        var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + "_" + att.FileName);
+                        await File.WriteAllBytesAsync(tempPath, att.Content);
+                        tempFiles.Add(tempPath);
+
+                        attachmentFiles.Add(new AttachmentFile
+                        {
+                            FilePath = tempPath,
+                            DisplayName = att.FileName,
+                            MediaType = att.ContentType,
+                            Inline = false
+                        });
+                    }
+                }
+
+                await SendEmailInternalAsync(toEmail, subject, body, attachmentFiles, null, relatedEntityName, relatedEntityId);
+            }
+            finally
+            {
+                // Note: Ideally, delete files after mailer.SendEmailHtmlAsync is done.
+                // Since SendEmailInternalAsync is awaited, it should be safe here.
+                foreach (var file in tempFiles)
+                {
+                    try { if (File.Exists(file)) File.Delete(file); } catch { }
+                }
+            }
         }
 
         public async Task SendEmailHtmlAsync(string toEmail, string subject, string htmlBody, string? relatedEntityName = null, Guid? relatedEntityId = null)
         {
-            await SendEmailInternalAsync(toEmail, subject, htmlBody, null, relatedEntityName, relatedEntityId);
+            await SendEmailInternalAsync(toEmail, subject, htmlBody, null, null, relatedEntityName, relatedEntityId);
         }
 
-        private async Task SendEmailInternalAsync(string toEmail, string subject, string htmlBody, List<(string FileName, byte[] Content, string ContentType)>? attachments, string? relatedEntityName, Guid? relatedEntityId)
+        private async Task SendEmailInternalAsync(string toEmail, string subject, string htmlBody, IEnumerable<AttachmentFile>? attachments, IEnumerable<InlineImage>? inlineImages, string? relatedEntityName, Guid? relatedEntityId)
         {
             var emailLog = new EmailMessage
             {
@@ -162,36 +218,17 @@ namespace LiaNcc.WebAPI.Services
             {
                 await _emailRepository.CreateAsync(emailLog);
 
-                _logger.LogInformation("Attempting to send email to {ToEmail} with subject {Subject}", toEmail, subject);
+                _logger.LogInformation("Attempting to send email to {ToEmail} using MailHelper.HelperMailKit", toEmail);
 
-                var message = new MimeMessage();
-                message.From.Add(new MailboxAddress(_settings.SenderName ?? "Lia NCC", _settings.FromEmail));
-                message.To.Add(new MailboxAddress("", toEmail));
-                message.Subject = subject;
+                var mailer = CreateMailer();
 
-                var bodyBuilder = new BodyBuilder { HtmlBody = htmlBody };
-                if (attachments != null)
-                {
-                    foreach (var attachment in attachments)
-                    {
-                        bodyBuilder.Attachments.Add(attachment.FileName, attachment.Content, ContentType.Parse(attachment.ContentType));
-                    }
-                }
-                message.Body = bodyBuilder.ToMessageBody();
-
-                using (var client = new SmtpClient())
-                {
-                    _logger.LogInformation("Connecting to SMTP server {Host}:{Port}", _settings.Host, _settings.Port);
-                    await client.ConnectAsync(_settings.Host, _settings.Port, _settings.EnableSSL ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
-
-                    if (!string.IsNullOrEmpty(_settings.FromEmailPwd))
-                    {
-                        await client.AuthenticateAsync(_settings.FromEmail, _settings.FromEmailPwd);
-                    }
-
-                    await client.SendAsync(message);
-                    await client.DisconnectAsync(true);
-                }
+                await mailer.SendEmailHtmlAsync(
+                    toEmail,
+                    subject,
+                    htmlBody,
+                    inlineImages,
+                    attachments
+                );
 
                 emailLog.Status = "Sent";
                 emailLog.SentAt = DateTime.UtcNow;
@@ -210,7 +247,7 @@ namespace LiaNcc.WebAPI.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending email to {ToEmail}", toEmail);
+                _logger.LogError(ex, "Error sending email to {ToEmail} using MailHelper", toEmail);
 
                 emailLog.Status = "Failed";
                 emailLog.ErrorMessage = ex.Message;
@@ -228,6 +265,8 @@ namespace LiaNcc.WebAPI.Services
                     ApplicationEventType.Email,
                     new { EmailId = emailLog.Id }
                 );
+
+                throw;
             }
         }
     }
