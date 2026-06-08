@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiaNcc.Models.Entities;
+using LiaNcc.Models.DTOs.Requests;
 using LiaNcc.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,17 +18,53 @@ namespace LiaNcc.Repository.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<Booking>> GetAllAsync()
+        public async Task<IEnumerable<Booking>> GetAllAsync(BookingFilterRequest? filter = null)
         {
-            return await _context.Bookings
+            var query = _context.Bookings
                 .Include(b => b.ServiceType)
                 .Include(b => b.PassengerOption)
                 .Include(b => b.Tour)
                 .Include(b => b.Vehicle)
                     .ThenInclude(v => v!.VehicleCategory)
-                .AsNoTracking()
-                .OrderByDescending(b => b.CreatedAt)
-                .ToListAsync();
+                .AsNoTracking();
+
+            if (filter != null)
+            {
+                if (!string.IsNullOrEmpty(filter.Status))
+                    query = query.Where(b => b.Status == filter.Status);
+
+                if (filter.ServiceTypeId.HasValue)
+                    query = query.Where(b => b.ServiceTypeId == filter.ServiceTypeId);
+
+                if (filter.TourId.HasValue)
+                    query = query.Where(b => b.TourId == filter.TourId);
+
+                if (filter.VehicleId.HasValue)
+                    query = query.Where(b => b.VehicleId == filter.VehicleId);
+
+                if (filter.FromServiceDate.HasValue)
+                    query = query.Where(b => b.ServiceDate >= filter.FromServiceDate.Value);
+
+                if (filter.ToServiceDate.HasValue)
+                    query = query.Where(b => b.ServiceDate <= filter.ToServiceDate.Value);
+
+                if (filter.FromCreatedAt.HasValue)
+                    query = query.Where(b => b.CreatedAt >= filter.FromCreatedAt.Value);
+
+                if (filter.ToCreatedAt.HasValue)
+                    query = query.Where(b => b.CreatedAt <= filter.ToCreatedAt.Value);
+
+                if (!string.IsNullOrEmpty(filter.SearchText))
+                {
+                    var search = filter.SearchText.ToLower();
+                    query = query.Where(b => b.FullName.ToLower().Contains(search) ||
+                                             b.Email.ToLower().Contains(search) ||
+                                             (b.Phone != null && b.Phone.ToLower().Contains(search)) ||
+                                             (b.Message != null && b.Message.ToLower().Contains(search)));
+                }
+            }
+
+            return await query.OrderByDescending(b => b.CreatedAt).ToListAsync();
         }
 
         public async Task<IEnumerable<Booking>> GetByStatusAsync(string status)

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LiaNcc.BO.Controllers.Base;
 using LiaNcc.BO.Services.Interfaces;
+using LiaNcc.Models.DTOs.Requests;
+using LiaNcc.BO.Helpers;
 
 namespace LiaNcc.BO.Controllers
 {
@@ -18,9 +20,19 @@ namespace LiaNcc.BO.Controllers
             _logger = applicationLogger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(ContactMessageFilterRequest filter)
         {
-            var messages = await _contactMessagesApiClient.GetAllAsync();
+            // Convert local Rome dates to UTC for API query
+            if (filter.FromDate.HasValue) filter.FromDate = filter.FromDate.Value.ToUtcFromRome();
+            if (filter.ToDate.HasValue) filter.ToDate = filter.ToDate.Value.Date.AddDays(1).AddTicks(-1).ToUtcFromRome();
+
+            var messages = await _contactMessagesApiClient.GetAllAsync(filter);
+
+            // Re-convert to Rome for display in filter inputs
+            if (filter.FromDate.HasValue) filter.FromDate = filter.FromDate.Value.ToRomeTime();
+            if (filter.ToDate.HasValue) filter.ToDate = filter.ToDate.Value.ToRomeTime();
+
+            ViewBag.Filter = filter;
             return View(messages);
         }
 

@@ -8,6 +8,46 @@
     <h2>Gestione Messaggi</h2>
 </div>
 
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body bg-light">
+        <form method="get" class="row g-3">
+            @{
+                var filter = ViewBag.Filter as LiaNcc.Models.DTOs.Requests.ContactMessageFilterRequest;
+            }
+            <div class="col-md-3">
+                <label class="form-label small">Stato</label>
+                <select name="IsRead" class="form-select form-select-sm">
+                    <option value="">Tutti</option>
+                    <option value="false" selected="@(filter?.IsRead == false)">Da leggere</option>
+                    <option value="true" selected="@(filter?.IsRead == true)">Letti</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Da Data</label>
+                <input type="date" name="FromDate" class="form-control form-control-sm" value="@(filter?.FromDate?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">A Data</label>
+                <input type="date" name="ToDate" class="form-control form-control-sm" value="@(filter?.ToDate?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small">Ricerca Libera</label>
+                <input type="text" name="SearchText" class="form-control form-control-sm" placeholder="Nome, email, messaggio..." value="@filter?.SearchText" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <div class="btn-group w-100">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-search"></i> Filtra
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm" title="Reset">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card shadow-sm border-0">
     <div class="card-body p-0">
         <div class="table-responsive">

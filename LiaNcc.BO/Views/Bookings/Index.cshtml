@@ -9,6 +9,69 @@
     <h2>Gestione Prenotazioni</h2>
 </div>
 
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body bg-light">
+        <form method="get" class="row g-3">
+            @{
+                var filter = ViewBag.Filter as LiaNcc.Models.DTOs.Requests.BookingFilterRequest;
+                var serviceTypes = ViewBag.ServiceTypes as IEnumerable<LiaNcc.Models.Entities.BookingServiceType>;
+            }
+            <div class="col-md-2">
+                <label class="form-label small">Stato</label>
+                <select name="Status" class="form-select form-select-sm">
+                    <option value="">Tutti</option>
+                    <option value="Pending" selected="@(filter?.Status == "Pending")">Pending</option>
+                    <option value="Confirmed" selected="@(filter?.Status == "Confirmed")">Confermata</option>
+                    <option value="Cancelled" selected="@(filter?.Status == "Cancelled")">Annullata</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Servizio</label>
+                <select name="ServiceTypeId" class="form-select form-select-sm">
+                    <option value="">Tutti</option>
+                    @if (serviceTypes != null)
+                    {
+                        foreach (var st in serviceTypes)
+                        {
+                            <option value="@st.Id" selected="@(filter?.ServiceTypeId == st.Id)">@st.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Da Data Servizio</label>
+                <input type="date" name="FromServiceDate" class="form-control form-control-sm" value="@(filter?.FromServiceDate?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">A Data Servizio</label>
+                <input type="date" name="ToServiceDate" class="form-control form-control-sm" value="@(filter?.ToServiceDate?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Da Data Richiesta</label>
+                <input type="date" name="FromCreatedAt" class="form-control form-control-sm" value="@(filter?.FromCreatedAt?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">A Data Richiesta</label>
+                <input type="date" name="ToCreatedAt" class="form-control form-control-sm" value="@(filter?.ToCreatedAt?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Ricerca Libera</label>
+                <input type="text" name="SearchText" class="form-control form-control-sm" placeholder="Nome, email, tel..." value="@filter?.SearchText" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <div class="btn-group w-100">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-search"></i> Filtra
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm" title="Reset">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card shadow-sm border-0">
     <div class="card-body">
         <div class="table-responsive">
