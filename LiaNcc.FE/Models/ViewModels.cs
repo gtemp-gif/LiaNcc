@@ -9,6 +9,7 @@ namespace LiaNcc.FE.Models
     {
         public SitePage? Page { get; set; }
         public IEnumerable<Service> FeaturedServices { get; set; } = new List<Service>();
+        public IEnumerable<Service> Services { get; set; } = new List<Service>();
         public IEnumerable<VehicleDto> FeaturedVehicles { get; set; } = new List<VehicleDto>();
         public IEnumerable<TourDto> FeaturedTours { get; set; } = new List<TourDto>();
         public IEnumerable<Partner> Partners { get; set; } = new List<Partner>();

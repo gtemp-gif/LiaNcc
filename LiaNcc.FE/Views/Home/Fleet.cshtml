@@ -168,7 +168,6 @@
                                 <option class="bg-black text-[#D4AF37]" value="@service.Id">@service.Name</option>
                             }
                         }
-                        <option class="bg-black text-[#D4AF37]" value="Altro">Altro</option>
                     </select>
                     <span class="hidden md:block material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
 
@@ -186,7 +185,6 @@
                                     <li class="px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light border-b border-[#1A1A1A]" data-value="@service.Id">@service.Name</li>
                                 }
                             }
-                            <li class="px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light" data-value="Altro">Altro</li>
                         </ul>
                     </div>
                 </div>
@@ -218,7 +216,7 @@
             <button class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8 flex items-center justify-center" type="submit">
                 Invia Richiesta di Prenotazione
             </button>
-            <div id="modal-booking-message" class="hidden mt-4 p-4 text-center font-bold"></div>
+            <div id="modal-booking-message" class="hidden mt-4 p-4 text-center font-bold text-[15px]"></div>
         </form>
     </div>
 </div>
@@ -234,7 +232,6 @@
             const desktopGuestsSelect = document.getElementById('desktop-guests-select');
             const guestsText = document.getElementById('guests-text');
             const mobileGuestsInput = document.getElementById('mobile-guests-input');
-            const messageDiv = document.getElementById('modal-booking-message');
 
             if (form) form.reset();
             if (dateInput && dateInput._flatpickr) dateInput._flatpickr.clear();
@@ -262,8 +259,6 @@
                 guestsText.classList.add('text-gray-500');
                 mobileGuestsInput.value = "";
             }
-
-            if (messageDiv) { messageDiv.classList.add('hidden'); messageDiv.textContent = ''; }
         }
 
         function openBookingModal(carName, vehicleId, maxSeats) {
@@ -304,14 +299,32 @@
                 }
             }
 
+            // Assicura che il messaggio di errore/successo precedente sia nascosto all'apertura
+            const messageDiv = document.getElementById('modal-booking-message');
+            if (messageDiv) {
+                messageDiv.classList.add('hidden');
+                messageDiv.textContent = '';
+            }
+
             document.getElementById('bookingModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+            
+            // Assicuriamoci che il bottone sia visibile in caso di riapertura
+            const submitBtn = document.querySelector('#fleetBookingForm button[type="submit"]');
+            if (submitBtn) submitBtn.classList.remove('hidden');
         }
 
         function closeBookingModal() {
             document.getElementById('bookingModal').classList.add('hidden');
             document.body.style.overflow = 'auto';
             clearFleetForm();
+            
+            // CANCELLIAMO IL MESSAGGIO SOLO QUANDO SI CHIUDE LA MODALE
+            const messageDiv = document.getElementById('modal-booking-message');
+            if (messageDiv) {
+                messageDiv.classList.add('hidden');
+                messageDiv.textContent = '';
+            }
         }
 
         window.onclick = function(event) {
@@ -392,11 +405,12 @@
                     }
 
                     const messageDiv = document.getElementById('modal-booking-message');
-                    messageDiv.classList.add('hidden'); // Nasconde messaggi di errore precedenti
+                    messageDiv.classList.add('hidden');
 
                     const submitBtn = form.querySelector('button[type="submit"]');
                     const originalText = submitBtn.innerHTML;
 
+                    // 1. ATTIVIAMO IL LOADER SUL BOTTONE
                     submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> INVIO IN CORSO...`;
                     submitBtn.disabled = true;
                     submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
@@ -417,8 +431,7 @@
                     const vehicleId = formData.get('VehicleId');
                     if (vehicleId && vehicleId.trim() !== '') params.append('VehicleId', vehicleId);
 
-                    // Sicurezza per C#: se scelgono 'Altro' non inviamo il parametro (il C# riceverà null)
-                    if (finalServiceValue && finalServiceValue !== "Altro") {
+                    if (finalServiceValue) {
                         params.append('ServiceTypeId', finalServiceValue);
                     }
 
@@ -438,19 +451,33 @@
                             body: params.toString()
                         });
                         
-                        const result = await response.json();
+                        let result = {};
+                        try {
+                            result = await response.json();
+                        } catch (jsonError) {
+                            result = { success: response.ok, message: "Richiesta inviata con successo!" };
+                        }
                         
-                        if (response.ok && result.success) {
+                        // 2. CONTROLLO SUCCESSO
+                        if (response.ok) {
                             messageDiv.textContent = result.message || "Richiesta inviata con successo!";
                             messageDiv.classList.remove('hidden', 'text-red-500');
                             messageDiv.classList.add('text-green-500');
                             
                             clearFleetForm();
                             
+                            // NASCONDIAMO IL BOTTONE (lasciando solo il messaggio verde)
+                            submitBtn.classList.add('hidden');
+                            
+                            // 3. CHIUSURA MODALE RITARDATA DOPO 3 SECONDI
                             setTimeout(() => {
                                 closeBookingModal();
-                                messageDiv.classList.add('hidden');
+                                // Ripristiniamo il bottone (nascosto dalla vista) per la prossima apertura
+                                submitBtn.innerHTML = originalText;
+                                submitBtn.disabled = false;
+                                submitBtn.classList.remove('hidden', 'opacity-80', 'cursor-not-allowed');
                             }, 3000);
+                            
                         } else {
                             throw new Error(result.message || 'Errore server');
                         }
@@ -459,7 +486,8 @@
                         messageDiv.textContent = "Errore durante l'invio. Riprova.";
                         messageDiv.classList.remove('hidden', 'text-green-500');
                         messageDiv.classList.add('text-red-500');
-                    } finally {
+                        
+                        // Sblocchiamo il bottone in caso di errore
                         submitBtn.innerHTML = originalText;
                         submitBtn.disabled = false;
                         submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');

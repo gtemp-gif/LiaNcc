@@ -229,14 +229,13 @@
                         
                         <select id="desktop-service-select" class="hidden md:block w-full truncate bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-gray-500 py-4 pr-10 font-light text-[15px] transition-all cursor-pointer outline-none appearance-none !bg-none" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;">
                             <option class="bg-black text-gray-500" value="" hidden selected>Seleziona un servizio...</option>
-                            @if (Model.FeaturedServices != null)
+                            @if (Model.Services != null)
                             {
-                                @foreach (var service in Model.FeaturedServices)
+                                @foreach (var service in Model.Services)
                                 {
                                     <option class="bg-black text-[#D4AF37]" value="@service.Id">@service.Name</option>
                                 }
                             }
-                            <option class="bg-black text-[#D4AF37]" value="Altro">Altro</option>
                         </select>
                         <span class="hidden md:block material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
 
@@ -246,15 +245,15 @@
                                 <span id="service-text" class="truncate text-gray-500">Seleziona un servizio...</span>
                                 <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
                             </div>
+                            
                             <ul id="service-menu" class="hidden absolute top-[100%] left-0 w-full bg-[#050505] border border-[#1A1A1A] shadow-2xl m-0 p-0 list-none max-h-64 overflow-y-auto">
-                                @if (Model.FeaturedServices != null)
+                                @if (Model.Services != null)
                                 {
-                                    @foreach (var service in Model.FeaturedServices)
+                                    @foreach (var service in Model.Services)
                                     {
                                         <li class="px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light border-b border-[#1A1A1A]" data-value="@service.Id">@service.Name</li>
                                     }
                                 }
-                                <li class="px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light" data-value="Altro">Altro</li>
                             </ul>
                         </div>
                     </div>
@@ -445,7 +444,7 @@
                 }
             }
 
-            // 4. INVIO FORM PRENOTAZIONE (Sicuro con URLSearchParams)
+            // 4. INVIO FORM PRENOTAZIONE (Corretto con parse sicuro e scomparsa bottone)
             const bookingForm = document.getElementById('form-booking');
             if (bookingForm) {
                 bookingForm.addEventListener('submit', async function(e) {
@@ -460,6 +459,8 @@
                     }
 
                     const messageDiv = document.getElementById('booking-message');
+                    messageDiv.classList.add('hidden');
+
                     const submitBtn = bookingForm.querySelector('button[type="submit"]');
                     const originalBtnText = submitBtn.innerHTML;
 
@@ -479,8 +480,8 @@
                     const message = formData.get('Message');
                     if (message && message.trim() !== '') params.append('Message', message);
 
-                    // Sicurezza Guid: Se è "Altro" non passiamo l'ID
-                    if (finalServiceValue && finalServiceValue !== "Altro") {
+                    // Sicurezza Guid: Passiamo il valore dinamicamente, "Altro" è caricato come ID dal DB
+                    if (finalServiceValue) {
                         params.append('ServiceTypeId', finalServiceValue);
                     }
 
@@ -500,41 +501,57 @@
                             body: params.toString()
                         });
                         
-                        const result = await response.json();
+                        // PARSE JSON SICURO
+                        let result = {};
+                        try {
+                            result = await response.json();
+                        } catch (jsonError) {
+                            result = { success: response.ok, message: "Richiesta inviata con successo!" };
+                        }
                         
-                        if (response.ok && result.success) {
+                        if (response.ok) {
                             messageDiv.textContent = result.message || "Richiesta inviata con successo!";
                             messageDiv.classList.remove('hidden', 'text-red-500');
                             messageDiv.classList.add('text-green-500');
                             
                             clearHomeBookingForm();
+                            
+                            // NASCONDE IL BOTTONE
+                            submitBtn.classList.add('hidden');
 
+                            // RIPRISTINA DOPO 5 SECONDI
                             setTimeout(() => {
                                 messageDiv.classList.add('hidden');
                                 messageDiv.textContent = '';
+                                submitBtn.innerHTML = originalBtnText;
+                                submitBtn.disabled = false;
+                                submitBtn.classList.remove('hidden', 'opacity-80', 'cursor-not-allowed');
                             }, 5000);
                         } else {
                             throw new Error(result.message || 'Errore server');
                         }
                     } catch (error) {
-                        messageDiv.textContent = "Si è verificato un errore.";
+                        messageDiv.textContent = "Si è verificato un errore. Riprova.";
                         messageDiv.classList.remove('hidden', 'text-green-500');
                         messageDiv.classList.add('text-red-500');
-                    } finally {
+                        
+                        // IN CASO DI ERRORE, SBLOCCA SUBITO IL BOTTONE
                         submitBtn.innerHTML = originalBtnText;
                         submitBtn.disabled = false;
-                        submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                        submitBtn.classList.remove('hidden', 'opacity-80', 'cursor-not-allowed');
                     }
                 });
             }
 
-            // 5. INVIO FORM CONTATTI (URLSearchParams per coerenza)
+            // 5. INVIO FORM CONTATTI (Corretto con parse sicuro e scomparsa bottone)
             const contactForm = document.getElementById('form-contact');
             if (contactForm) {
                 contactForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
                     const messageDiv = document.getElementById('contact-message');
+                    messageDiv.classList.add('hidden');
+                    
                     const submitBtn = contactForm.querySelector('button[type="submit"]');
                     const originalBtnText = submitBtn.innerHTML;
 
@@ -559,30 +576,44 @@
                             body: params.toString()
                         });
                         
-                        const result = await response.json();
+                        // PARSE JSON SICURO
+                        let result = {};
+                        try {
+                            result = await response.json();
+                        } catch (jsonError) {
+                            result = { success: response.ok, message: "Messaggio inviato con successo!" };
+                        }
 
-                        if (response.ok && result.success) {
+                        if (response.ok) {
                             messageDiv.textContent = result.message || "Messaggio inviato con successo!";
                             messageDiv.classList.remove('hidden', 'text-red-500');
                             messageDiv.classList.add('text-green-500');
                             
                             contactForm.reset();
+                            
+                            // NASCONDE IL BOTTONE
+                            submitBtn.classList.add('hidden');
 
+                            // RIPRISTINA DOPO 5 SECONDI
                             setTimeout(() => {
                                 messageDiv.classList.add('hidden');
                                 messageDiv.textContent = '';
+                                submitBtn.innerHTML = originalBtnText;
+                                submitBtn.disabled = false;
+                                submitBtn.classList.remove('hidden', 'opacity-80', 'cursor-not-allowed');
                             }, 5000);
                         } else {
                             throw new Error('Errore server');
                         }
                     } catch (error) {
-                        messageDiv.textContent = "Si è verificato un errore.";
+                        messageDiv.textContent = "Si è verificato un errore. Riprova.";
                         messageDiv.classList.remove('hidden', 'text-green-500');
                         messageDiv.classList.add('text-red-500');
-                    } finally {
+                        
+                        // IN CASO DI ERRORE, SBLOCCA SUBITO IL BOTTONE
                         submitBtn.innerHTML = originalBtnText;
                         submitBtn.disabled = false;
-                        submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                        submitBtn.classList.remove('hidden', 'opacity-80', 'cursor-not-allowed');
                     }
                 });
             }
