@@ -1,9 +1,17 @@
 @using LiaNcc.Models.DTOs.Dashboard
+@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
+@inject IViewLocalizer Localizer
+
+@{
+    var currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+}
 <!DOCTYPE html>
-<html class="dark scroll-smooth" lang="it">
+<html class="dark scroll-smooth" lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="~/img/favicon_io/favicon.ico" />
     <title>@ViewData["Title"] - LIA NCC</title>
     
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -127,19 +135,22 @@
 <body class="font-body overflow-x-hidden selection:bg-primary/30 selection:text-on-primary-container relative flex flex-col min-h-screen">
     
     @{
-        CompanyProfile? company = null;
-        List<CompanyContactDto> contacts = new List<CompanyContactDto>();
-        try
-        {
-            company = await CompanyApi.GetCompanyProfileAsync();
-            contacts = await CompanyApi.GetContactsAsync();
-        }
-        catch { }
+            CompanyProfile? company = null;
+            List<CompanyContactDto> contacts = new List<CompanyContactDto>();
+            try
+            {
+                company = await CompanyApi.GetCompanyProfileAsync();
+                contacts = await CompanyApi.GetContactsAsync();
+            }
+            catch { }
 
-        var phone = contacts.FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 333 715 9308";
-        var phone2 = contacts.Skip(1).FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 350 576 3433";
-        var email = contacts.FirstOrDefault(c => c.Type == "Email")?.Value ?? "liamoto@alice.it";
-        var isItalian = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "it";
+            var phone = contacts.FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 333 715 9308";
+            var phone2 = contacts.Skip(1).FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 350 576 3433";
+            var email = contacts.FirstOrDefault(c => c.Type == "Email")?.Value ?? "liamoto@alice.it";
+            var address = company?.Address ?? "Via Roma 1";
+            var cityZip = $"{(company?.City ?? "Matera")} - {(company?.ZipCode ?? "75100")}".Trim();
+            var country = company?.Country ?? "Italia";
+            var isItalian = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "it";
     }
 
     <header class="fixed top-0 w-full z-40 bg-black/90 backdrop-blur-xl border-b border-[#1A1A1A]">
@@ -149,19 +160,19 @@
             </a>
 
             <nav class="hidden md:flex gap-12 font-semibold tracking-widest uppercase text-[10px] items-center">
-                <a asp-action="Index" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Home</a>
-                <a asp-action="Fleet" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Fleet" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Flotta</a>
-                <a href="/Home/Index#servizi" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Servizi</a>
-                <a asp-action="Tours" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Tours" || ViewContext.RouteData.Values["Action"]?.ToString() == "TourDetail" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">Tour</a>
-                <a asp-controller="Home" asp-action="Index" asp-fragment="contatti" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">Contatti</a>
+                <a asp-action="Index" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">@Localizer["Home"]</a>
+                <a asp-action="Fleet" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Fleet" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">@Localizer["Fleet"]</a>
+                <a href="/Home/Index#servizi" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">@Localizer["Services"]</a>
+                <a asp-action="Tours" asp-controller="Home" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Tours" || ViewContext.RouteData.Values["Action"]?.ToString() == "TourDetail" ? "text-[#D4AF37] border-b border-[#D4AF37] pb-1" : "text-gray-500 hover:text-[#D4AF37] transition-colors duration-300")">@Localizer["Tours"]</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="contatti" class="text-gray-500 hover:text-[#D4AF37] transition-colors duration-300">@Localizer["Contacts"]</a>
 
                 <div class="flex gap-2">
-                    <a href="?culture=it" class="@(isItalian ? "text-[#D4AF37]" : "text-gray-500 hover:text-[#D4AF37]")">IT</a>
+                    <a href="?culture=it&ui-culture=it" class="@(isItalian ? "text-[#D4AF37]" : "text-gray-500 hover:text-[#D4AF37]")">IT</a>
                     <span class="text-gray-500">|</span>
-                    <a href="?culture=en" class="@(!isItalian ? "text-[#D4AF37]" : "text-gray-500 hover:text-[#D4AF37]")">EN</a>
+                    <a href="?culture=en&ui-culture=en" class="@(!isItalian ? "text-[#D4AF37]" : "text-gray-500 hover:text-[#D4AF37]")">EN</a>
                 </div>
                 
-                <a href="/Home/Index#booking-form" class="btn-secondary !text-[10px] !py-3">Prenota Ora</a>
+                <a href="/Home/Index#booking-form" class="btn-secondary !text-[10px] !py-3">@Localizer["BookNow"]</a>
             </nav>
 
             <button id="mobile-menu-btn" class="md:hidden text-[#D4AF37] focus:outline-none">
@@ -171,25 +182,25 @@
 
         <nav id="mobile-menu" class="fixed inset-0 h-screen w-screen bg-[#050505] flex-col hidden z-45 transition-all duration-300 pt-28 pb-8 overflow-y-auto">
             <div class="flex flex-col items-center justify-center gap-8 font-semibold tracking-[0.2em] uppercase flex-grow">
-                <a asp-action="Index" asp-controller="Home" class="mobile-link text-white hover:text-[#D4AF37] text-lg">Home</a>
-                <a asp-action="Fleet" asp-controller="Home" class="mobile-link text-white hover:text-[#D4AF37] text-lg">Flotta</a>
-                <a href="/Home/Index#servizi" class="mobile-link text-white hover:text-[#D4AF37] text-lg">Servizi</a>
-                <a asp-action="Tours" asp-controller="Home" class="mobile-link text-white hover:text-[#D4AF37] text-lg">Tour</a>
-                <a href="/Home/Index#contatti" class="mobile-link text-white hover:text-[#D4AF37] text-lg">Contatti</a>
+                <a asp-action="Index" asp-controller="Home" class="mobile-link text-white hover:text-[#D4AF37] text-lg">@Localizer["Home"]</a>
+                <a asp-action="Fleet" asp-controller="Home" class="mobile-link text-white hover:text-[#D4AF37] text-lg">@Localizer["Fleet"]</a>
+                <a href="/Home/Index#servizi" class="mobile-link text-white hover:text-[#D4AF37] text-lg">@Localizer["Services"]</a>
+                <a asp-action="Tours" asp-controller="Home" class="mobile-link text-white hover:text-[#D4AF37] text-lg">@Localizer["Tours"]</a>
+                <a href="/Home/Index#contatti" class="mobile-link text-white hover:text-[#D4AF37] text-lg">@Localizer["Contacts"]</a>
                 
                 <div class="flex gap-6 mt-4 border-t border-[#1A1A1A] pt-8 w-[60%] justify-center">
-                    <a href="?culture=it" class="@(isItalian ? "text-[#D4AF37]" : "text-gray-500") text-xl">IT</a>
+                    <a href="?culture=it&ui-culture=it" class="@(isItalian ? "text-[#D4AF37]" : "text-gray-500") text-xl">IT</a>
                     <span class="text-gray-500 text-xl">|</span>
-                    <a href="?culture=en" class="@(!isItalian ? "text-[#D4AF37]" : "text-gray-500") text-xl">EN</a>
+                    <a href="?culture=en&ui-culture=en" class="@(!isItalian ? "text-[#D4AF37]" : "text-gray-500") text-xl">EN</a>
                 </div>
                 
-                <a href="/Home/Index#booking-form" class="mobile-link bg-[#D4AF37] text-black px-10 py-5 mt-6 text-xs font-bold tracking-[0.3em]">PRENOTA ORA</a>
+                <a href="/Home/Index#booking-form" class="mobile-link bg-[#D4AF37] text-black px-10 py-5 mt-6 text-xs font-bold tracking-[0.3em]">@Localizer["BookNow"]</a>
             </div>
 
             <div class="mt-12 border-t border-[#1A1A1A] pt-8 w-full px-8 pb-4">
                 <div class="grid grid-cols-2 gap-4 w-full">
                     <div class="flex flex-col gap-4 items-start text-left">
-                        <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-1">Contatti</span>
+                        <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-1">@Localizer["Contacts"]</span>
                         @foreach (var contact in contacts.Where(c => c.Type == "Phone" || c.Type == "WhatsApp"))
                         {
                             <a href="tel:@contact.Value.Replace(" ", "")" class="font-bold text-[10px] tracking-[0.1em] uppercase text-white hover:text-[#D4AF37] transition-all">@contact.Value</a>
@@ -201,14 +212,14 @@
                     </div>
 
                     <div class="flex flex-col gap-4 items-end text-right">
-                        <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-1">Legal</span>
-                        <a asp-controller="Home" asp-action="Legal" asp-fragment="privacy" class="mobile-link font-bold text-[10px] tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">Privacy Policy</a>
-                        <a asp-controller="Home" asp-action="Legal" asp-fragment="termini" class="mobile-link font-bold text-[10px] tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">Termini & Condizioni</a>
+                        <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-1">@Localizer["Legal"]</span>
+                        <a asp-controller="Home" asp-action="Legal" asp-fragment="privacy" class="mobile-link font-bold text-[10px] tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">@Localizer["PrivacyPolicy"]</a>
+                        <a asp-controller="Home" asp-action="Legal" asp-fragment="termini" class="mobile-link font-bold text-[10px] tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">@Localizer["TermsConditions"]</a>
                     </div>
                 </div>
                 <div class="w-full text-center border-t border-[#1A1A1A] pt-6 mt-8">
                     <p class="font-bold text-[9px] tracking-[0.2em] uppercase text-gray-600 leading-loose">
-                        © @DateTime.Now.Year @(company?.Name ?? "LIA NCC").<br /> L'ECCELLENZA IN MOVIMENTO.
+                        © @DateTime.Now.Year @(company?.Name ?? "LIA NCC").<br /> @Localizer["ExcellenceInMotion"]
                     </p>
                 </div>
             </div>
@@ -220,55 +231,85 @@
     </main>
 
     <footer class="w-full bg-[#000000] border-t border-[#1A1A1A] mt-auto" id="contatti">
-        <div class="w-full py-16 md:py-20 px-6 md:px-16 max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-12 lg:gap-20">
-            <div class="flex flex-col items-center lg:items-start text-center lg:text-left w-full lg:w-1/3">
-                <a asp-action="Index" asp-controller="Home" class="mb-8">
-                    <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="~/img/LiaNcc_logo.jpeg" />
-                </a>
-                <p class="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-600 leading-loose hidden lg:block">
-                    © @DateTime.Now.Year @(company?.Name ?? "LIA NCC").<br /> L'ECCELLENZA IN MOVIMENTO.
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4 md:gap-8 w-full lg:w-2/3 lg:justify-end">
-                <div class="flex flex-col gap-4 items-start lg:items-end">
-                    <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-2">Contatti</span>
+        <div class="w-full py-16 md:py-20 px-6 md:px-16 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+
+                <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
+                    <a asp-action="Index" asp-controller="Home" class="mb-8">
+                        <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="~/img/LiaNcc_logo.jpeg" />
+                    </a>
+
+                    <p class="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-600 leading-loose">
+                        © @DateTime.Now.Year @(company?.Name ?? "LIA NCC").<br /> @Localizer["ExcellenceInMotion"]
+                    </p>
+                </div>
+
+                <div class="flex flex-col gap-4 items-center sm:items-start text-center sm:text-left">
+                    <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-2">
+                        @Localizer["Location"]
+                    </span>
+
+                    <span class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-white">
+                        @address
+                    </span>
+
+                    <span class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-gray-400">
+                        @cityZip
+                    </span>
+                    <span class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-gray-400">
+                        @country
+                    </span>
+                </div>
+
+                <div class="flex flex-col gap-4 items-center sm:items-start lg:items-end text-center sm:text-left lg:text-right">
+                    <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-2">
+                        @Localizer["Contacts"]
+                    </span>
+
                     @foreach (var contact in contacts.Where(c => c.Type == "Phone" || c.Type == "WhatsApp"))
                     {
-                        <a href="tel:@contact.Value.Replace(" ", "")" class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-white hover:text-[#D4AF37] transition-all">@contact.Value</a>
+                        <a href="tel:@contact.Value.Replace(" ", "")" class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-white hover:text-[#D4AF37] transition-all">
+                            @contact.Value
+                        </a>
                     }
+
                     @foreach (var contact in contacts.Where(c => c.Type == "Email"))
                     {
-                        <a href="mailto:@contact.Value" class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all break-all sm:break-normal">@contact.Value</a>
+                        <a href="mailto:@contact.Value" class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all break-all sm:break-normal">
+                            @contact.Value
+                        </a>
                     }
                 </div>
 
-                <div class="flex flex-col gap-4 items-end text-right">
-                    <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-2">Legal</span>
-                    <a asp-controller="Home" asp-action="Legal" asp-fragment="privacy" class="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">Privacy Policy</a>
-                    <a asp-controller="Home" asp-action="Legal" asp-fragment="termini" class="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">Termini & Condizioni</a>
-                </div>
-            </div>
+                <div class="flex flex-col gap-4 items-center sm:items-end text-center sm:text-right">
+                    <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-2">
+                        @Localizer["Legal"]
+                    </span>
 
-            <div class="w-full text-center border-t border-[#1A1A1A] pt-8 mt-4 lg:hidden">
-                <p class="font-bold text-[9px] tracking-[0.2em] uppercase text-gray-600 leading-loose">
-                    © @DateTime.Now.Year @(company?.Name ?? "LIA NCC").<br /> L'ECCELLENZA IN MOVIMENTO.
-                </p>
+                    <a asp-controller="Home" asp-action="Legal" asp-fragment="privacy" class="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">
+                        @Localizer["PrivacyPolicy"]
+                    </a>
+
+                    <a asp-controller="Home" asp-action="Legal" asp-fragment="termini" class="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">
+                        @Localizer["TermsConditions"]
+                    </a>
+                </div>
+
             </div>
         </div>
     </footer>
-    
+
     <div id="scroll-controls" class="fixed bottom-8 right-6 md:right-10 z-[90] flex flex-col gap-3 opacity-0 translate-y-4 transition-all duration-500 pointer-events-none">
         
         <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
                 class="w-12 h-12 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all group shadow-[0_0_15px_rgba(212,175,55,0.2)]"
-                title="Torna in alto">
+                title="@Localizer["BackToTop"]">
             <span class="material-symbols-outlined font-light transition-transform duration-300 group-hover:-translate-y-1">expand_less</span>
         </button>
 
         <button onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })"
                 class="w-12 h-12 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all group shadow-[0_0_15px_rgba(212,175,55,0.2)]"
-                title="Vai ai Contatti">
+                title="@Localizer["GoToContacts"]">
             <span class="material-symbols-outlined font-light transition-transform duration-300 group-hover:translate-y-1">expand_more</span>
         </button>
 

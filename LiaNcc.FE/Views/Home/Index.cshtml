@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model HomeViewModel
 @{
     ViewData["Title"] = Model.Page?.MetaTitle ?? "Home";
@@ -18,8 +20,8 @@
         <div class="absolute inset-0 hero-mask"></div>
     </div>
     <div class="relative z-10 max-w-5xl">
-        <span class="font-bold text-primary tracking-[0.4em] uppercase text-xs mb-6 block">@(heroSection?.Title ?? "Esperienza Chauffeur Premium")</span>
-        <h1 class="text-4xl md:text-5xl font-medium text-white mb-8 tracking-tight uppercase" style="letter-spacing: 3px;">@(heroSection?.Description ?? "Il Vertice del Trasporto Privato")</h1>
+        <span class="font-bold text-primary tracking-[0.4em] uppercase text-xs mb-6 block">@(heroSection?.Title ?? Localizer["PremiumExperience"].Value)</span>
+        <h1 class="text-4xl md:text-5xl font-medium text-white mb-8 tracking-tight uppercase" style="letter-spacing: 3px;">@(heroSection?.Description ?? Localizer["PrivateTransportTitle"].Value)</h1>
         <div class="flex flex-col sm:flex-row gap-6 justify-center">
             @foreach (var cta in heroSection?.CallToActions ?? Enumerable.Empty<CallToAction>())
             {
@@ -34,8 +36,8 @@
             }
             @if (heroSection == null || !heroSection.CallToActions.Any())
             {
-                <button class="bg-[#D4AF37] text-black px-10 py-5 font-bold uppercase text-xs tracking-widest hover:scale-105 transition-transform" onclick="document.getElementById('booking-form').scrollIntoView({behavior: 'smooth'})">Prenota il tuo Viaggio</button>
-                <a class="btn-secondary !text-xs !py-5 !px-10" asp-action="Fleet" asp-controller="Home">Scopri la Flotta</a>
+                <button class="bg-[#D4AF37] text-black px-10 py-5 font-bold uppercase text-xs tracking-widest hover:scale-105 transition-transform" onclick="document.getElementById('booking-form').scrollIntoView({behavior: 'smooth'})">@Localizer["BookJourney"]</button>
+                <a class="btn-secondary !text-xs !py-5 !px-10" asp-action="Fleet" asp-controller="Home">@Localizer["DiscoverFleet"]</a>
             }
         </div>
     </div>
@@ -45,10 +47,10 @@
 </section>
 
 <section class="py-32 px-6 md:px-16 bg-black">
-    <div class="max-w-7xl mx-auto">
+    <div class="w-full max-w-7xl mx-auto">
         
         <div class="mb-16 text-left">
-            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@(companyProfile?.AboutTitle ?? "Chi Siamo")</h2>
+            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@(aboutSection?.Title ?? Localizer["AboutUs"].Value)</h2>
             <div class="w-24 h-1 bg-[#D4AF37]"></div>
         </div>
         
@@ -63,25 +65,25 @@
             <div class="lg:col-span-7 text-left">
                 
                 <div class="text-gray-300 leading-loose font-light text-[14px] whitespace-pre-line">
-                    @(companyProfile?.AboutDescription ?? "LIA NCC è un’azienda specializzata nel servizio di noleggio con conducente (NCC) e nell’organizzazione di transfer e tour personalizzati, operativa principalmente tra Basilicata e Puglia.")
+                    @(companyProfile?.AboutDescription ?? Localizer["CompanyDescription"].Value)
                 </div>
 
                 <div class="mt-12 pt-8 border-t border-[#D4AF37]/20">
                     <ul class="grid grid-cols-1 sm:grid-cols-3 gap-y-5 gap-x-6 uppercase tracking-widest text-[10px] text-gray-400 font-semibold">
                         <li class="flex items-center gap-3">
-                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Puntualità e affidabilità
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> @Localizer["Punctuality"]
                         </li>
                         <li class="flex items-center gap-3">
-                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Comfort e sicurezza
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> @Localizer["ComfortSafety"]
                         </li>
                         <li class="flex items-center gap-3">
-                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Massima disponibilità
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> @Localizer["Availability"]
                         </li>
                         <li class="flex items-center gap-3">
-                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Servizi personalizzati
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> @Localizer["CustomServices"]
                         </li>
                         <li class="flex items-center gap-3">
-                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> Conoscenza del territorio
+                            <span class="w-1.5 h-1.5 bg-[#D4AF37] shrink-0"></span> @Localizer["LocalKnowledge"]
                         </li>
                     </ul>
                 </div>
@@ -93,10 +95,10 @@
     </div>
 </section>
 
-<section class="py-32 bg-[#050505]" id="servizi">
-    <div class="px-6 md:px-16 max-w-7xl mx-auto">
+<section class="py-32 px-6 md:px-16 bg-[#050505]" id="servizi">
+    <div class="w-full max-w-7xl mx-auto">
         <div class="mb-20 text-left">
-            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@(servicesSection?.Title ?? "Servizi Esclusivi")</h2>
+            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@(servicesSection?.Title ?? Localizer["ExclusiveServices"].Value)</h2>
             <div class="w-24 h-1 bg-[#D4AF37]"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -109,7 +111,7 @@
                     <div class="text-[#D4AF37] font-bold text-xl flex justify-between items-center w-full mt-4">
                         @if (service.IsBookable)
                         {
-                            <a class="service-book-btn btn-secondary !px-6 !py-2 !text-[10px] ml-4" data-service="@service.Id" href="#booking-form">PRENOTA ORA</a>
+                            <a class="service-book-btn btn-secondary !px-6 !py-2 !text-[10px] ml-4" data-service="@service.Id" href="#booking-form">@Localizer["BookNow"]</a>
                         }
                     </div>
                 </div>
@@ -131,12 +133,13 @@
 </section>
 
 <section class="py-32 px-6 md:px-16 overflow-hidden">
-    <div class="max-w-7xl mx-auto">
+    <div class="w-full max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start mb-16 gap-6">
             <div class="text-left">
-                <h2 class="text-4xl md:text-5xl font-semibold text-white tracking-tight section-title text-[24px] font-medium">@(toursSection?.Title ?? "Destinazioni d'Autore")</h2>
+                <h2 class="text-4xl md:text-5xl font-semibold text-white tracking-tight section-title text-[24px] font-medium">@(toursSection?.Title ?? Localizer["SignatureDestinations"].Value)</h2>
+                <div class="w-24 h-1 bg-[#D4AF37] mt-4"></div>
             </div>
-            <a class="group font-display uppercase text-[#D4AF37] text-[12px] tracking-[0.2em] transition-all duration-300 hover:underline hover:underline-offset-4" asp-action="Tours" asp-controller="Home">MOSTRA TUTTI I TOUR <span class="inline-block transition-transform duration-300 group-hover:translate-x-2">➔</span></a>
+            <a class="group font-display uppercase text-[#D4AF37] text-[12px] tracking-[0.2em] transition-all duration-300 hover:underline hover:underline-offset-4" asp-action="Tours" asp-controller="Home">@Localizer["ViewAllTours"] <span class="inline-block transition-transform duration-300 group-hover:translate-x-2">➔</span></a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach (var tour in Model.FeaturedTours.Take(3))
@@ -148,7 +151,7 @@
                         <span class="text-[#D4AF37] font-bold text-[10px] tracking-[0.3em] uppercase">@tour.CategoryName</span>
                         <h3 class="text-3xl font-semibold mt-2 leading-tight text-[24px] font-medium">@tour.Name</h3>
                         <div class="mt-4 overflow-hidden h-0 group-hover:h-8 transition-all duration-500 opacity-0 group-hover:opacity-100 flex items-center gap-2 text-[#D4AF37]">
-                            <span class="text-xs uppercase tracking-widest font-bold">Vedi Dettagli</span>
+                            <span class="text-xs uppercase tracking-widest font-bold">@Localizer["ViewDetails"]</span>
                             <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </div>
                     </div>
@@ -158,13 +161,14 @@
     </div>
 </section>
 
-<section class="py-32 bg-[#0a0a0a]" id="fleet">
-    <div class="px-6 md:px-16 max-w-7xl mx-auto">
+<section class="py-32 px-6 md:px-16 bg-[#0a0a0a]" id="fleet">
+    <div class="w-full max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start mb-16 gap-6">
             <div class="text-left">
-                <h2 class="text-4xl md:text-5xl font-semibold text-white tracking-tight section-title text-[24px] font-medium">@(fleetSection?.Title ?? "FLOTTA D'ECCELLENZA")</h2>
+                <h2 class="text-4xl md:text-5xl font-semibold text-white tracking-tight section-title text-[24px] font-medium">@(fleetSection?.Title ?? Localizer["FleetExcellence"].Value)</h2>
+                <div class="w-24 h-1 bg-[#D4AF37] mt-4"></div>
             </div>
-            <a class="group font-display uppercase text-[#D4AF37] text-[12px] tracking-[0.2em] transition-all duration-300 hover:underline hover:underline-offset-4" asp-action="Fleet" asp-controller="Home">MOSTRA TUTTA LA FLOTTA <span class="inline-block transition-transform duration-300 group-hover:translate-x-2">➔</span></a>
+            <a class="group font-display uppercase text-[#D4AF37] text-[12px] tracking-[0.2em] transition-all duration-300 hover:underline hover:underline-offset-4" asp-action="Fleet" asp-controller="Home">@Localizer["ViewAllFleet"] <span class="inline-block transition-transform duration-300 group-hover:translate-x-2">➔</span></a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @foreach (var vehicle in Model.FeaturedVehicles.Take(3))
@@ -173,15 +177,15 @@
                     <div class="relative h-64 overflow-hidden">
                         <img alt="@vehicle.Name" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="@MediaUrlBuilder.Build(vehicle.GalleryImages.FirstOrDefault()?.ImageUrl)" />
                         <div class="absolute top-4 right-4 bg-black/80 px-4 py-2 border border-[#D4AF37]">
-                            <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase">DISPONIBILE ORA</span>
+                            <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase">@Localizer["AvailableNow"]</span>
                         </div>
                     </div>
                     <div class="p-8">
                         <h3 class="text-2xl font-semibold mb-2 text-[24px] font-medium">@vehicle.Name @vehicle.Title</h3>
                         <p class="text-gray-500 font-light mb-6 text-[15px]">@vehicle.Description</p>
                         <div class="flex gap-4 border-t border-[#1A1A1A] pt-6">
-                            <span class="flex items-center gap-2 text-[11px] text-gray-400 font-bold tracking-wider uppercase"><span class="material-symbols-outlined text-sm">person</span> @vehicle.Seats Posti</span>
-                            <span class="flex items-center gap-2 text-[11px] text-gray-400 font-bold tracking-wider uppercase"><span class="material-symbols-outlined text-sm">luggage</span> @vehicle.Luggages Valigie</span>
+                            <span class="flex items-center gap-2 text-[11px] text-gray-400 font-bold tracking-wider uppercase"><span class="material-symbols-outlined text-sm">person</span> @vehicle.Seats @Localizer["Seats"]</span>
+                            <span class="flex items-center gap-2 text-[11px] text-gray-400 font-bold tracking-wider uppercase"><span class="material-symbols-outlined text-sm">luggage</span> @vehicle.Luggages @Localizer["Luggage"]</span>
                         </div>
                     </div>
                 </div>
@@ -191,44 +195,45 @@
 </section>
 
 <section class="py-32 px-6 md:px-16" id="booking-form">
-    <div class="max-w-4xl mx-auto">
-        <div class="mb-12 text-left">
-            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@(contactSection?.Title ?? "Richiesta Prenotazione")</h2>
-            <p class="text-gray-400 font-light text-lg text-[15px]">@(contactSection?.Description ?? "Compila il modulo per ricevere un preventivo personalizzato immediato.")</p>
+    <div class="w-full max-w-7xl mx-auto">
+        <div class="mb-12 text-center max-w-3xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@(contactSection?.Title ?? Localizer["BookingRequest"].Value)</h2>
+            <div class="w-24 h-1 bg-[#D4AF37] mx-auto mb-6"></div>
+            <p class="text-gray-400 font-light text-lg text-[15px]">@(contactSection?.Description ?? Localizer["BookingDescription"].Value)</p>
         </div>
-        <div class="charcoal-border bg-[#050505] p-8 md:p-20 relative">
+        <div class="charcoal-border bg-[#050505] p-8 md:p-20 relative w-full max-w-4xl mx-auto">
             <form id="form-booking" class="space-y-10">
                 @Html.AntiForgeryToken()
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div class="space-y-2">
-                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Nome Completo</label>
-                        <input name="FullName" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="Mario Rossi" type="text" />
+                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["FullName"]</label>
+                        <input name="FullName" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="@Localizer["SampleName"]" type="text" />
                     </div>
                     <div class="space-y-2">
-                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Email</label>
-                        <input name="Email" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="mario@esempio.it" type="email" />
+                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["Email"]</label>
+                        <input name="Email" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="@Localizer["SampleEmail"]" type="email" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div class="space-y-2 flex flex-col">
-                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Telefono <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
+                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["Phone"] <span class="text-gray-500 normal-case tracking-normal">@Localizer["Optional"]</span></label>
                         <input name="Phone" type="tel" placeholder="+39 333 1234567" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] text-white placeholder-gray-500 py-4 font-light text-[15px] focus:ring-0 focus:border-[#D4AF37] transition-colors" />
                     </div>
                     <div class="space-y-2 relative flex flex-col z-0">
-                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data del Servizio</label>
-                        <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="gg/mm/aaaa" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all cursor-pointer outline-none placeholder-gray-500" />
+                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["ServiceDate"]</label>
+                        <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="@Localizer["DatePlaceholder"]" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all cursor-pointer outline-none placeholder-gray-500" />
                         <span class="material-symbols-outlined absolute right-0 bottom-4 text-gray-500 pointer-events-none">calendar_today</span>
                     </div>
                 </div>
                 
                 <div class="grid grid-cols-1 gap-10">
                     <div class="space-y-2 relative flex flex-col w-full z-50" id="service-dropdown-container">
-                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Tipo di Servizio</label>
+                        <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["ServiceType"]</label>
                         
                         <select id="desktop-service-select" class="hidden md:block w-full truncate bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-gray-500 py-4 pr-10 font-light text-[15px] transition-all cursor-pointer outline-none appearance-none !bg-none" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;">
-                            <option class="bg-black text-gray-500" value="" hidden selected>Seleziona un servizio...</option>
+                            <option class="bg-black text-gray-500" value="" hidden selected>@Localizer["SelectService"]</option>
                             @if (Model.Services != null)
                             {
                                 @foreach (var service in Model.Services)
@@ -242,7 +247,7 @@
                         <div class="block md:hidden relative w-full">
                             <input type="hidden" id="mobile-service-input" />
                             <div id="service-btn" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] py-4 pr-10 text-gray-500 font-light text-[15px] cursor-pointer flex justify-between items-center outline-none">
-                                <span id="service-text" class="truncate text-gray-500">Seleziona un servizio...</span>
+                                <span id="service-text" class="truncate text-gray-500">@Localizer["SelectService"]</span>
                                 <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
                             </div>
                             
@@ -260,12 +265,12 @@
                 </div>
                 
                 <div class="space-y-2">
-                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Messaggio / Richieste Speciali <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
-                    <textarea name="Message" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all resize-none placeholder-gray-500" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["SpecialRequests"] <span class="text-gray-500 normal-case tracking-normal">@Localizer["Optional"]</span></label>
+                    <textarea name="Message" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all resize-none placeholder-gray-500" placeholder="@Localizer["AdditionalDetails"]" rows="3"></textarea>
                 </div>
                 
                 <button class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8 flex items-center justify-center" type="submit">
-                    Invia Richiesta di Prenotazione
+                    @Localizer["SendBookingRequest"]
                 </button>
                 <div id="booking-message" class="hidden mt-4 p-4 text-center font-bold"></div>
             </form>
@@ -273,78 +278,57 @@
     </div>
 </section>
 
-<section class="py-32 px-6 md:px-16 max-w-7xl mx-auto border-t border-[#1A1A1A]">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-        <div class="h-full min-h-[400px] border border-[#1A1A1A] relative overflow-hidden">
-            <iframe allowfullscreen="" height="100%" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3032.553259837731!2d16.2798153!3d40.6358178!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1338dfd6e64c3c39%3A0x6b77c4f4a3e9c8e!2sVia%20delle%20Rimembranze%2C%2075014%20Grassano%20MT!5e0!3m2!1sit!2sit!4v1710000000000!5m2!1sit!2sit" style="border:0; filter: grayscale(100%) invert(92%) contrast(83%);" width="100%"></iframe>
+<section class="py-32 px-6 md:px-16 bg-black border-t border-[#1A1A1A]" id="contatti">
+    <div class="w-full max-w-7xl mx-auto">
+        <div class="mb-16 text-center max-w-3xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-4 section-title text-[24px] font-medium">@Localizer["ContactUs"]</h2>
+            <div class="w-24 h-1 bg-[#D4AF37] mx-auto"></div>
         </div>
-        <div class="flex flex-col justify-center text-left">
-            <h2 class="text-4xl md:text-5xl font-semibold text-white mb-8 section-title text-[24px] font-medium">La Nostra Sede</h2>
-            <p class="text-lg text-gray-400 font-light mb-8 leading-relaxed text-[15px]">@Model.Company?.Address, @Model.Company?.City @Model.Company?.ZipCode</p>
-            <div class="pt-8 border-t border-[#1A1A1A] space-y-4">
-                <div class="flex items-center gap-4">
-                    <span class="material-symbols-outlined text-[#D4AF37]">location_on</span>
-                    <span class="text-gray-300 font-bold tracking-wide">@Model.Company?.Address, @Model.Company?.City @Model.Company?.ZipCode</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<section class="pt-32 pb-16 bg-black" id="contatti">
-    <div class="px-6 md:px-16 max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
-            <div class="text-left">
-                <h2 class="text-5xl font-semibold mb-12 text-white section-title text-[24px] font-medium">Contattaci</h2>
-                <div class="space-y-12">
-                    <div class="flex items-start gap-6">
-                        <span class="material-symbols-outlined text-[#D4AF37] text-4xl">phone_iphone</span>
-                        <div>
-                            <p class="font-bold text-gray-500 uppercase tracking-widest mb-2 text-[10px] text-[15px]">Cellulare</p>
-                            @foreach (var contact in (await CompanyApi.GetContactsAsync()).Where(c => c.Type == "Phone" || c.Type == "WhatsApp"))
-                            {
-                                <p class="text-2xl font-bold text-white text-[15px]">@contact.Value</p>
-                            }
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-6">
-                        <span class="material-symbols-outlined text-[#D4AF37] text-4xl">mail</span>
-                        <div>
-                            <p class="font-bold text-gray-500 uppercase tracking-widest mb-2 text-[10px] text-[15px]">Email</p>
-                            @foreach (var contact in (await CompanyApi.GetContactsAsync()).Where(c => c.Type == "Email"))
-                            {
-                                <p class="text-2xl font-bold text-white text-[15px]">@contact.Value</p>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="charcoal-border p-12 bg-[#050505]">
-                <form id="form-contact" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+
+            <div class="charcoal-border bg-[#050505] p-8 md:p-12 aspect-auto lg:aspect-square flex items-center">
+                <form id="form-contact" class="space-y-6 w-full">
                     @Html.AntiForgeryToken()
-                    <input name="FullName" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light" placeholder="Il Tuo Nome" type="text" />
-                    <input name="Email" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light" placeholder="Indirizzo Email" type="email" />
-                    <textarea name="Message" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light resize-none" placeholder="Scrivi qui la tua richiesta..." rows="4"></textarea>
-                    
+                    <input name="FullName" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light" placeholder="@Localizer["YourName"]" type="text" />
+                    <input name="Email" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light" placeholder="@Localizer["EmailAddress"]" type="email" />
+                    <textarea name="Message" required class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light resize-none" placeholder="@Localizer["WriteRequest"]" rows="4"></textarea>
+
                     <button class="w-full btn-secondary !text-[11px] !py-5 flex items-center justify-center" type="submit">
-                        Invia Messaggio
+                        @Localizer["SendMessage"]
                     </button>
                     <div id="contact-message" class="hidden mt-4 p-4 text-center font-bold"></div>
                 </form>
             </div>
+
+            <div class="charcoal-border aspect-square relative overflow-hidden">
+                <iframe allowfullscreen="" height="100%" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3032.553259837731!2d16.2798153!3d40.6358178!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1338dfd6e64c3c39%3A0x6b77c4f4a3e9c8e!2sVia%20delle%20Rimembranze%2C%2075014%20Grassano%20MT!5e0!3m2!1sit!2sit!4v1710000000000!5m2!1sit!2sit" style="border:0; filter: grayscale(100%) invert(92%) contrast(83%);" width="100%"></iframe>
+            </div>
+
         </div>
+
+       
     </div>
 </section>
 
 @section Scripts {
     <script>
+        // TRADUZIONI JAVASCRIPT
+        const locSelectService = `@Localizer["SelectService"]`;
+        const locServiceSelected = `@Localizer["SelectedService"]`;
+        const locErrSelectService = `@Localizer["SelectedServiceInfo"]`;
+        const locSending = `@Localizer["Sending"]`;
+        const locSuccess = `@Localizer["RequestSuccess"]`;
+        const locSuccessMsg = `@Localizer["MessageSuccess"]`;
+        const locError = `@Localizer["GenericError"]`;
+
         document.addEventListener('DOMContentLoaded', function() {
             
             // 1. Inizializza Flatpickr
             const dateInput = document.getElementById('custom-date-picker');
             if (dateInput) {
                 flatpickr(dateInput, {
-                    locale: "it",
+                    locale: "it", // Se vuoi puoi rendere dinamico anche questo in futuro
                     dateFormat: "d/m/Y",
                     minDate: "today",
                     disableMobile: true
@@ -399,7 +383,7 @@
                     const serviceId = this.getAttribute('data-service');
                     
                     // Cerca il nome del servizio corrispondente dall'opzione
-                    let serviceName = "Servizio Selezionato";
+                    let serviceName = locServiceSelected;
                     if (desktopServiceSelect) {
                         for (let i = 0; i < desktopServiceSelect.options.length; i++) {
                             if (desktopServiceSelect.options[i].value === serviceId) {
@@ -437,14 +421,14 @@
                     desktopServiceSelect.classList.add('text-gray-500');
                 }
                 if (serviceText && mobileInput) {
-                    serviceText.innerText = "Seleziona un servizio...";
+                    serviceText.innerText = locSelectService;
                     serviceText.classList.remove('text-white');
                     serviceText.classList.add('text-gray-500');
                     mobileInput.value = "";
                 }
             }
 
-            // 4. INVIO FORM PRENOTAZIONE (Corretto con parse sicuro e scomparsa bottone)
+            // 4. INVIO FORM PRENOTAZIONE
             const bookingForm = document.getElementById('form-booking');
             if (bookingForm) {
                 bookingForm.addEventListener('submit', async function(e) {
@@ -454,7 +438,7 @@
                     const finalServiceValue = isDesktop ? desktopServiceSelect.value : mobileInput.value;
 
                     if (!finalServiceValue) {
-                        alert("Seleziona il tipo di servizio desiderato.");
+                        alert(locErrSelectService);
                         return;
                     }
 
@@ -464,7 +448,7 @@
                     const submitBtn = bookingForm.querySelector('button[type="submit"]');
                     const originalBtnText = submitBtn.innerHTML;
 
-                    submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> INVIO IN CORSO...`;
+                    submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ${locSending}`;
                     submitBtn.disabled = true;
                     submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
 
@@ -481,7 +465,6 @@
                     const message = formData.get('Message');
                     if (message && message.trim() !== '') params.append('Message', message);
 
-                    // Sicurezza Guid: Passiamo il valore dinamicamente, "Altro" è caricato come ID dal DB
                     if (finalServiceValue) {
                         params.append('ServiceTypeId', finalServiceValue);
                     }
@@ -502,25 +485,22 @@
                             body: params.toString()
                         });
                         
-                        // PARSE JSON SICURO
                         let result = {};
                         try {
                             result = await response.json();
                         } catch (jsonError) {
-                            result = { success: response.ok, message: "Richiesta inviata con successo!" };
+                            result = { success: response.ok, message: locSuccess };
                         }
                         
                         if (response.ok) {
-                            messageDiv.textContent = result.message || "Richiesta inviata con successo!";
+                            messageDiv.textContent = result.message || locSuccess;
                             messageDiv.classList.remove('hidden', 'text-red-500');
                             messageDiv.classList.add('text-green-500');
                             
                             clearHomeBookingForm();
                             
-                            // NASCONDE IL BOTTONE
                             submitBtn.classList.add('hidden');
 
-                            // RIPRISTINA DOPO 5 SECONDI
                             setTimeout(() => {
                                 messageDiv.classList.add('hidden');
                                 messageDiv.textContent = '';
@@ -532,11 +512,10 @@
                             throw new Error(result.message || 'Errore server');
                         }
                     } catch (error) {
-                        messageDiv.textContent = "Si è verificato un errore. Riprova.";
+                        messageDiv.textContent = locError;
                         messageDiv.classList.remove('hidden', 'text-green-500');
                         messageDiv.classList.add('text-red-500');
                         
-                        // IN CASO DI ERRORE, SBLOCCA SUBITO IL BOTTONE
                         submitBtn.innerHTML = originalBtnText;
                         submitBtn.disabled = false;
                         submitBtn.classList.remove('hidden', 'opacity-80', 'cursor-not-allowed');
@@ -544,7 +523,7 @@
                 });
             }
 
-            // 5. INVIO FORM CONTATTI (Corretto con parse sicuro e scomparsa bottone)
+            // 5. INVIO FORM CONTATTI
             const contactForm = document.getElementById('form-contact');
             if (contactForm) {
                 contactForm.addEventListener('submit', async function(e) {
@@ -556,7 +535,7 @@
                     const submitBtn = contactForm.querySelector('button[type="submit"]');
                     const originalBtnText = submitBtn.innerHTML;
 
-                    submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> INVIO IN CORSO...`;
+                    submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ${locSending}`;
                     submitBtn.disabled = true;
                     submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
 
@@ -577,25 +556,21 @@
                             body: params.toString()
                         });
                         
-                        // PARSE JSON SICURO
                         let result = {};
                         try {
                             result = await response.json();
                         } catch (jsonError) {
-                            result = { success: response.ok, message: "Messaggio inviato con successo!" };
+                            result = { success: response.ok, message: locSuccessMsg };
                         }
 
                         if (response.ok) {
-                            messageDiv.textContent = result.message || "Messaggio inviato con successo!";
+                            messageDiv.textContent = result.message || locSuccessMsg;
                             messageDiv.classList.remove('hidden', 'text-red-500');
                             messageDiv.classList.add('text-green-500');
                             
                             contactForm.reset();
-                            
-                            // NASCONDE IL BOTTONE
                             submitBtn.classList.add('hidden');
 
-                            // RIPRISTINA DOPO 5 SECONDI
                             setTimeout(() => {
                                 messageDiv.classList.add('hidden');
                                 messageDiv.textContent = '';
@@ -607,11 +582,10 @@
                             throw new Error('Errore server');
                         }
                     } catch (error) {
-                        messageDiv.textContent = "Si è verificato un errore. Riprova.";
+                        messageDiv.textContent = locError;
                         messageDiv.classList.remove('hidden', 'text-green-500');
                         messageDiv.classList.add('text-red-500');
                         
-                        // IN CASO DI ERRORE, SBLOCCA SUBITO IL BOTTONE
                         submitBtn.innerHTML = originalBtnText;
                         submitBtn.disabled = false;
                         submitBtn.classList.remove('hidden', 'opacity-80', 'cursor-not-allowed');

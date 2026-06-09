@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+		Microsoft ResX Schema
+
+		Version 1.3
+
+		The primary goals of this format is to allow a simple XML format 
+		that is mostly human readable. The generation and parsing of the 
+		various data types are done through the TypeConverter classes 
+		associated with the data types.
+
+		Example:
+
+		... ado.net/XML headers & schema ...
+		<resheader name="resmimetype">text/microsoft-resx</resheader>
+		<resheader name="version">1.3</resheader>
+		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+		<data name="Name1">this is my long string</data>
+		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+			[base64 mime encoded serialized .NET Framework object]
+		</data>
+		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+			[base64 mime encoded string representing a byte array form of the .NET Framework object]
+		</data>
+
+		There are any number of "resheader" rows that contain simple 
+		name/value pairs.
+
+		Each data row contains a name, and value. The row also contains a 
+		type or mimetype. Type corresponds to a .NET class that support 
+		text/value conversion through the TypeConverter architecture. 
+		Classes that don't support this are serialized and stored with the 
+		mimetype set.
+
+		The mimetype is used for serialized objects, and tells the 
+		ResXResourceReader how to depersist the object. This is currently not 
+		extensible. For a given mimetype the value must be set accordingly:
+
+		Note - application/x-microsoft.net.object.binary.base64 is the format 
+		that the ResXResourceWriter will generate, however the reader can 
+		read any of the formats listed below.
+
+		mimetype: application/x-microsoft.net.object.binary.base64
+		value   : The object must be serialized with 
+			: System.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.soap.base64
+		value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.bytearray.base64
+		value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="PremiumExperience" xml:space="preserve">
+    <value>Premium Chauffeur Experience</value>
+  </data>
+  <data name="PrivateTransportTitle" xml:space="preserve">
+    <value>The Pinnacle of Private Transport</value>
+  </data>
+  <data name="BookJourney" xml:space="preserve">
+    <value>Book Your Journey</value>
+  </data>
+  <data name="DiscoverFleet" xml:space="preserve">
+    <value>Discover the Fleet</value>
+  </data>
+  <data name="AboutUs" xml:space="preserve">
+    <value>About Us</value>
+  </data>
+  <data name="CompanyDescription" xml:space="preserve">
+    <value>LIA NCC is a company specialized in chauffeur-driven car rental (NCC) and the organization of personalized transfers and tours, operating mainly in Basilicata and Puglia.</value>
+  </data>
+  <data name="Punctuality" xml:space="preserve">
+    <value>Punctuality and reliability</value>
+  </data>
+  <data name="ComfortSafety" xml:space="preserve">
+    <value>Comfort and safety</value>
+  </data>
+  <data name="Availability" xml:space="preserve">
+    <value>Maximum availability</value>
+  </data>
+  <data name="CustomServices" xml:space="preserve">
+    <value>Personalized services</value>
+  </data>
+  <data name="LocalKnowledge" xml:space="preserve">
+    <value>Local knowledge</value>
+  </data>
+  <data name="ExclusiveServices" xml:space="preserve">
+    <value>Exclusive Services</value>
+  </data>
+  <data name="BookNow" xml:space="preserve">
+    <value>BOOK NOW</value>
+  </data>
+  <data name="SignatureDestinations" xml:space="preserve">
+    <value>Signature Destinations</value>
+  </data>
+  <data name="ViewAllTours" xml:space="preserve">
+    <value>VIEW ALL TOURS</value>
+  </data>
+  <data name="ViewDetails" xml:space="preserve">
+    <value>View Details</value>
+  </data>
+  <data name="FleetExcellence" xml:space="preserve">
+    <value>FLEET OF EXCELLENCE</value>
+  </data>
+  <data name="ViewAllFleet" xml:space="preserve">
+    <value>VIEW ALL FLEET</value>
+  </data>
+  <data name="AvailableNow" xml:space="preserve">
+    <value>AVAILABLE NOW</value>
+  </data>
+  <data name="Seats" xml:space="preserve">
+    <value>SEATS</value>
+  </data>
+  <data name="Luggage" xml:space="preserve">
+    <value>LUGGAGE</value>
+  </data>
+  <data name="BookingRequest" xml:space="preserve">
+    <value>Booking Request</value>
+  </data>
+  <data name="BookingDescription" xml:space="preserve">
+    <value>Fill out the form to receive an immediate personalized quote.</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Full Name</value>
+  </data>
+  <data name="SampleName" xml:space="preserve">
+    <value>John Doe</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="SampleEmail" xml:space="preserve">
+    <value>john@example.com</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>(optional)</value>
+  </data>
+  <data name="ServiceDate" xml:space="preserve">
+    <value>Service Date</value>
+  </data>
+  <data name="DatePlaceholder" xml:space="preserve">
+    <value>dd/mm/yyyy</value>
+  </data>
+  <data name="ServiceType" xml:space="preserve">
+    <value>Service Type</value>
+  </data>
+  <data name="SelectService" xml:space="preserve">
+    <value>Select a service...</value>
+  </data>
+  <data name="SpecialRequests" xml:space="preserve">
+    <value>Message / Special Requests</value>
+  </data>
+  <data name="AdditionalDetails" xml:space="preserve">
+    <value>Indicate additional details...</value>
+  </data>
+  <data name="SendBookingRequest" xml:space="preserve">
+    <value>Send Booking Request</value>
+  </data>
+  <data name="OurLocation" xml:space="preserve">
+    <value>Our Location</value>
+  </data>
+  <data name="ContactUs" xml:space="preserve">
+    <value>Contact Us</value>
+  </data>
+  <data name="Mobile" xml:space="preserve">
+    <value>Mobile</value>
+  </data>
+  <data name="YourName" xml:space="preserve">
+    <value>Your Name</value>
+  </data>
+  <data name="EmailAddress" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="WriteRequest" xml:space="preserve">
+    <value>Write your request here...</value>
+  </data>
+  <data name="SendMessage" xml:space="preserve">
+    <value>Send Message</value>
+  </data>
+  <data name="SelectedService" xml:space="preserve">
+    <value>Selected Service</value>
+  </data>
+  <data name="SelectedServiceInfo" xml:space="preserve">
+    <value>Please select the desired service type.</value>
+  </data>
+  <data name="Sending" xml:space="preserve">
+    <value>SENDING...</value>
+  </data>
+  <data name="RequestSuccess" xml:space="preserve">
+    <value>Request sent successfully!</value>
+  </data>
+  <data name="MessageSuccess" xml:space="preserve">
+    <value>Message sent successfully!</value>
+  </data>
+</root>

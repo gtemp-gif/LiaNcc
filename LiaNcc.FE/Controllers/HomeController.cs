@@ -65,7 +65,7 @@ namespace LiaNcc.FE.Controllers
             try { model.FeaturedVehicles = await _vehiclesApi.GetFeaturedAsync(culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Vehicles", "LoadFeatured", "Error loading vehicles", ex); }
             try { model.FeaturedTours = await _toursApi.GetFeaturedAsync(culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Tours", "LoadFeatured", "Error loading tours", ex); }
             try { model.Partners = await _partnersApi.GetActiveAsync(); } catch (Exception ex) { await _appLogger.LogErrorAsync("Partners", "LoadActive", "Error loading partners", ex); }
-            try { model.Company = await _companyApi.GetCompanyProfileAsync(); } catch (Exception ex) { await _appLogger.LogErrorAsync("Company", "LoadProfile", "Error loading company profile", ex); }
+            try { model.Company = await _companyApi.GetCompanyProfileAsync(culture); } catch (Exception ex) { await _appLogger.LogErrorAsync("Company", "LoadProfile", "Error loading company profile", ex); }
 
             return View(model);
         }

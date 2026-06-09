@@ -36,7 +36,7 @@ namespace LiaNcc.FE.Services.Interfaces
 
     public interface ICompanyApiClient
     {
-        Task<CompanyProfile?> GetCompanyProfileAsync();
+        Task<CompanyProfile?> GetCompanyProfileAsync(string? culture = null);
         Task<List<CompanyContactDto>> GetContactsAsync();
     }
 

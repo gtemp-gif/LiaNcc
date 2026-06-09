@@ -1,6 +1,8 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model FleetViewModel
 @{
-    ViewData["Title"] = "La Nostra Flotta";
+    ViewData["Title"] = Localizer["FleetTitle"].Value;
     Layout = "_Layout";
 }
 
@@ -17,9 +19,9 @@
 
 <main class="bg-black pt-32">
     <section class="px-6 md:px-12 py-24 max-w-screen-2xl mx-auto text-center">
-        <h1 class="section-title text-4xl md:text-5xl text-white mb-6 uppercase tracking-[3px] font-semibold">LA NOSTRA FLOTTA</h1>
+        <h1 class="section-title text-4xl md:text-5xl text-white mb-6 uppercase tracking-[3px] font-semibold">@Localizer["FleetTitle"]</h1>
         <p class="font-light text-lg text-[#d0c5af] max-w-2xl mx-auto opacity-80">
-            Sperimenta l'eccellenza del servizio chauffeur italiano con la nostra selezione curata di veicoli prestigiosi, progettati per il massimo del comfort e dello stile.
+            @Localizer["FleetDescription"]
         </p>
         <div class="w-24 h-px bg-[#D4AF37] mx-auto mt-12 opacity-50"></div>
     </section>
@@ -45,14 +47,14 @@
                     @if (vehicle.IsBookable)
                     {
                         <div class="absolute top-4 right-4 bg-black/80 px-4 py-2 border border-[#D4AF37]">
-                            <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase">PRENOTABILE</span>
+                            <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase">@Localizer["Bookable"]</span>
                         </div>
                     }
                 </div>
 
                 <div class="lg:col-span-5 @textOrderClass space-y-8">
                     <div class="space-y-2">
-                        <span class="font-bold text-[#D4AF37] tracking-[0.3em] text-[10px] uppercase">@vehicle.CategoryName</span>
+                        <span class="font-bold text-[#D4AF37] tracking-[0.3em] text-[10px] uppercase">@vehicle.Title</span>
                         <h2 class="text-3xl font-semibold text-white uppercase" style="letter-spacing: 2px;">@vehicle.Name @vehicle.Title</h2>
                     </div>
                     
@@ -63,11 +65,11 @@
                     <div class="grid grid-cols-2 gap-8 border-y border-[#D4AF37]/10 py-8">
                         <div class="flex items-center gap-4">
                             <span class="material-symbols-outlined text-[#D4AF37]">person</span>
-                            <span class="font-bold text-white text-[10px] uppercase tracking-widest">@vehicle.Seats PASSEGGERI</span>
+                            <span class="font-bold text-white text-[10px] uppercase tracking-widest">@vehicle.Seats @Localizer["Passengers"]</span>
                         </div>
                         <div class="flex items-center gap-4">
                             <span class="material-symbols-outlined text-[#D4AF37]">luggage</span>
-                            <span class="font-bold text-white text-[10px] uppercase tracking-widest">@vehicle.Luggages VALIGIE</span>
+                            <span class="font-bold text-white text-[10px] uppercase tracking-widest">@vehicle.Luggages @Localizer["Luggage"]</span>
                         </div>
                         
                         @foreach (var feature in vehicle.Features.Take(2))
@@ -82,13 +84,13 @@
                     @if (vehicle.IsBookable)
                     {
                         <button class="w-full py-5 bg-[#D4AF37] text-black font-bold uppercase text-[10px] tracking-widest hover:bg-[#E5C158] transition-all" onclick="openBookingModal('@vehicle.Name', '@vehicle.Id', @vehicle.Seats)">
-                            PRENOTA ORA
+                            @Localizer["BookNow"]
                         </button>
                     }
                     else
                     {
                         <button class="w-full py-5 border border-[#D4AF37] text-[#D4AF37] bg-transparent font-bold uppercase text-[10px] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all" onclick="openBookingModal('@vehicle.Name', '@vehicle.Id', @vehicle.Seats)">
-                            CHIEDI INFORMAZIONI
+                            @Localizer["RequestInfo"]
                         </button>
                     }
                 </div>
@@ -100,18 +102,18 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12">
             <div class="bg-[#050505] border border-[#D4AF37]/10 p-10 flex flex-col items-center text-center group hover:border-[#D4AF37]/30 transition-colors">
                 <span class="material-symbols-outlined text-[#D4AF37] text-4xl mb-6">verified</span>
-                <h4 class="text-xl font-semibold text-white mb-4 uppercase tracking-wider">Puntualità</h4>
-                <p class="text-[#d0c5af] text-sm font-light leading-relaxed">Arrivo previsto 15 minuti prima di ogni prelievo programmato.</p>
+                <h4 class="text-xl font-semibold text-white mb-4 uppercase tracking-wider">@Localizer["Punctuality"]</h4>
+                <p class="text-[#d0c5af] text-sm font-light leading-relaxed">@Localizer["PunctualityDesc"]</p>
             </div>
             <div class="bg-[#050505] border border-[#D4AF37]/10 p-10 flex flex-col items-center text-center group hover:border-[#D4AF37]/30 transition-colors">
                 <span class="material-symbols-outlined text-[#D4AF37] text-4xl mb-6">security</span>
-                <h4 class="text-xl font-semibold text-white mb-4 uppercase tracking-wider">Discrezione</h4>
-                <p class="text-[#d0c5af] text-sm font-light leading-relaxed">Chauffeur professionisti addestrati alla riservatezza e alla privacy d'élite.</p>
+                <h4 class="text-xl font-semibold text-white mb-4 uppercase tracking-wider">@Localizer["Discretion"]</h4>
+                <p class="text-[#d0c5af] text-sm font-light leading-relaxed">@Localizer["DiscretionDesc"]</p>
             </div>
             <div class="bg-[#050505] border border-[#D4AF37]/10 p-10 flex flex-col items-center text-center group hover:border-[#D4AF37]/30 transition-colors">
                 <span class="material-symbols-outlined text-[#D4AF37] text-4xl mb-6">build_circle</span>
-                <h4 class="text-xl font-semibold text-white mb-4 uppercase tracking-wider">Manutenzione Meticolosa</h4>
-                <p class="text-[#d0c5af] text-sm font-light leading-relaxed">Veicoli ispezionati e igienizzati quotidianamente per garantire i massimi standard di sicurezza, estetica e comfort.</p>
+                <h4 class="text-xl font-semibold text-white mb-4 uppercase tracking-wider">@Localizer["MeticulousMaintenance"]</h4>
+                <p class="text-[#d0c5af] text-sm font-light leading-relaxed">@Localizer["MeticulousMaintenanceDesc"]</p>
             </div>
         </div>
     </section>
@@ -124,8 +126,8 @@
         </button>
         
         <div class="mb-12 text-left">
-            <h2 class="section-title text-3xl md:text-4xl text-white mb-2 uppercase tracking-[3px]">Richiesta Prenotazione</h2>
-            <p class="text-gray-400 font-light text-lg">Ricevi un preventivo personalizzato per: <span class="text-[#D4AF37] font-semibold" id="selectedCarName"></span></p>
+            <h2 class="section-title text-3xl md:text-4xl text-white mb-2 uppercase tracking-[3px]">@Localizer["BookingRequest"]</h2>
+            <p class="text-gray-400 font-light text-lg">@Localizer["QuoteFor"] <span class="text-[#D4AF37] font-semibold" id="selectedCarName"></span></p>
         </div>
         
         <form id="fleetBookingForm" class="space-y-10">
@@ -134,33 +136,33 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div class="space-y-2">
-                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Nome Completo</label>
-                    <input name="FullName" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="Mario Rossi" type="text" required />
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["FullName"]</label>
+                    <input name="FullName" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="@(Localizer["SampleName"])" type="text" required />
                 </div>
                 <div class="space-y-2">
-                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Email</label>
-                    <input name="Email" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="mario@esempio.it" type="email" required />
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["Email"]</label>
+                    <input name="@Localizer["Email"]" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="@(Localizer["SampleEmail"])" type="email" required />
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div class="space-y-2">
-                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Telefono <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["Phone"] <span class="text-gray-500 normal-case tracking-normal">@Localizer["Optional"]</span></label>
                     <input name="Phone" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500" placeholder="+39 333 1234567" type="tel" />
                 </div>
                 <div class="space-y-2 relative flex flex-col z-0">
-                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Data del Servizio</label>
-                    <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="gg/mm/aaaa" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500 cursor-pointer outline-none" required />
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["ServiceDate"]</label>
+                    <input type="text" name="ServiceDateStr" id="custom-date-picker" placeholder="@(Localizer["DatePlaceholder"])" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 font-light text-[15px] transition-all placeholder-gray-500 cursor-pointer outline-none" required />
                     <span class="material-symbols-outlined absolute right-0 bottom-4 text-gray-500 pointer-events-none">calendar_today</span>
                 </div>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div class="space-y-2 relative flex flex-col w-full z-50">
-                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Tipo di Servizio</label>
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["ServiceType"]</label>
                     
                     <select id="desktop-service-select" class="hidden md:block w-full truncate bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-gray-500 py-4 pr-10 font-light text-[15px] transition-all cursor-pointer outline-none appearance-none !bg-none" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;">
-                        <option class="bg-black text-gray-500" value="" hidden selected>Seleziona un servizio...</option>
+                        <option class="bg-black text-gray-500" value="" hidden selected>@Localizer["SelectService"]</option>
                         @if (Model.Services != null)
                         {
                             @foreach (var service in Model.Services)
@@ -174,7 +176,7 @@
                     <div class="block md:hidden relative w-full">
                         <input type="hidden" id="mobile-service-input" />
                         <div id="service-btn" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] py-4 pr-10 text-gray-500 font-light text-[15px] cursor-pointer flex justify-between items-center outline-none">
-                            <span id="service-text" class="truncate">Seleziona un servizio...</span>
+                            <span id="service-text" class="truncate">@Localizer["SelectService"]</span>
                             <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
                         </div>
                         <ul id="service-menu" class="hidden absolute top-[100%] left-0 w-full bg-[#050505] border border-[#1A1A1A] shadow-2xl z-[60] m-0 p-0 list-none max-h-64 overflow-y-auto">
@@ -190,7 +192,7 @@
                 </div>
 
                 <div class="space-y-2 relative flex flex-col w-full z-40">
-                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Numero Ospiti</label>
+                    <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["GuestsNumber"]</label>
                     
                     <select id="desktop-guests-select" class="hidden md:block w-full truncate bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-gray-500 py-4 pr-10 font-light text-[15px] transition-all cursor-pointer outline-none appearance-none !bg-none" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important; color-scheme: dark;">
                     </select>
@@ -199,7 +201,7 @@
                     <div class="block md:hidden relative w-full">
                         <input type="hidden" id="mobile-guests-input" />
                         <div id="guests-btn" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] py-4 pr-10 text-gray-500 font-light text-[15px] cursor-pointer flex justify-between items-center outline-none">
-                            <span id="guests-text" class="truncate text-gray-500">Seleziona numero ospiti</span>
+                            <span id="guests-text" class="truncate text-gray-500">@Localizer["SelectGuests"]</span>
                             <span class="material-symbols-outlined absolute right-0 bottom-4 text-[#D4AF37] pointer-events-none">expand_more</span>
                         </div>
                         <ul id="guests-menu" class="hidden absolute top-[100%] left-0 w-full bg-[#050505] border border-[#1A1A1A] shadow-2xl m-0 p-0 list-none max-h-64 overflow-y-auto">
@@ -209,12 +211,12 @@
             </div>
             
             <div class="space-y-2">
-                <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">Note Aggiuntive <span class="text-gray-500 normal-case tracking-normal">(opzionale)</span></label>
-                <textarea name="Message" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500 resize-none font-light text-[15px]" placeholder="Indica dettagli aggiuntivi..." rows="3"></textarea>
+                <label class="font-bold text-[#D4AF37] text-[10px] uppercase tracking-widest">@Localizer["AdditionalNotes"] <span class="text-gray-500 normal-case tracking-normal">@Localizer["Optional"]</span></label>
+                <textarea name="Message" class="w-full bg-transparent border-0 border-b border-[#1A1A1A] focus:border-[#D4AF37] focus:ring-0 text-white py-4 transition-all placeholder-gray-500 resize-none font-light text-[15px]" placeholder="@(Localizer["AdditionalDetails"])" rows="3"></textarea>
             </div>
             
             <button class="w-full py-6 bg-[#D4AF37] text-black font-bold uppercase text-[12px] tracking-[0.2em] hover:bg-[#E5C158] transition-all mt-8 flex items-center justify-center" type="submit">
-                Invia Richiesta di Prenotazione
+                @Localizer["SendBookingRequest"]
             </button>
             <div id="modal-booking-message" class="hidden mt-4 p-4 text-center font-bold text-[15px]"></div>
         </form>
@@ -223,6 +225,15 @@
 
 @section Scripts {
     <script>
+        const locSelectService = `@Localizer["SelectService"]`;
+        const locSelectGuests = `@Localizer["SelectGuests"]`;
+        const locPerson = `@Localizer["Person"]`;
+        const locPeople = `@Localizer["People"]`;
+        const locSelectServiceError = `@Localizer["SelectServiceError"]`;
+        const locSelectGuestsError = `@Localizer["SelectGuestsError"]`;
+        const locSending = `@Localizer["Sending"]`;
+        const locRequestSuccess = `@Localizer["RequestSuccess"]`;
+        const locRequestError = `@Localizer["RequestError"]`;
         function clearFleetForm() {
             const form = document.getElementById('fleetBookingForm');
             const dateInput = document.getElementById('custom-date-picker');
@@ -242,7 +253,7 @@
                 desktopServiceSelect.classList.add('text-gray-500');
             }
             if (serviceText && mobileServiceInput) {
-                serviceText.innerText = "Seleziona un servizio...";
+                serviceText.innerText = locSelectService;
                 serviceText.classList.remove('text-white');
                 serviceText.classList.add('text-gray-500');
                 mobileServiceInput.value = "";
@@ -254,7 +265,7 @@
                 desktopGuestsSelect.classList.add('text-gray-500');
             }
             if (guestsText && mobileGuestsInput) {
-                guestsText.innerText = "Seleziona numero ospiti";
+                guestsText.innerText = locSelectGuests;
                 guestsText.classList.remove('text-white');
                 guestsText.classList.add('text-gray-500');
                 mobileGuestsInput.value = "";
@@ -268,9 +279,9 @@
             // Popola Tendina Desktop
             const desktopSelect = document.getElementById('desktop-guests-select');
             if (desktopSelect) {
-                desktopSelect.innerHTML = '<option class="bg-black text-gray-500" value="" hidden selected>Seleziona numero ospiti</option>';
+                desktopSelect.innerHTML = `<option class="bg-black text-gray-500" value="" hidden selected>${locSelectGuests}</option>`;
                 for (let i = 1; i <= maxSeats; i++) {
-                    let label = i === 1 ? 'Persona' : 'Persone';
+                    let label = i === 1 ? locPerson : locPeople;
                     desktopSelect.innerHTML += `<option class="bg-black text-[#D4AF37]" value="${i}">${i} ${label}</option>`;
                 }
             }
@@ -280,7 +291,7 @@
             if (mobileMenu) {
                 mobileMenu.innerHTML = '';
                 for (let i = 1; i <= maxSeats; i++) {
-                    let label = i === 1 ? 'Persona' : 'Persone';
+                    let label = i === 1 ? locPerson : locPeople;
                     const li = document.createElement('li');
                     li.className = "px-4 py-4 text-white hover:bg-[#D4AF37] hover:text-black cursor-pointer transition-colors text-[15px] font-light border-b border-[#1A1A1A]";
                     li.setAttribute('data-value', i);
@@ -411,7 +422,7 @@
                     const originalText = submitBtn.innerHTML;
 
                     // 1. ATTIVIAMO IL LOADER SUL BOTTONE
-                    submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> INVIO IN CORSO...`;
+                    submitBtn.innerHTML = `<svg class="animate-spin inline-block mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ${locSending}`;
                     submitBtn.disabled = true;
                     submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
 
@@ -420,7 +431,7 @@
                     
                     params.append('SourcePage', 'Flotta: ' + document.getElementById('selectedCarName').innerText);
                     params.append('FullName', formData.get('FullName'));
-                    params.append('Email', formData.get('Email'));
+                    params.append('@Localizer["Email"]', formData.get('@Localizer["Email"]'));
                     params.append('MaxSeats', finalGuestsValue);
 
                     const phone = formData.get('Phone');

@@ -110,9 +110,10 @@ namespace LiaNcc.FE.Services.Implementations
             _httpClient = httpClient;
         }
 
-        public async Task<CompanyProfile?> GetCompanyProfileAsync()
+        public async Task<CompanyProfile?> GetCompanyProfileAsync(string? culture = null)
         {
-            return await _httpClient.GetFromJsonAsync<CompanyProfile>("company", _jsonSerializerOptions);
+            var url = string.IsNullOrEmpty(culture) ? "company" : $"company?culture={culture}";
+            return await _httpClient.GetFromJsonAsync<CompanyProfile>(url, _jsonSerializerOptions);
         }
 
 
