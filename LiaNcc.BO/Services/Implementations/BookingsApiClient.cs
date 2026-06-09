@@ -65,11 +65,11 @@ namespace LiaNcc.BO.Services.Implementations
             EnsureValidResponse(response);
         }
 
-        public async Task<IEnumerable<BookingServiceType>> GetServiceTypesAsync()
+        public async Task<IEnumerable<Service>> GetServiceTypesAsync()
         {
             var response = await _httpClient.GetAsync($"{_endpointUrl}/service-types");
             EnsureValidResponse(response);
-            return await response.Content.ReadFromJsonAsync<IEnumerable<BookingServiceType>>(_jsonSerializerOptions) ?? new List<BookingServiceType>();
+            return await response.Content.ReadFromJsonAsync<IEnumerable<Service>>(_jsonSerializerOptions) ?? new List<Service>();
         }
     }
 }

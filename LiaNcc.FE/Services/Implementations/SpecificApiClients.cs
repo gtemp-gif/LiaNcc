@@ -220,10 +220,10 @@ namespace LiaNcc.FE.Services.Implementations
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<IEnumerable<BookingServiceType>> GetServiceTypesAsync(string? culture = null)
+        public async Task<IEnumerable<Service>> GetServiceTypesAsync(string? culture = null)
         {
             var url = string.IsNullOrEmpty(culture) ? "bookings/service-types" : $"bookings/service-types?culture={culture}";
-            return await _httpClient.GetFromJsonAsync<IEnumerable<BookingServiceType>>(url, _jsonSerializerOptions) ?? Array.Empty<BookingServiceType>();
+            return await _httpClient.GetFromJsonAsync<IEnumerable<Service>>(url, _jsonSerializerOptions) ?? Array.Empty<Service>();
         }
 
         public async Task<IEnumerable<BookingPassengerOption>> GetPassengerOptionsAsync(string? culture = null)

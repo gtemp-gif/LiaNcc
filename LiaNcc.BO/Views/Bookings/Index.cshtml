@@ -14,7 +14,7 @@
         <form method="get" class="row g-3">
             @{
                 var filter = ViewBag.Filter as LiaNcc.Models.DTOs.Requests.BookingFilterRequest;
-                var serviceTypes = ViewBag.ServiceTypes as IEnumerable<LiaNcc.Models.Entities.BookingServiceType>;
+                var serviceTypes = ViewBag.ServiceTypes as IEnumerable<LiaNcc.Models.Entities.Service>;
             }
             <div class="col-md-2">
                 <label class="form-label small">Stato</label>

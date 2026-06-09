@@ -87,7 +87,7 @@ namespace LiaNcc.WebAPI.Services
                 <p><strong>Email:</strong> {booking.Email}</p>
                 <p><strong>Telefono:</strong> {booking.Phone ?? "Non fornito"}</p>
                 <p><strong>Data Servizio:</strong> {booking.ServiceDate:dd/MM/yyyy HH:mm}</p>
-                <p><strong>Servizio:</strong> {booking.ServiceType?.Name ?? booking.ServiceType?.Code ?? "-"}</p>
+                <p><strong>Servizio:</strong> {booking.ServiceType?.Name ?? "-"}</p>
                 <p><strong>Opzione Passeggeri:</strong> {booking.PassengerOption?.Name ?? "-"}</p>
                 <p><strong>Tour:</strong> {booking.Tour?.Name ?? "-"}</p>
                 <p><strong>Veicolo:</strong> {(booking.Vehicle != null ? $"{booking.Vehicle.Name} ({booking.Vehicle.VehicleCategory?.Name})" : "-")}</p>
@@ -109,7 +109,7 @@ namespace LiaNcc.WebAPI.Services
 
             string requestedDetails = "";
             if (booking.Tour != null) requestedDetails += $"<li><strong>Tour:</strong> {booking.Tour.Name}</li>";
-            if (booking.ServiceType != null) requestedDetails += $"<li><strong>Servizio:</strong> {booking.ServiceType.Name ?? booking.ServiceType.Code}</li>";
+            if (booking.ServiceType != null) requestedDetails += $"<li><strong>Servizio:</strong> {booking.ServiceType.Name}</li>";
             if (booking.Vehicle != null) requestedDetails += $"<li><strong>Veicolo:</strong> {booking.Vehicle.Name} ({booking.Vehicle.VehicleCategory?.Name})</li>";
             if (booking.PassengerOption != null) requestedDetails += $"<li><strong>Opzione Passeggeri:</strong> {booking.PassengerOption.Name}</li>";
 
@@ -136,7 +136,7 @@ namespace LiaNcc.WebAPI.Services
 
             string requestedDetails = "";
             if (booking.Tour != null) requestedDetails += $"<li><strong>Tour:</strong> {booking.Tour.Name}</li>";
-            if (booking.ServiceType != null) requestedDetails += $"<li><strong>Servizio:</strong> {booking.ServiceType.Name ?? booking.ServiceType.Code}</li>";
+            if (booking.ServiceType != null) requestedDetails += $"<li><strong>Servizio:</strong> {booking.ServiceType.Name}</li>";
             if (booking.Vehicle != null) requestedDetails += $"<li><strong>Veicolo:</strong> {booking.Vehicle.Name} ({booking.Vehicle.VehicleCategory?.Name})</li>";
             if (booking.PassengerOption != null) requestedDetails += $"<li><strong>Opzione Passeggeri:</strong> {booking.PassengerOption.Name}</li>";
 
@@ -163,7 +163,7 @@ namespace LiaNcc.WebAPI.Services
 
             string requestedDetails = "";
             if (booking.Tour != null) requestedDetails += $"<li><strong>Tour:</strong> {booking.Tour.Name}</li>";
-            if (booking.ServiceType != null) requestedDetails += $"<li><strong>Servizio:</strong> {booking.ServiceType.Name ?? booking.ServiceType.Code}</li>";
+            if (booking.ServiceType != null) requestedDetails += $"<li><strong>Servizio:</strong> {booking.ServiceType.Name}</li>";
             if (booking.Vehicle != null) requestedDetails += $"<li><strong>Veicolo:</strong> {booking.Vehicle.Name} ({booking.Vehicle.VehicleCategory?.Name})</li>";
             if (booking.PassengerOption != null) requestedDetails += $"<li><strong>Opzione Passeggeri:</strong> {booking.PassengerOption.Name}</li>";
 

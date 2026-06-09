@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LiaNcc.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/contactmessages")]
+    [Route("api/contact-messages")]
     [Authorize]
     public class ContactMessagesController : ControllerBase
     {

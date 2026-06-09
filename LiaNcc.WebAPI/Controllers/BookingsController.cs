@@ -187,14 +187,14 @@ namespace LiaNcc.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("service-types")]
-        public async Task<ActionResult<IEnumerable<BookingServiceType>>> GetServiceTypes([FromQuery] string? culture)
+        public async Task<ActionResult<IEnumerable<Service>>> GetServiceTypes([FromQuery] string? culture)
         {
             var types = await _bookingRepository.GetServiceTypesAsync();
             if (!string.IsNullOrEmpty(culture))
             {
                 foreach (var type in types)
                 {
-                    var translations = await _localizationRepository.GetByEntityAsync("BookingServiceType", type.Id, culture);
+                    var translations = await _localizationRepository.GetByEntityAsync("Service", type.Id, culture);
                     type.Name = _resolver.Resolve(translations, "Name", type.Name, culture);
                 }
             }
@@ -227,8 +227,8 @@ namespace LiaNcc.WebAPI.Controllers
                 Phone = booking.Phone,
                 ServiceDate = booking.ServiceDate,
                 ServiceTypeId = booking.ServiceTypeId,
-                ServiceTypeName = booking.ServiceType?.Name ?? booking.ServiceType?.Code,
-                ServiceTypeDescription = null, // Can be added if needed, BookingServiceType entity doesn't have it yet
+                ServiceTypeName = booking.ServiceType?.Name,
+                ServiceTypeDescription = booking.ServiceType?.Description, // Can be added if needed, Service entity doesn't have it yet
                 PassengerOptionId = booking.PassengerOptionId,
                 PassengerOptionName = booking.PassengerOption?.Name,
                 PassengerOptionDescription = null,

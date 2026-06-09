@@ -28,7 +28,7 @@ namespace LiaNcc.Repository
         public DbSet<TourSection> TourSections { get; set; } = null!;
         public DbSet<TourGalleryImage> TourGalleryImages { get; set; } = null!;
         public DbSet<TourInfoItem> TourInfoItems { get; set; } = null!;
-        public DbSet<BookingServiceType> BookingServiceTypes { get; set; } = null!;
+        //public DbSet<BookingServiceType> BookingServiceTypes { get; set; } = null!;
         public DbSet<BookingPassengerOption> BookingPassengerOptions { get; set; } = null!;
         public DbSet<Booking> Bookings { get; set; } = null!;
         public DbSet<ContactMessage> ContactMessages { get; set; } = null!;
@@ -211,12 +211,7 @@ namespace LiaNcc.Repository
             });
 
             // Bookings
-            modelBuilder.Entity<BookingServiceType>(entity => {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
-                entity.Property(e => e.Code).IsRequired().HasMaxLength(50);
-                entity.HasIndex(e => e.Code).IsUnique();
-            });
+            
             modelBuilder.Entity<BookingPassengerOption>(entity => {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
@@ -226,7 +221,7 @@ namespace LiaNcc.Repository
                 entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(e => e.FullName).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(256);
-                entity.HasOne(e => e.ServiceType).WithMany(s => s.Bookings).HasForeignKey(e => e.ServiceTypeId).OnDelete(DeleteBehavior.ClientSetNull);
+                entity.HasOne(e => e.ServiceType); //.WithMany(s => s.Bookings).HasForeignKey(e => e.ServiceTypeId).OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(e => e.PassengerOption).WithMany(p => p.Bookings).HasForeignKey(e => e.PassengerOptionId).OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(e => e.Tour).WithMany(t => t.Bookings).HasForeignKey(e => e.TourId).OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(e => e.Vehicle).WithMany(v => v.Bookings).HasForeignKey(e => e.VehicleId).OnDelete(DeleteBehavior.ClientSetNull);

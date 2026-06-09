@@ -14,7 +14,7 @@ namespace LiaNcc.BO.Services.Implementations
     public class ContactMessagesApiClient : BaseApiClient<ContactMessage, Guid>, IContactMessagesApiClient
     {
         public ContactMessagesApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
-            : base(httpClient, httpContextAccessor, "contactmessages") { }
+            : base(httpClient, httpContextAccessor, "contact-messages") { }
 
         public async Task<IEnumerable<ContactMessage>> GetAllAsync(ContactMessageFilterRequest? filter = null)
         {

@@ -127,9 +127,9 @@ namespace LiaNcc.Repository.Implementations
             }
         }
 
-        public async Task<IEnumerable<BookingServiceType>> GetServiceTypesAsync()
+        public async Task<IEnumerable<Service>> GetServiceTypesAsync()
         {
-            return await _context.BookingServiceTypes.AsNoTracking().Where(s => s.IsActive).OrderBy(s => s.SortOrder).ToListAsync();
+            return await _context.Services.AsNoTracking().Where(s => s.IsActive).OrderBy(s => s.SortOrder).ToListAsync();
         }
 
         public async Task<IEnumerable<BookingPassengerOption>> GetPassengerOptionsAsync()

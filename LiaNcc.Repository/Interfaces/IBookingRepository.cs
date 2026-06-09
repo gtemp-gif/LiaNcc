@@ -16,7 +16,7 @@ namespace LiaNcc.Repository.Interfaces
         Task UpdateStatusAsync(Guid id, string status);
         Task DeleteAsync(Guid id);
 
-        Task<IEnumerable<BookingServiceType>> GetServiceTypesAsync();
+        Task<IEnumerable<Service>> GetServiceTypesAsync();
         Task<IEnumerable<BookingPassengerOption>> GetPassengerOptionsAsync();
     }
 }

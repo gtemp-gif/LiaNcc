@@ -61,7 +61,7 @@ namespace LiaNcc.FE.Services.Interfaces
         Task<IEnumerable<Booking>> GetAllAsync();
         Task<Booking?> GetByIdAsync(Guid id);
         Task UpdateStatusAsync(Guid id, string status);
-        Task<IEnumerable<BookingServiceType>> GetServiceTypesAsync(string? culture = null);
+        Task<IEnumerable<Service>> GetServiceTypesAsync(string? culture = null);
         Task<IEnumerable<BookingPassengerOption>> GetPassengerOptionsAsync(string? culture = null);
     }
 }

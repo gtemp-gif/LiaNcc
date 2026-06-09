@@ -20,7 +20,7 @@ namespace LiaNcc.Models.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
 
-        public BookingServiceType? ServiceType { get; set; }
+        public Service? ServiceType { get; set; }
         public BookingPassengerOption? PassengerOption { get; set; }
         public Tour? Tour { get; set; }
         public Vehicle? Vehicle { get; set; }
