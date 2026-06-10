@@ -302,7 +302,18 @@
             </div>
 
             <div class="charcoal-border aspect-square relative overflow-hidden">
-                <iframe allowfullscreen="" height="100%" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3032.553259837731!2d16.2798153!3d40.6358178!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1338dfd6e64c3c39%3A0x6b77c4f4a3e9c8e!2sVia%20delle%20Rimembranze%2C%2075014%20Grassano%20MT!5e0!3m2!1sit!2sit!4v1710000000000!5m2!1sit!2sit" style="border:0; filter: grayscale(100%) invert(92%) contrast(83%);" width="100%"></iframe>
+
+                @if (!string.IsNullOrWhiteSpace(companyProfile?.GoogleMapsUrl))
+                {
+                    <iframe allowfullscreen
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            src="@companyProfile.GoogleMapsUrl"
+                            style="border:0;"
+                            width="100%"
+                            height="100%">
+                    </iframe>
+                }
             </div>
 
         </div>

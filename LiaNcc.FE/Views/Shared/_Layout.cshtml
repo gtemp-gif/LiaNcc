@@ -13,144 +13,237 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="~/img/favicon_io/favicon.ico" />
     <title>@ViewData["Title"] - LIA NCC</title>
-    
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    
+
     <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "surface-variant": "#353535",
-                        "surface-container-lowest": "#0e0e0e",
-                        "primary-fixed": "#ffe088",
-                        "inverse-on-surface": "#313030",
-                        "on-tertiary-fixed-variant": "#454747",
-                        "on-tertiary-container": "#434546",
-                        "on-secondary-fixed-variant": "#474747",
-                        "surface-tint": "#e9c349",
-                        error: "#ffb4ab",
-                        "on-surface": "#e5e2e1",
-                        "on-tertiary-fixed": "#1a1c1c",
-                        "surface-container-low": "#1c1b1b",
-                        "on-primary-fixed": "#241a00",
-                        "error-container": "#93000a",
-                        "tertiary-fixed": "#e2e2e2",
-                        "surface-container-high": "#2a2a2a",
-                        "primary-fixed-dim": "#e9c349",
-                        surface: "#131313",
-                        "on-background": "#e5e2e1",
-                        "on-secondary-fixed": "#1b1b1b",
-                        "on-primary": "#3c2f00",
-                        "tertiary-fixed-dim": "#c6c6c7",
-                        "surface-bright": "#393939",
-                        "on-secondary-container": "#b5b5b5",
-                        "on-error-container": "#ffdad6",
-                        tertiary: "#cecece",
-                        "surface-container-highest": "#353535",
-                        "surface-dim": "#131313",
-                        "on-tertiary": "#2f3131",
-                        background: "#131313",
-                        primary: "#f2ca50",
-                        "outline-variant": "#4d4635",
-                        "on-surface-variant": "#d0c5af",
-                        "inverse-surface": "#e5e2e1",
-                        "secondary-container": "#474747",
-                        "on-primary-container": "#554300",
-                        "secondary-fixed": "#e2e2e2",
-                        "surface-container": "#20201f",
-                        "on-secondary": "#303030",
-                        secondary: "#c6c6c6",
-                        "on-error": "#690005",
-                        "inverse-primary": "#735c00",
-                        "primary-container": "#d4af37",
-                        outline: "#99907c",
-                        "on-primary-fixed-variant": "#574500",
-                        "secondary-fixed-dim": "#c6c6c6",
-                        "tertiary-container": "#b2b3b3"
-                    },
-                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
-                    spacing: { unit: "8px", "container-max": "1440px", "section-gap": "128px", margin: "64px", gutter: "24px", "element-gap": "32px", "section-padding": "120px" },
-                    fontFamily: {
-                        sans: ["Montserrat", "sans-serif"],
-                        display: ["Montserrat", "sans-serif"],
-                        body: ["Montserrat", "sans-serif"]
-                    }
-                }
-            }
+        darkMode: "class",
+        theme: {
+        extend: {
+        colors: {
+        "surface-variant": "#353535",
+        "surface-container-lowest": "#0e0e0e",
+        "primary-fixed": "#ffe088",
+        "inverse-on-surface": "#313030",
+        "on-tertiary-fixed-variant": "#454747",
+        "on-tertiary-container": "#434546",
+        "on-secondary-fixed-variant": "#474747",
+        "surface-tint": "#e9c349",
+        error: "#ffb4ab",
+        "on-surface": "#e5e2e1",
+        "on-tertiary-fixed": "#1a1c1c",
+        "surface-container-low": "#1c1b1b",
+        "on-primary-fixed": "#241a00",
+        "error-container": "#93000a",
+        "tertiary-fixed": "#e2e2e2",
+        "surface-container-high": "#2a2a2a",
+        "primary-fixed-dim": "#e9c349",
+        surface: "#131313",
+        "on-background": "#e5e2e1",
+        "on-secondary-fixed": "#1b1b1b",
+        "on-primary": "#3c2f00",
+        "tertiary-fixed-dim": "#c6c6c7",
+        "surface-bright": "#393939",
+        "on-secondary-container": "#b5b5b5",
+        "on-error-container": "#ffdad6",
+        tertiary: "#cecece",
+        "surface-container-highest": "#353535",
+        "surface-dim": "#131313",
+        "on-tertiary": "#2f3131",
+        background: "#131313",
+        primary: "#f2ca50",
+        "outline-variant": "#4d4635",
+        "on-surface-variant": "#d0c5af",
+        "inverse-surface": "#e5e2e1",
+        "secondary-container": "#474747",
+        "on-primary-container": "#554300",
+        "secondary-fixed": "#e2e2e2",
+        "surface-container": "#20201f",
+        "on-secondary": "#303030",
+        secondary: "#c6c6c6",
+        "on-error": "#690005",
+        "inverse-primary": "#735c00",
+        "primary-container": "#d4af37",
+        outline: "#99907c",
+        "on-primary-fixed-variant": "#574500",
+        "secondary-fixed-dim": "#c6c6c6",
+        "tertiary-container": "#b2b3b3"
+        },
+        borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+        spacing: { unit: "8px", "container-max": "1440px", "section-gap": "128px", margin: "64px", gutter: "24px", "element-gap": "32px", "section-padding": "120px" },
+        fontFamily: {
+        sans: ["Montserrat", "sans-serif"],
+        display: ["Montserrat", "sans-serif"],
+        body: ["Montserrat", "sans-serif"]
+        }
+        }
+        }
         };
     </script>
-    
+
     <style>
-        body { background-color: #000000; color: #e2e2e2; font-family: 'Montserrat', sans-serif; font-weight: 400; }
-        h1, h2, h3 { font-weight: 600; }
-        .section-title { text-transform: uppercase; letter-spacing: 3px; }
-        .light-text { font-weight: 300; }
-        .gold-border { border: 1px solid #D4AF37; }
-        .gold-text { color: #D4AF37; }
-        .gold-bg { background-color: #D4AF37; }
-        .charcoal-border { border: 1px solid #1A1A1A; }
-        .glass-effect { backdrop-filter: blur(20px); background: rgba(0, 0, 0, 0.7); }
-        .hero-mask { background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.9) 100%); }
-        .cinematic-img { filter: grayscale(20%) contrast(110%); }
-        .modal-overlay { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); }
-        
+        body {
+        background-color: #000000;
+        color: #e2e2e2;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        }
+
+        h1, h2, h3 {
+        font-weight: 600;
+        }
+
+        .section-title {
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        }
+
+        .light-text {
+        font-weight: 300;
+        }
+
+        .gold-border {
+        border: 1px solid #D4AF37;
+        }
+
+        .gold-text {
+        color: #D4AF37;
+        }
+
+        .gold-bg {
+        background-color: #D4AF37;
+        }
+
+        .charcoal-border {
+        border: 1px solid #1A1A1A;
+        }
+
+        .glass-effect {
+        backdrop-filter: blur(20px);
+        background: rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-mask {
+        background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.9) 100%);
+        }
+
+        .cinematic-img {
+        filter: grayscale(20%) contrast(110%);
+        }
+
+        .modal-overlay {
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        }
+
         .btn-secondary {
-            background-color: transparent; border: 1px solid #D4AF37; color: #D4AF37;
-            font-family: 'Montserrat', sans-serif; font-weight: 500; letter-spacing: 2px;
-            text-transform: uppercase; padding: 12px 32px; white-space: nowrap;
-            transition: all 0.4s ease; display: inline-block; text-align: center;
+        background-color: transparent;
+        border: 1px solid #D4AF37;
+        color: #D4AF37;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 12px 32px;
+        white-space: nowrap;
+        transition: all 0.4s ease;
+        display: inline-block;
+        text-align: center;
         }
-        .btn-secondary:hover { background-color: #D4AF37; color: #121212; }
-        
+
+        .btn-secondary:hover {
+        background-color: #D4AF37;
+        color: #121212;
+        }
+
         .input-underline {
-            border: none; border-bottom: 1px solid #1A1A1A; background: transparent !important;
-            transition: border-color 0.4s ease;
+        border: none;
+        border-bottom: 1px solid #1A1A1A;
+        background: transparent !important;
+        transition: border-color 0.4s ease;
         }
-        .input-underline:focus { outline: none; border-bottom: 1px solid #D4AF37; box-shadow: none; ring: 0; }
-        
+
+        .input-underline:focus {
+        outline: none;
+        border-bottom: 1px solid #D4AF37;
+        box-shadow: none;
+        ring: 0;
+        }
+
         .btn-ghost {
-            background-color: transparent; border: 1px solid #D4AF37; color: #D4AF37;
-            font-family: 'Montserrat', sans-serif; font-weight: 600; letter-spacing: 2px;
-            text-transform: uppercase; padding: 12px 32px; white-space: nowrap;
-            transition: all 0.4s ease; display: inline-block; text-align: center;
+        background-color: transparent;
+        border: 1px solid #D4AF37;
+        color: #D4AF37;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 12px 32px;
+        white-space: nowrap;
+        transition: all 0.4s ease;
+        display: inline-block;
+        text-align: center;
         }
-        .btn-ghost:hover { background-color: #D4AF37; color: #000000; }
-        
-        .luxury-gradient-bg { background: radial-gradient(circle at 50% -20%, #1A1A1A 0%, #000000 100%); }
-        .vehicle-glow { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.15)); }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .noir-gradient { background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%); }
-        .cinematic-card:hover .card-border { border-color: #D4AF37; }
-        .cinematic-card:hover img { scale: 1.05; }
+
+        .btn-ghost:hover {
+        background-color: #D4AF37;
+        color: #000000;
+        }
+
+        .luxury-gradient-bg {
+        background: radial-gradient(circle at 50% -20%, #1A1A1A 0%, #000000 100%);
+        }
+
+        .vehicle-glow {
+        filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.15));
+        }
+
+        .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .noir-gradient {
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
+        }
+
+        .cinematic-card:hover .card-border {
+        border-color: #D4AF37;
+        }
+
+        .cinematic-card:hover img {
+        scale: 1.05;
+        }
     </style>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QEC705JVZW"></script>
+<script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());   gtag('config', 'G-QEC705JVZW'); </script>
 <body class="font-body overflow-x-hidden selection:bg-[#D4AF37]/30 selection:text-white relative flex flex-col min-h-screen">
-    
-    @{
-            CompanyProfile? company = null;
-            List<CompanyContactDto> contacts = new List<CompanyContactDto>();
-            try
-            {
-                company = await CompanyApi.GetCompanyProfileAsync();
-                contacts = await CompanyApi.GetContactsAsync();
-            }
-            catch { }
 
-            var phone = contacts.FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 333 715 9308";
-            var phone2 = contacts.Skip(1).FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 350 576 3433";
-            var email = contacts.FirstOrDefault(c => c.Type == "Email")?.Value ?? "liamoto@alice.it";
-            var address = company?.Address ?? "Via Roma 1";
-            var cityZip = $"{(company?.City ?? "Matera")} - {(company?.ZipCode ?? "75100")}".Trim();
-            var country = company?.Country ?? "Italia";
-            var isItalian = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "it";
+    @{
+        CompanyProfile? company = null;
+        List<CompanyContactDto> contacts = new List<CompanyContactDto>();
+        try
+        {
+            company = await CompanyApi.GetCompanyProfileAsync();
+            contacts = await CompanyApi.GetContactsAsync();
+        }
+        catch { }
+
+        var phone = contacts.FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 333 715 9308";
+        var phone2 = contacts.Skip(1).FirstOrDefault(c => c.Type == "Phone")?.Value ?? "+39 350 576 3433";
+        var email = contacts.FirstOrDefault(c => c.Type == "Email")?.Value ?? "liamoto@alice.it";
+        var address = company?.Address ?? "Via della Rimembranza, 108";
+        var cityZip = $"{(company?.City ?? "Grassano")} - {(company?.ZipCode ?? "75014")}".Trim();
+        var country = company?.Country ?? "Italia";
+        var isItalian = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "it";
+        
     }
 
     <header class="fixed top-0 w-full z-40 bg-black/90 backdrop-blur-xl border-b border-[#1A1A1A]">
@@ -171,7 +264,7 @@
                     <span class="text-gray-500">|</span>
                     <a href="?culture=en&ui-culture=en" class="@(!isItalian ? "text-[#D4AF37]" : "text-gray-500 hover:text-[#D4AF37]")">EN</a>
                 </div>
-                
+
                 <a href="/Home/Index#booking-form" class="btn-secondary !text-[10px] !py-3">@Localizer["BookNow"]</a>
             </nav>
 
@@ -187,13 +280,13 @@
                 <a href="/Home/Index#servizi" class="mobile-link text-white hover:text-[#D4AF37] text-lg">@Localizer["Services"]</a>
                 <a asp-action="Tours" asp-controller="Home" class="mobile-link text-white hover:text-[#D4AF37] text-lg">@Localizer["Tours"]</a>
                 <a href="/Home/Index#contatti" class="mobile-link text-white hover:text-[#D4AF37] text-lg">@Localizer["Contacts"]</a>
-                
+
                 <div class="flex gap-6 mt-4 border-t border-[#1A1A1A] pt-8 w-[60%] justify-center">
                     <a href="?culture=it&ui-culture=it" class="@(isItalian ? "text-[#D4AF37]" : "text-gray-500") text-xl">IT</a>
                     <span class="text-gray-500 text-xl">|</span>
                     <a href="?culture=en&ui-culture=en" class="@(!isItalian ? "text-[#D4AF37]" : "text-gray-500") text-xl">EN</a>
                 </div>
-                
+
                 <a href="/Home/Index#booking-form" class="mobile-link bg-[#D4AF37] text-black px-10 py-5 mt-6 text-xs font-bold tracking-[0.3em]">@Localizer["BookNow"]</a>
             </div>
 
@@ -221,6 +314,13 @@
                     <p class="font-bold text-[9px] tracking-[0.2em] uppercase text-gray-600 leading-loose">
                         © @DateTime.Now.Year @(company?.Name ?? "LIA NCC").<br /> @Localizer["ExcellenceInMotion"]
                     </p>
+
+                    @if (!string.IsNullOrWhiteSpace(company?.VatNumber))
+                    {
+                        <p class="font-bold text-[9px] tracking-[0.15em] uppercase text-gray-600 mt-4">
+                            P. IVA @company.VatNumber
+                        </p>
+                    }
                 </div>
             </div>
         </nav>
@@ -229,78 +329,116 @@
     <main class="flex-grow">
         @RenderBody()
     </main>
-
     <footer class="w-full bg-[#000000] border-t border-[#1A1A1A] mt-auto" id="contatti">
-        <div class="w-full py-16 md:py-20 px-6 md:px-16 max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+        <div class="w-full px-6 md:px-16 py-20 max-w-7xl mx-auto">
 
-                <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
-                    <a asp-action="Index" asp-controller="Home" class="mb-8">
-                        <img alt="LIA NCC Logo" class="h-16 w-auto object-contain" src="~/img/LiaNcc_logo.jpeg" />
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+
+                <!-- Brand -->
+                <div class="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left">
+                    <a asp-action="Index" asp-controller="Home" class="mb-10">
+                        <img alt="LIA NCC Logo"
+                             class="h-20 w-auto object-contain"
+                             src="~/img/LiaNcc_logo.jpeg" />
                     </a>
 
-                    <p class="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-600 leading-loose">
-                        © @DateTime.Now.Year @(company?.Name ?? "LIA NCC").<br /> @Localizer["ExcellenceInMotion"]
+                    <p class="font-bold text-[13px] tracking-[0.2em] uppercase text-gray-400 leading-loose">
+                        @Localizer["ExcellenceInMotion"]
                     </p>
                 </div>
 
-                <div class="flex flex-col gap-4 items-center sm:items-start text-center sm:text-left">
-                    <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-2">
+                <!-- Sede -->
+                <div class="lg:col-span-3 flex flex-col items-center lg:items-start text-center lg:text-left">
+                    <h3 class="text-white font-bold text-[15px] tracking-[0.25em] uppercase mb-10">
                         @Localizer["Location"]
-                    </span>
+                    </h3>
 
-                    <span class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-white">
-                        @address
-                    </span>
+                    <div class="flex flex-col gap-4">
+                        <span class="font-bold text-[12px] tracking-[0.14em] uppercase text-gray-500">
+                            @address
+                        </span>
 
-                    <span class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-gray-400">
-                        @cityZip
-                    </span>
-                    <span class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-gray-400">
-                        @country
-                    </span>
+                        <span class="font-bold text-[12px] tracking-[0.14em] uppercase text-gray-500">
+                            @cityZip
+                        </span>
+
+                        <span class="font-bold text-[12px] tracking-[0.14em] uppercase text-gray-500">
+                            @country
+                        </span>
+                    </div>
                 </div>
 
-                <div class="flex flex-col gap-4 items-center sm:items-start lg:items-end text-center sm:text-left lg:text-right">
-                    <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-2">
+                <!-- Contatti -->
+                <div class="lg:col-span-3 flex flex-col items-center lg:items-start text-center lg:text-left">
+                    <h3 class="text-white font-bold text-[15px] tracking-[0.25em] uppercase mb-10">
                         @Localizer["Contacts"]
-                    </span>
+                    </h3>
 
-                    @foreach (var contact in contacts.Where(c => c.Type == "Phone" || c.Type == "WhatsApp"))
-                    {
-                        <a href="tel:@contact.Value.Replace(" ", "")" class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-white hover:text-[#D4AF37] transition-all">
-                            @contact.Value
-                        </a>
-                    }
+                    <div class="flex flex-col gap-4">
 
-                    @foreach (var contact in contacts.Where(c => c.Type == "Email"))
-                    {
-                        <a href="mailto:@contact.Value" class="font-bold text-[10px] md:text-xs tracking-[0.1em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all break-all sm:break-normal">
-                            @contact.Value
-                        </a>
-                    }
-                </div>
+                        @foreach (var contact in contacts.Where(c => c.Type == "Phone" || c.Type == "WhatsApp"))
+                        {
+                            <a href="tel:@contact.Value.Replace(" ", "")"
+                               class="font-bold text-[12px] tracking-[0.14em] uppercase text-gray-500 hover:text-[#D4AF37] transition-all">
+                                @contact.Value
+                            </a>
+                        }
 
-                <div class="flex flex-col gap-4 items-center sm:items-end text-center sm:text-right">
-                    <span class="text-[#D4AF37] font-bold text-[9px] tracking-widest uppercase mb-2">
-                        @Localizer["Legal"]
-                    </span>
+                        @foreach (var contact in contacts.Where(c => c.Type == "Email"))
+                        {
+                            <a href="mailto:@contact.Value"
+                               class="font-bold text-[12px] tracking-[0.14em] uppercase text-gray-500 hover:text-[#D4AF37] transition-all break-all">
+                                @contact.Value
+                            </a>
+                        }
 
-                    <a asp-controller="Home" asp-action="Legal" asp-fragment="privacy" class="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">
-                        @Localizer["PrivacyPolicy"]
-                    </a>
-
-                    <a asp-controller="Home" asp-action="Legal" asp-fragment="termini" class="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 hover:text-[#D4AF37] transition-all">
-                        @Localizer["TermsConditions"]
-                    </a>
+                    </div>
                 </div>
 
             </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-[#252525] mt-20 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+
+                    <p class="font-bold text-[10px] tracking-[0.25em] uppercase text-gray-600 text-center md:text-left">
+                        © @DateTime.Now.Year @(company?.Name ?? "LIA NCC")
+                    </p>
+
+                    <div class="flex flex-col md:flex-row items-center gap-4 md:gap-10">
+
+                        @if (!string.IsNullOrWhiteSpace(company?.VatNumber))
+                        {
+                            <p class="font-bold text-[10px] tracking-[0.25em] uppercase text-gray-600">
+                                P. IVA @company.VatNumber
+                            </p>
+                        }
+
+                        <a asp-controller="Home"
+                           asp-action="Legal"
+                           asp-fragment="privacy"
+                           class="font-bold text-[10px] tracking-[0.25em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all">
+                            @Localizer["PrivacyPolicy"]
+                        </a>
+
+                        <a asp-controller="Home"
+                           asp-action="Legal"
+                           asp-fragment="termini"
+                           class="font-bold text-[10px] tracking-[0.25em] uppercase text-gray-600 hover:text-[#D4AF37] transition-all">
+                            @Localizer["TermsConditions"]
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </footer>
+    
 
     <div id="scroll-controls" class="fixed bottom-8 right-6 md:right-10 z-[90] flex flex-col gap-3 opacity-0 translate-y-4 transition-all duration-500 pointer-events-none">
-        
+
         <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
                 class="w-12 h-12 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all group shadow-[0_0_15px_rgba(212,175,55,0.2)]"
                 title="@Localizer["BackToTop"]">
@@ -321,40 +459,40 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Logica Menu Mobile
-            const menuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const menuIcon = document.getElementById('menu-icon');
-            const mobileLinks = document.querySelectorAll('.mobile-link');
+        // Logica Menu Mobile
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
 
-            function toggleMenu() {
-                mobileMenu.classList.toggle('hidden');
-                mobileMenu.classList.toggle('flex');
-                document.body.classList.toggle('overflow-hidden');
-                menuIcon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
-            }
+        function toggleMenu() {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenu.classList.toggle('flex');
+        document.body.classList.toggle('overflow-hidden');
+        menuIcon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
+        }
 
-            if (menuBtn) {
-                menuBtn.addEventListener('click', toggleMenu);
-            }
-                
-            mobileLinks.forEach(link => {
-                link.addEventListener('click', toggleMenu);
-            });
+        if (menuBtn) {
+        menuBtn.addEventListener('click', toggleMenu);
+        }
 
-            // Logica Controlli di Scroll
-            const scrollControls = document.getElementById('scroll-controls');
-            if (scrollControls) {
-                window.addEventListener('scroll', function() {
-                    if (window.scrollY > 400) {
-                        scrollControls.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
-                        scrollControls.classList.add('opacity-100', 'translate-y-0');
-                    } else {
-                        scrollControls.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
-                        scrollControls.classList.remove('opacity-100', 'translate-y-0');
-                    }
-                });
-            }
+        mobileLinks.forEach(link => {
+        link.addEventListener('click', toggleMenu);
+        });
+
+        // Logica Controlli di Scroll
+        const scrollControls = document.getElementById('scroll-controls');
+        if (scrollControls) {
+        window.addEventListener('scroll', function() {
+        if (window.scrollY > 400) {
+        scrollControls.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+        scrollControls.classList.add('opacity-100', 'translate-y-0');
+        } else {
+        scrollControls.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+        scrollControls.classList.remove('opacity-100', 'translate-y-0');
+        }
+        });
+        }
         });
     </script>
 
